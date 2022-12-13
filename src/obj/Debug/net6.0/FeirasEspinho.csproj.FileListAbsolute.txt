@@ -1,0 +1,15 @@
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\bin\Debug\net6.0\FeirasEspinho.exe
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\bin\Debug\net6.0\FeirasEspinho.deps.json
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\bin\Debug\net6.0\FeirasEspinho.runtimeconfig.json
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\bin\Debug\net6.0\FeirasEspinho.dll
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\bin\Debug\net6.0\FeirasEspinho.pdb
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.csproj.AssemblyReference.cache
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.AssemblyInfoInputs.cache
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.AssemblyInfo.cs
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.csproj.CoreCompileInputs.cache
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.dll
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\refint\FeirasEspinho.dll
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.pdb
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\FeirasEspinho.genruntimeconfig.cache
+C:\Users\ferna\Desktop\LI4\FeirasEspinho\obj\Debug\net6.0\ref\FeirasEspinho.dll
