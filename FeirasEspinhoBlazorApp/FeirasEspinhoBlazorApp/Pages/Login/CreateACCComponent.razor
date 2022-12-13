@@ -1,0 +1,35 @@
+﻿@page "/createacc"
+
+<PageTitle>Página de criação de conta</PageTitle>
+
+<h1>Criar conta</h1>
+
+<br />
+
+<div class="page">
+	<main>
+		<div>
+			<label><b>Email</b></label>
+			<input type="text" id="email" name="email" placeholder="Insira o seu email" />
+		</div>
+		<br />
+		<div>
+			<label> <b>Palavra passe</b> </label>
+			<input type="password" id="password" name="password" />
+		</div>
+		<br />
+		<div>
+			<button class="buttonA">Adicionar Conta</button>
+			<button class="buttonA">
+				<NavLink href="login" class="nounderline">
+					Retroceder
+				</NavLink>
+			</button>
+		</div>
+	</main>
+</div>
+
+@code 
+{
+
+}
