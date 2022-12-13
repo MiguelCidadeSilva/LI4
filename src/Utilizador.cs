@@ -3,77 +3,67 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
-namespace FeirasEspinho
+namespace Utilizadores
 {
+    // SUPERCLASSE USER
     public abstract class Utilizador
     {
-        protected String username;
-        protected String password;
-        protected String email;
-        protected DateTime dataNascimento;
+        protected String Username  // user
+        { get; set; }
+        protected String Password  // password
+        { get; set; }
+        protected String Email  // mail
+        { get; set; }
+        protected DateTime DataNascimento  // data nascimento(DD/MM/AAAA)
+        { get; set; }
 
         public Utilizador()
         {
-            this.username = "";
-            this.password = "";
-            this.email = "";
-            this.dataNascimento = DateTime.MinValue;
+            this.Username = "";
+            this.Password = "";
+            this.Email = "";
+            this.DataNascimento = DateTime.MinValue;
         }
 
         public Utilizador(String username, String password, String email, DateTime dataNascimento)
         {
-            this.username = username;
-            this.password = password;
-            this.email = email;
-            this.dataNascimento = dataNascimento;
-        }
-
-        public String getUsername()
-        {
-            return this.username;
-        }
-        public String getPassword()
-        {
-            return this.password;
-        }
-        public String getEmail()
-        {
-            return this.email;
-        }
-        public DateTime getDataNascimento()
-        {
-            return this.dataNascimento;
+            this.Username = username;
+            this.Password = password;
+            this.Email = email;
+            this.DataNascimento = dataNascimento;
         }
 
         public Utilizador(Utilizador u)
         {
-            this.username = u.getUsername();
-            this.password = u.getPassword();
-            this.email = u.getEmail();
-            this.dataNascimento = u.getDataNascimento();
+            this.Username = u.Username;
+            this.Password = u.Password;
+            this.Email = u.Email;
+            this.DataNascimento = u.DataNascimento;
         }
 
         public virtual String toString()
         {
-            return ("User: " + this.getUsername() + "\nPassword: " + this.getPassword() + "\nEmail: " + this.getEmail() + "\nDataNascimento: " + this.getDataNascimento() + "\n");
+            return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: " + this.DataNascimento.ToString("dd/MM/YYYY") + "\n");
         }
 
 
-        public Boolean equals(Object obj)
+        public virtual Boolean equals(Object obj)
         {
             if (this == obj) return true;
             if ((obj.Equals(null)) || (obj is not Utilizador)) return false;
             Utilizador u = (Utilizador)obj;
-            return (this.getUsername().Equals(u.getUsername()) &&
-                       this.getPassword().Equals(u.getPassword()) &&
-                       this.getEmail().Equals(u.getEmail()) &&
-                       this.getDataNascimento().Equals(u.getDataNascimento()));
+            return (this.Username.Equals(u.Username) &&
+                       this.Password.Equals(u.Password) &&
+                       this.Email.Equals(u.Email) &&
+                       this.DataNascimento.Equals(u.DataNascimento));
         }
 
 
     }
 
+    // SUBCLASSE ADMIN
     public class Administrador : Utilizador 
     {
         public Administrador() : base()
@@ -84,7 +74,7 @@ namespace FeirasEspinho
         {
         }
 
-        public Administrador(Administrador u) : base(u.getUsername(),u.getPassword(), u.getEmail(), u.getDataNascimento() )
+        public Administrador(Administrador u) : base(u.Username,u.Password, u.Email, u.DataNascimento )
         {
         }
 
@@ -98,21 +88,107 @@ namespace FeirasEspinho
             return ("ADMINISTRADOR\n" + base.toString()); 
         }
 
-
-    }
-
-    class Teste
-    {
-        static void Main(String[] args)
+        public override Boolean equals(Object obj)
         {
-            //  Converter de str "DD/MM/AAAA" p/ Datetime -> Convert.ToDateTime(str);
+            if(obj == null) return false;
+            if (this == obj) return true;
 
-            Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com",DateTime.Now);
-            Administrador a2 = a.Clone();
-            Console.Write(a.toString());
-
-            Console.WriteLine("Prima Enter para terminar");
-            Console.ReadLine();
+            return base.equals(obj);
         }
+
+
     }
+
+    //SUBCLASSE CLIENTE
+
+
+    public class Cliente : Utilizador
+    {
+        public Cliente() : base()
+        {
+        }
+
+        public Cliente(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
+        {
+        }
+
+        public Cliente(Cliente u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
+        {
+        }
+
+        public Cliente Clone()
+        {
+            return new Cliente(this);
+        }
+
+        public override String ToString()
+        {
+            return ("CLIENTE\n" + base.ToString());
+        }
+
+        public override Boolean Equals(Object obj)
+        {
+            if (obj == null) return false;
+            if (this == obj) return true;
+
+            return base.equals(obj);
+        }
+
+
+    }
+
+
+    //SUBCLASSE FEIRANTE
+
+    public class Feirante : Utilizador
+    {
+        public Feirante() : base()
+        {
+        }
+
+        public Feirante(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
+        {
+        }
+
+        public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
+        {
+        }
+
+        public Feirante Clone()
+        {
+            return new Feirante(this);
+        }
+
+        public override String toString()
+        {
+            return ("CLIENTE\n" + base.toString());
+        }
+
+        public override Boolean equals(Object obj)
+        {
+            if (obj == null) return false;
+            if (this == obj) return true;
+
+            return base.equals(obj);
+        }
+
+
+    }
+    /*
+    public class Teste
+    {
+    static void Main(String[] args)
+    {
+       //  Converter de str "DD/MM/AAAA" p/ Datetime -> Convert.ToDateTime(str);
+
+        Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com",DateTime.Now);
+        Administrador a2 = a.Clone();
+        Console.Write(a.toString());
+        Console.WriteLine("Prima Enter para terminar");
+        Console.ReadLine();
+         }
+     }
+    */
+     
+
 }
