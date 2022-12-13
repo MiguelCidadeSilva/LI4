@@ -33,8 +33,12 @@ namespace FeirasEspinho
     {
         static void Main(String[] args)
         {
-            Utilizador u = new Utilizador("Eduardo", "123", "braga@gmail.com");
-            Console.Write(u.toString());
+            //  Converter de str "DD/MM/AAAA" p/ Datetime -> Convert.ToDateTime(str);
+
+            Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com",DateTime.Now);
+            Administrador a2 = a.Clone();
+            Console.Write(a.toString());
+
             Console.WriteLine("Prima Enter para terminar");
             Console.ReadLine();
         }
