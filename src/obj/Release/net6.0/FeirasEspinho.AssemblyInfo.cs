@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("FeirasEspinhoBlazorApp")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("FeirasEspinho")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("FeirasEspinhoBlazorApp")]
-[assembly: System.Reflection.AssemblyTitleAttribute("FeirasEspinhoBlazorApp")]
+[assembly: System.Reflection.AssemblyProductAttribute("FeirasEspinho")]
+[assembly: System.Reflection.AssemblyTitleAttribute("FeirasEspinho")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.
