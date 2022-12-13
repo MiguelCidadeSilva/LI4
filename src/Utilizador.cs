@@ -43,9 +43,9 @@ namespace Utilizadores
             this.DataNascimento = u.DataNascimento;
         }
 
-        public virtual String toString()
+        public virtual String ToString()
         {
-            return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: " + this.DataNascimento.ToString("dd/MM/YYYY") + "\n");
+            return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: " + this.DataNascimento.ToString("dd/MM/yyyy") + "\n");
         }
 
 
@@ -83,9 +83,9 @@ namespace Utilizadores
             return new Administrador(this);
         }
 
-        public override String toString()
+        public override String ToString()
         {
-            return ("ADMINISTRADOR\n" + base.toString()); 
+            return ("ADMINISTRADOR\n" + base.ToString()); 
         }
 
         public override Boolean equals(Object obj)
@@ -159,9 +159,9 @@ namespace Utilizadores
             return new Feirante(this);
         }
 
-        public override String toString()
+        public override String ToString()
         {
-            return ("CLIENTE\n" + base.toString());
+            return ("CLIENTE\n" + base.ToString());
         }
 
         public override Boolean equals(Object obj)
@@ -183,7 +183,7 @@ namespace Utilizadores
 
         Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com",DateTime.Now);
         Administrador a2 = a.Clone();
-        Console.Write(a.toString());
+        Console.Write(a.ToString());
         Console.WriteLine("Prima Enter para terminar");
         Console.ReadLine();
          }

@@ -33,7 +33,7 @@ namespace FeirasEspinho
 
 		}
 
-		public String toString()
+		public String ToString()
 		{
 			String s = "=====USERS=====\n";
 			int i = 1;
@@ -41,7 +41,7 @@ namespace FeirasEspinho
 			{
                 if(dc.Key is not null)
 				{
-                    s += i + ". -> \n" + ((Utilizador) dc.Value).toString();
+                    s += i + ". -> \n" + ((Utilizador) dc.Value).ToString();
                     i++;
                 }
 			}
@@ -70,8 +70,11 @@ namespace FeirasEspinho
 				Console.WriteLine("teste");
 				Administrador a = new Administrador("Eduardo","123","sweeper@gmail.com",DateTime.Now);
 				SistemaFeiras sf = new SistemaFeiras();
-				sf.addUser("Edurado", a);
-				Console.WriteLine(sf.toString());
+
+				Feirante f = new Feirante("José","banana","fallo@hotmail.com",new DateTime(2022,10,10));
+				sf.addUser("José", f);
+				sf.addUser("Eduardo", a);
+				Console.WriteLine(sf.ToString());
 					     
 			}
 
