@@ -54,7 +54,7 @@ namespace FeirasEspinho
             this.dataNascimento = u.getDataNascimento();
         }
 
-        public String toString()
+        public virtual String toString()
         {
             return ("User: " + this.getUsername() + "\nPassword: " + this.getPassword() + "\nEmail: " + this.getEmail() + "\nDataNascimento: " + this.getDataNascimento() + "\n");
         }
@@ -91,6 +91,11 @@ namespace FeirasEspinho
         public Administrador Clone()
         {
             return new Administrador(this);
+        }
+
+        public override String toString()
+        {
+            return ("ADMINISTRADOR\n" + base.toString()); 
         }
 
 
