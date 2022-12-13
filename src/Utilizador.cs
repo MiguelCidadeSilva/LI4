@@ -19,7 +19,7 @@ namespace FeirasEspinho
             this.email = "";
         }
 
-        public Utilizador(String nome, String password, String email)
+        public void setNome(String nome)
         {
             this.nome = nome;
             this.password = password;
@@ -33,8 +33,10 @@ namespace FeirasEspinho
     {
         static void Main(String[] args)
         {
-            Console.WriteLine("Hello, World!");
-            Console.WriteLine("yes");
+            Utilizador u = new Utilizador("Eduardo", "123", "braga@gmail.com");
+            Console.Write(u.toString());
+            Console.WriteLine("Prima Enter para terminar");
+            Console.ReadLine();
         }
     }
 }
