@@ -1,4 +1,6 @@
 ﻿@page "/createacc"
+@using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
+@inject NavigationManager _navigationManager;
 
 <PageTitle>Página de criação de conta</PageTitle>
 
@@ -8,23 +10,123 @@
 
 <div class="page">
 	<main>
+		@if (erro != 0)
+		{
+			<ErrorComponent erro="@codigosErro[erro]" />
+		}
+		else if (sucess)
+		{
+			<SucessComponent sucmensagem="@sucmensagem" />
+		}
 		<div>
 			<label><b>Email</b></label>
-			<input type="text" id="email" name="email" placeholder="Insira o seu email" />
+			<input type="text" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
+		</div>
+		<br />
+		<div>
+			<label><b>Nome de utilizador</b></label>
+			<input type="text" id="name" name="name" placeholder="Insira o seu nome de utilizador" @bind-value="name"/>
+		</div>
+		<br />
+		<div>
+			<label><b>Data de nascimento (DD-MM-AAAA)</b></label>
+			<input type="text" id="bornDate" name="bornDate" placeholder="Insira a sua data de nascimento" @bind-value="bornDate" />
 		</div>
 		<br />
 		<div>
 			<label> <b>Palavra passe</b> </label>
-			<input type="password" id="password" name="password" />
+			<input type="password" id="password" name="password" @bind-value="password" />
 		</div>
 		<br />
 		<div>
-			<button class="buttonA">Adicionar Conta</button>
+			<label> <b>Repita a palvra passe</b> </label>
+			<input type="password" id="passwordRepeat" name="passwordRepeat" @bind-value="passwordRepat"/>
+		</div>
+		<br />
+		<div>
+			<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected(1)" checked=@(selected == 1) /><b> Cliente</b>
+			<br />
+			<input type="radio" name="tipo" value="Feirante" @onclick="() => Selected(2)" checked=@(selected == 2)/><b> Feirante</b>
+		</div>
+		<br />
+		<div>
+			<button class="buttonA" @onclick="AdicionarConta">Adicionar Conta</button>
 		</div>
 	</main>
 </div>
 
-@code 
+@code
 {
-
+	private bool sucess = false;
+	private string sucmensagem = "Conta criada com sucesso";
+	private int selected;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	protected int erro = 0;
+	protected string email = "";
+	protected string name = "";
+	protected string bornDate = "";
+	protected string password = "";
+	protected string passwordRepat = "";
+	protected override void OnInitialized()
+	{
+		this.selected = 0;
+		this.codigosErro.Add(1, "Campos incompletos");
+		this.codigosErro.Add(2, "Passwords diferentes");
+		this.codigosErro.Add(3, "Data inválida");
+		this.codigosErro.Add(4, "Opção não selecionada");
+	}
+	private void LimpaCampos()
+	{
+		this.selected = 0;
+		this.email = "";
+		this.name = "";
+		this.bornDate = "";
+		this.password = "";
+		this.passwordRepat = "";
+	}
+	public void AdicionarConta()
+	{
+		this.erro = 0;
+		DateTime date = new DateTime();
+		if (email.Length == 0 || name.Length == 0 || bornDate.Length == 0 || password.Length == 0 || passwordRepat.Length == 0)
+			this.erro = 1;
+		else if (!password.Equals(passwordRepat))
+		{
+			this.password = "";
+			this.passwordRepat = "";
+			this.erro = 2;
+		}
+		else if (bornDate.Count(c => (c == '-')) != 2 || !DateTime.TryParse(bornDate, out date))
+		{
+			this.bornDate = "";
+			this.erro = 3;
+		}
+		else if (selected == 0)
+			this.erro = 4;
+		else
+		{
+			Utilizador utilizador;
+			switch (selected)
+			{
+				case 1:
+					utilizador = new Cliente(name, password, email, date);
+					break;
+				case 2:
+					utilizador = new Feirante(name, password, email, date,2);
+					break;
+			}
+			this.sucess = true;
+			// adicionar variavel utilizador à base de dados
+			this.LimpaCampos();
+		}
+	}
+	public void FechaAlerta()
+	{
+		this.sucess = false;
+		this.erro = 0;
+	}
+	public void Selected(int novoValor)
+	{
+		this.selected = novoValor;
+	}
 }

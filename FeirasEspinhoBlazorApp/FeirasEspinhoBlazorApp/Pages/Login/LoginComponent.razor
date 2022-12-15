@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@inject NavigationManager _navigationManager
 
 <PageTitle>Página de autenticação</PageTitle>
 
@@ -8,18 +9,22 @@
 
 <div class="page">
 	<main>
+		@if (erro != 0)
+		{
+			<ErrorComponent erro="@codigosErro[erro]"/>
+		}
 		<div>
 			<label><b>Email</b></label>
-			<input type="text" id="email" name="email" placeholder="Insira o seu email" />
+			<input type="text" id="email" name="email" placeholder="Insira o seu email"  @bind-value="email"/>
 		</div>
 		<br />
 		<div>
 			<label> <b>Palavra passe</b> </label>
-			<input type="password" id="password" name="password" />
+			<input type="password" id="password" name="password" @bind-value="password" />
 		</div>
 		<br />
 		<div>
-			<button class="buttonA">Autenticar</button>
+			<button class="buttonA" @onclick="verificaCredencais">Autenticar</button>
 		</div>
 	</main>
 </div>
@@ -27,5 +32,35 @@
 
 @code 
 {
-
+	private int erro = 0;
+	private string email = "";
+	private string password = "";
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	protected override void OnInitialized()
+	{
+		this.codigosErro.Add(1, "Dados de acesso incorretos");
+		this.codigosErro.Add(2, "Campos incompletos");
+	}
+	private void verificaCredencais()
+	{
+		bool existe = false;
+		if(email.Length == 0 || password.Length == 0)
+		{
+			this.erro = 2;
+		}
+		else 
+		{
+			// método a perguntar à base de dados se existe
+			if(existe)
+			{
+				_navigationManager.NavigateTo("");
+			}
+			else
+				this.erro = 1;
+		}
+	}
+	public void FechaAlerta()
+	{
+		this.erro = 0;
+	}
 }

@@ -98,3 +98,62 @@ input[type=text], input[type=password] {
     color: black;
     text-decoration: none;
 }
+
+.alert {
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+.sucess {
+    background-color: limegreen; /* Red */
+}
+
+.buttonAlerta {
+    background-color: #f44336;
+    text-align: right;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: right;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.buttonSucess {
+    background-color: limegreen;
+}
+
+.d-table {
+    display: table;
+}
+
+.d-table-cell {
+    display: table-cell;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.tar {
+    text-align: right;
+}
+
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-clip: content-box;
+    padding: 3px;
+}
+
+    input[type="radio"]:checked {
+        background-color: #555555;
+    }
