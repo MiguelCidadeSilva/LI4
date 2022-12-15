@@ -11,7 +11,7 @@
 	<main>
 		@if (erro != 0)
 		{
-			<ErrorComponent erro="@codigosErro[erro]"/>
+			<NotificationComponent mensagem="@codigosErro[erro]" sucess="false" />
 		}
 		<div>
 			<label><b>Email</b></label>

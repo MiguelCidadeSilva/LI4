@@ -12,11 +12,11 @@
 	<main>
 		@if (erro != 0)
 		{
-			<ErrorComponent erro="@codigosErro[erro]" />
+			<NotificationComponent mensagem="@codigosErro[erro]" sucess="false" />
 		}
 		else if (sucess)
 		{
-			<SucessComponent sucmensagem="@sucmensagem" />
+			<NotificationComponent mensagem="@sucmensagem" sucess= "true"/>
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -49,6 +49,14 @@
 			<input type="radio" name="tipo" value="Feirante" @onclick="() => Selected(2)" checked=@(selected == 2)/><b> Feirante</b>
 		</div>
 		<br />
+		@if(this.selected == 2)
+		{
+			<div>
+				<label><b>Número da conta bancária</b></label>
+				<input type="text" id="numConta" name="numConta" placeholder="Insira a número da sua conta bancária" @bind-value="numConta" />
+			</div>
+			<br />
+		}
 		<div>
 			<button class="buttonA" @onclick="AdicionarConta">Adicionar Conta</button>
 		</div>
@@ -67,6 +75,7 @@
 	protected string bornDate = "";
 	protected string password = "";
 	protected string passwordRepat = "";
+	protected string numConta = "";
 	protected override void OnInitialized()
 	{
 		this.selected = 0;
@@ -109,10 +118,10 @@
 			switch (selected)
 			{
 				case 1:
-					utilizador = new Cliente(name, password, email, date);
+					//utilizador = new Cliente(name, password, email, date);
 					break;
 				case 2:
-					utilizador = new Feirante(name, password, email, date,2);
+					//utilizador = new Feirante(name, password, email, date,2);
 					break;
 			}
 			this.sucess = true;
