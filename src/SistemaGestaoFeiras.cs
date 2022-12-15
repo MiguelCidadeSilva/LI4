@@ -3,64 +3,72 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Runtime.CompilerServices;
-using  Utilizadores;
+using FeirasEspinho;
+
 
 namespace FeirasEspinho
 {
 	public class SistemaFeiras
 	{
-		private Hashtable? InfoUtilizadores  { get; set; }
-		private Hashtable? InfoFeiras  { get; set; }
+		protected Dictionary<String,Cliente> MapClientes  { get; set; }
+		protected Dictionary<String,Administrador> MapAdmins  { get; set; }
+		protected Dictionary<String, Feirante> MapFeirantes { get; set; }
 
 
 		public SistemaFeiras()
 		{
-			InfoUtilizadores = new Hashtable();
-			InfoFeiras = new Hashtable();
+			MapClientes = new Dictionary<String, Cliente>();
+			MapAdmins = new Dictionary<String,Administrador>();
+			MapFeirantes= new Dictionary<String,Feirante>();
 		}
 
-		public SistemaFeiras(Hashtable InfoUtilizadores, Hashtable InfoFeiras)
+		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins, Dictionary<String,Feirante> MapFeirantes )
 		{
-			this.InfoUtilizadores = (Hashtable)InfoUtilizadores.Clone();
-			this.InfoFeiras = (Hashtable)InfoFeiras.Clone();
-		}
+			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+            this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+            this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+        }
 
 
 		public SistemaFeiras(SistemaFeiras sf)
 		{
-			this.InfoUtilizadores = sf.InfoUtilizadores;
-			this.InfoFeiras = sf.InfoFeiras;
+			this.MapClientes = sf.MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+			this.MapAdmins = sf.MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+			this.MapFeirantes = sf.MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+        }
 
-		}
-
-		public String ToString()
+		public override String ToString()
 		{
-			String s = "=====USERS=====\n";
+			String s = "=====CLIENTES=====\n";
 			int i = 1;
-			foreach (DictionaryEntry  dc in InfoUtilizadores)
+			foreach(KeyValuePair<String,Cliente> par in this.MapClientes)
 			{
-                if(dc.Key is not null)
-				{
-                    s += i + ". -> \n" + ((Utilizador) dc.Value).ToString();
-                    i++;
-                }
+				s += ("\n" + i + "] ->");
+				s += par.Key;
+				s += ("\n" + par.Value.ToString());
 			}
-			i = 1;
-		/*	foreach (String key in this.InfoFeiras)
-			{
-				s += (i + ". -> \n" + InfoFeiras[key].ToString());
-				i++;
-			}
-		*/
-			return s;
+
+            return s;
 
 		}
 
-
-		public void addUser(String nome_User, Utilizador u)
+		public bool Login(String user, String password)
 		{
-			this.InfoUtilizadores.Add(nome_User, u);
-		}
+			if(password.Length <= 8)
+				return false;
+			
+
+            foreach (KeyValuePair<String, Cliente> par in this.MapClientes)
+			{
+				Cliente s = new Cliente(par.Value);
+				if (s.CheckCredenciais(user, password))
+					return true;
+			}
+
+			return false;
+
+        }
+
 
 
 		public class Teste
@@ -68,17 +76,20 @@ namespace FeirasEspinho
 			static void Main(String[] args)
 			{
 				Console.WriteLine("teste");
-				Administrador a = new Administrador("Eduardo","123","sweeper@gmail.com",DateTime.Now);
+				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com",DateTime.Now);
 				SistemaFeiras sf = new SistemaFeiras();
-
-				Feirante f = new Feirante("José","banana","fallo@hotmail.com",new DateTime(2022,10,10));
-				sf.addUser("José", f);
-				sf.addUser("Eduardo", a);
+				sf.MapClientes.Add("Eduardo", c);
 				Console.WriteLine(sf.ToString());
+				Console.Write(sf.Login("Eduardo","123456789"));
+
+				
 					     
 			}
 
 		}
-
+		/*
+		*/
 	}
 }
+
+

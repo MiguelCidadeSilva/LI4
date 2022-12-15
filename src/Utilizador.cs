@@ -2,10 +2,11 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
-namespace Utilizadores
+namespace FeirasEspinho
 {
     // SUPERCLASSE USER
     public abstract class Utilizador
@@ -43,16 +44,16 @@ namespace Utilizadores
             this.DataNascimento = u.DataNascimento;
         }
 
-        public virtual String ToString()
+        public override String ToString()
         {
             return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: " + this.DataNascimento.ToString("dd/MM/yyyy") + "\n");
         }
 
 
-        public virtual Boolean equals(Object obj)
+        public override bool Equals(Object? obj)
         {
             if (this == obj) return true;
-            if ((obj.Equals(null)) || (obj is not Utilizador)) return false;
+            if (obj == null || (obj is not Utilizador)) return false;
             Utilizador u = (Utilizador)obj;
             return (this.Username.Equals(u.Username) &&
                        this.Password.Equals(u.Password) &&
@@ -60,46 +61,62 @@ namespace Utilizadores
                        this.DataNascimento.Equals(u.DataNascimento));
         }
 
+        public virtual object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
+
+        public bool CheckCredenciais(String username, String password)
+        {
+            return ( this.Username.Equals(username) && this.Password.Equals(password) ) ? true : false;
+        }
+
 
     }
 
-    // SUBCLASSE ADMIN
-    public class Administrador : Utilizador 
+
+    // ======SUBCLASSE ADMIN======
+
+
+    public class Administrador : Utilizador
     {
         public Administrador() : base()
         {
         }
 
-        public Administrador(String username, String password, String email, DateTime dataNascimento) : base(username,password,email,dataNascimento)
+        public Administrador(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
         {
         }
 
-        public Administrador(Administrador u) : base(u.Username,u.Password, u.Email, u.DataNascimento )
+        public Administrador(Administrador u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
         {
         }
 
-        public Administrador Clone()
+        public override Administrador Clone()
         {
             return new Administrador(this);
         }
 
         public override String ToString()
         {
-            return ("ADMINISTRADOR\n" + base.ToString()); 
+            return ("ADMINISTRADOR\n" + base.ToString());
         }
 
-        public override Boolean equals(Object obj)
+        public override Boolean Equals(Object? obj)
         {
-            if(obj == null) return false;
+            if (obj == null) return false;
             if (this == obj) return true;
 
-            return base.equals(obj);
+            return base.Equals(obj);
         }
 
-
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
     }
 
-    //SUBCLASSE CLIENTE
+
+    //=====SUBCLASSE CLIENTE=====
 
 
     public class Cliente : Utilizador
@@ -116,7 +133,7 @@ namespace Utilizadores
         {
         }
 
-        public Cliente Clone()
+        public override Cliente Clone()
         {
             return new Cliente(this);
         }
@@ -126,69 +143,88 @@ namespace Utilizadores
             return ("CLIENTE\n" + base.ToString());
         }
 
-        public override Boolean Equals(Object obj)
+        public override Boolean Equals(Object? obj)
         {
             if (obj == null) return false;
             if (this == obj) return true;
 
-            return base.equals(obj);
+            return base.Equals(obj);
         }
 
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
 
     }
 
 
     //SUBCLASSE FEIRANTE
 
+
     public class Feirante : Utilizador
     {
+        //no modelo lógico, a classe Feirante é a única que tem um numero de conta associado...
+        protected int nr_conta {get; set;}
+
         public Feirante() : base()
         {
+            this.nr_conta = 0;
         }
 
-        public Feirante(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
+        public Feirante(String username, String password, String email, DateTime dataNascimento, int nr_conta) : base(username, password, email, dataNascimento)
         {
+            this.nr_conta = nr_conta;
         }
 
         public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
         {
+            this.nr_conta = u.nr_conta;
         }
 
-        public Feirante Clone()
+        public override Feirante Clone()
         {
             return new Feirante(this);
         }
 
         public override String ToString()
         {
-            return ("CLIENTE\n" + base.ToString());
+            return ("FEIRANTE\n" + base.ToString() + "Numero da conta: " + this.nr_conta + "\n");
         }
 
-        public override Boolean equals(Object obj)
+        public override Boolean Equals(Object? obj)
         {
             if (obj == null) return false;
             if (this == obj) return true;
 
-            return base.equals(obj);
+            Feirante f = (Feirante)obj;
+            return ( base.Equals(obj) && (this.nr_conta == f.nr_conta) );
         }
+
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento,nr_conta).GetHashCode();
 
 
     }
     /*
     public class Teste
     {
-    static void Main(String[] args)
-    {
-       //  Converter de str "DD/MM/AAAA" p/ Datetime -> Convert.ToDateTime(str);
+        static void Main(String[] args)
+        {
+            CultureInfo portugal = new CultureInfo("PT-pt");
+            //testes
+            Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000", "dd/MM/yyyy", portugal));
+            Administrador a2 = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000","dd/MM/yyyy",portugal));
+            Cliente c = new Cliente("Joao", "456", "jose@hotmail.com", DateTime.ParseExact("24/10/1999", "dd/MM/yyyy", portugal));
+            Feirante f = new Feirante("Miguel", "789", "miguel@sapo.pt", DateTime.ParseExact("31/10/2000", "dd/MM/yyyy", portugal),4);
 
-        Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com",DateTime.Now);
-        Administrador a2 = a.Clone();
-        Console.Write(a.ToString());
-        Console.WriteLine("Prima Enter para terminar");
-        Console.ReadLine();
-         }
-     }
+            Console.WriteLine(a.ToString());
+            Console.WriteLine(a2.ToString());
+            Console.WriteLine(c.ToString());
+            Console.WriteLine(f.ToString());
+
+            Console.WriteLine(a.Equals(a2));
+
+
+        }
+
+
+    }
     */
-     
-
 }
