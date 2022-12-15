@@ -4,3 +4,9 @@
 
 /FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp/bin/Debug/net7.0
 /FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp/obj/Debug/net7.0
+/.vs
+/FeirasEspinhoBlazorApp/.vs
+/FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp/obj
+/.gitignore
+/FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp.sln
+/src/obj/Debug/net6.0
