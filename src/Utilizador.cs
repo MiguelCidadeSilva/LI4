@@ -11,16 +11,41 @@ namespace FeirasEspinho
     // SUPERCLASSE USER
     public abstract class Utilizador : Exception
     {
-        protected String Username  // user
-        { get; set; }
-        protected String Password  // password
-        { get; set; }
-        protected String Email  // mail
-        { get; set; }
-        protected DateTime DataNascimento  // data nascimento(DD/MM/AAAA)
-        { get; set; }
-        protected DateTime DataCriacao // data criacao(DD/MM/AAAA)
-        { get; set; }
+        private String username;
+        private String password;
+        private String email;
+        private DateTime dataNascimento;
+        private DateTime dataCriacao;
+
+        public String? Username
+        {
+            get { return username; }
+            set { username = value; }
+        }
+
+        public String? Password
+        {
+            get { return password; }
+            set { password = value; }
+        }
+
+        public String? Email
+        {
+            get { return email; }
+            set { email = value; }
+        }
+
+        public DateTime DataNascimento
+        {
+            get { return dataNascimento; }
+            set { dataNascimento = value; }
+        }
+
+        public DateTime DataCriacao
+        {
+            get { return dataCriacao; }
+            set { dataCriacao = value; }
+        }
 
         public Utilizador()
         {
@@ -78,15 +103,15 @@ namespace FeirasEspinho
 
 
 
-        // verificacao de credenciais: 1) caso (user inserido no menu de login) != (user da classe utilizador em que a funcao é invocada) retorna false                                                                                                                              
+        // verificacao de credenciais: 1) caso (email inserido no menu de login) != (email da classe utilizador em que a funcao é invocada) retorna false                                                                                                                              
         //                             2) caso os usernames sejam iguais, retorna true se a password for igual     
         //                             3) se os users condizem mas a password seja errada, retorna uma excecao, a dizer que a password está errada
-        public bool CheckCredenciais(String username, String password)
+        public virtual bool CheckCredenciais(String email, String password)
         {
 
-            if (!(this.Username.Equals(username))) return false;
+            if (!(this.Email.Equals(email))) return false;
 
-            if(this.Username.Equals(username) && this.Password.Equals(password)) return true;
+            if(this.Email.Equals(email) && this.Password.Equals(password)) return true;
 
             throw new PasswordInvalidaException("passwords nao condizem...");
             
@@ -181,7 +206,13 @@ namespace FeirasEspinho
     public class Feirante : Utilizador
     {
         //no modelo lógico, a classe Feirante é a única que tem um numero de conta associado...
-        protected int IDconta {get; set;}
+        public int iDconta;
+
+        public int IDconta
+        {
+            get { return iDconta; }
+            set { iDconta = value; }
+        }
 
         public Feirante() : base()
         {

@@ -13,15 +13,29 @@ namespace FeirasEspinho
 
     }
 
-    public class UsernameInvalidoException : Exception
+    public class EmailInvalidoException : Exception
     {
-        public UsernameInvalidoException() { }
+        public EmailInvalidoException() { }
 
-        public UsernameInvalidoException(string mensagem) : base(mensagem) { }
+        public EmailInvalidoException(string mensagem) : base(mensagem) { }
 
-        public UsernameInvalidoException(string message, Exception innerException) : base(message, innerException) { }
+        public EmailInvalidoException(string message, Exception innerException) : base(message, innerException) { }
 
     }
+
+    public class RegistoInvalido : Exception
+    {
+        public RegistoInvalido() { }
+
+        public RegistoInvalido(string mensagem) : base(mensagem) { }
+
+        public RegistoInvalido(string message, Exception innerException) : base(message, innerException) { }
+
+    }
+
+
+
+
 
 
 

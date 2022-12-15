@@ -12,9 +12,9 @@ namespace FeirasEspinho
 {	
 	public class SistemaFeiras : Exception
 	{
-		protected Dictionary<String,Cliente> MapClientes  { get; set; }
-		protected Dictionary<String,Administrador> MapAdmins  { get; set; }
-		protected Dictionary<String, Feirante> MapFeirantes { get; set; }
+		public Dictionary<String,Cliente> MapClientes  { get; set; }
+		public Dictionary<String,Administrador> MapAdmins  { get; set; }
+		public Dictionary<String, Feirante> MapFeirantes { get; set; }
 		//protected Dictionary<String,List<Feira> > MapFeiras { get; set; }
 
 		public SistemaFeiras()
@@ -74,7 +74,7 @@ namespace FeirasEspinho
 		//nao senti a necessidade de clonar a classe principal. Talvez irei implementar isso no futuro
 
 
-		public void Login(String user, String password)
+		public void Login(String email, String password)
 		{
 			if (password.Length < 8)
 				throw new PasswordInvalidaException("Password tem de ter 8 ou mais caracteres...burro\n");
@@ -83,9 +83,9 @@ namespace FeirasEspinho
             foreach (KeyValuePair<String, Cliente> par in this.MapClientes)
 			{
 				Cliente s = new Cliente(par.Value);
-				if (s.CheckCredenciais(user, password))
+				if (s.CheckCredenciais(email, password))
                 {
-                    Console.WriteLine("[CLIENTE]Login bem sucedido - Bem vindo, " + user + "!");
+                    Console.WriteLine("[CLIENTE]Login bem sucedido - Bem vindo, " + s.Username + "!");
                     return;
                 }
             }
@@ -93,9 +93,9 @@ namespace FeirasEspinho
 			foreach (KeyValuePair<String,Administrador> par in this.MapAdmins)
 			{
 				Administrador a = new Administrador(par.Value);
-				if (a.CheckCredenciais(user, password))
+				if (a.CheckCredenciais(email, password))
 				{
-					Console.WriteLine("[ADMINISTRADOR]Login bem sucedido - Bem vindo, " + user + "!");
+					Console.WriteLine("[ADMINISTRADOR]Login bem sucedido - Bem vindo, " + a.Username + "!");
 					return;
 				}
 			}
@@ -103,16 +103,50 @@ namespace FeirasEspinho
             foreach (KeyValuePair<String, Feirante> par in this.MapFeirantes)
             {
                 Feirante f = new Feirante(par.Value);
-				if (f.CheckCredenciais(user, password))
+				if (f.CheckCredenciais(email, password))
                 {
-                    Console.WriteLine("[FEIRANTE]Login bem sucedido - Bem vindo, " + user + "!");
+                    Console.WriteLine("[FEIRANTE]Login bem sucedido - Bem vindo, " + f.Username + "!");
                     return;
                 }
             }
 
-			throw new UsernameInvalidoException("username não existe, regista-te...burro");
+			throw new EmailInvalidoException("email não está registado, regista-te...burro");
 
         }
+
+		public void Registo(Utilizador u)
+		{
+			String key = u.Email;
+			if (MapClientes.ContainsKey(key) || MapAdmins.ContainsKey(key) || MapFeirantes.ContainsKey(key))
+				throw new EmailInvalidoException("Email já está associado a uma conta...");
+
+			if(u is FeirasEspinho.Cliente)
+			{
+				Cliente c = (Cliente) u;
+				MapClientes[key] = c;
+				Console.WriteLine("Registado " + c.Username + " com sucesso");
+				return;
+			}
+			else if (u is FeirasEspinho.Administrador)
+			{
+				Administrador a = (Administrador) u;
+				MapAdmins[key] = a;
+                Console.WriteLine("Registado " + a.Username + " com sucesso");
+				return;
+            }
+			else if (u is FeirasEspinho.Feirante)
+			{
+				Feirante f = (Feirante) u;
+				MapFeirantes[key] = f;
+                Console.WriteLine("Registado " + f.Username + " com sucesso");
+				return;
+            }
+
+			throw new RegistoInvalido("Registo abortado, algo correu mal!");
+
+		}
+
+
 
 
 
@@ -120,17 +154,26 @@ namespace FeirasEspinho
 		{
 			static void Main(String[] args)
 			{
-                Console.WriteLine("teste");
-				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("24/10/2000", "dd/MM/yyyy", new CultureInfo("pt-pt")),DateTime.Now);
+
+				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now);
 				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, 2);
 				SistemaFeiras sf = new SistemaFeiras();
-				sf.MapClientes.Add("Eduardo", c.Clone());
-				sf.MapFeirantes.Add("Jose", f.Clone());
+				try
+				{
+				sf.Registo(f);
+				sf.Registo(c);
+				sf.Registo(f);
+				}
+				catch(Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				
 				Console.WriteLine(sf.ToString());
 				try
 				{
-				sf.Login("Eduardo","123456789");
-				sf.Login("JoseBruh", "bananas123");
+				sf.Login("sweeper@gmail.com","123456789");
+				sf.Login("ze@gmail.com", "bananas123");
 				}
 				catch(Exception ex)
 				{
