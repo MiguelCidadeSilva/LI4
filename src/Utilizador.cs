@@ -9,16 +9,43 @@ using System.Xml.Linq;
 namespace FeirasEspinho
 {
     // SUPERCLASSE USER
-    public abstract class Utilizador
+    public abstract class Utilizador : Exception
     {
-        protected String Username  // user
-        { get; set; }
-        protected String Password  // password
-        { get; set; }
-        protected String Email  // mail
-        { get; set; }
-        protected DateTime DataNascimento  // data nascimento(DD/MM/AAAA)
-        { get; set; }
+        private String username;
+        private String password;
+        private String email;
+        private DateTime dataNascimento;
+        private DateTime dataCriacao;
+
+        public String? Username
+        {
+            get { return username; }
+            set { username = value; }
+        }
+
+        public String? Password
+        {
+            get { return password; }
+            set { password = value; }
+        }
+
+        public String? Email
+        {
+            get { return email; }
+            set { email = value; }
+        }
+
+        public DateTime DataNascimento
+        {
+            get { return dataNascimento; }
+            set { dataNascimento = value; }
+        }
+
+        public DateTime DataCriacao
+        {
+            get { return dataCriacao; }
+            set { dataCriacao = value; }
+        }
 
         public Utilizador()
         {
@@ -26,14 +53,17 @@ namespace FeirasEspinho
             this.Password = "";
             this.Email = "";
             this.DataNascimento = DateTime.MinValue;
+            this.DataCriacao = DateTime.MinValue;
         }
 
-        public Utilizador(String username, String password, String email, DateTime dataNascimento)
+        public Utilizador(String username, String password, String email, DateTime dataNascimento, DateTime dataCriacao)
         {
             this.Username = username;
             this.Password = password;
             this.Email = email;
             this.DataNascimento = dataNascimento;
+            this.DataCriacao = dataCriacao;
+
         }
 
         public Utilizador(Utilizador u)
@@ -42,13 +72,15 @@ namespace FeirasEspinho
             this.Password = u.Password;
             this.Email = u.Email;
             this.DataNascimento = u.DataNascimento;
+            this.DataCriacao = u.DataCriacao;
         }
 
         public override String ToString()
         {
-            return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: " + this.DataNascimento.ToString("dd/MM/yyyy") + "\n");
+            return ("User: " + this.Username + "\nPassword: " + this.Password + "\nEmail: " + this.Email + "\nDataNascimento: "
+                    + this.DataNascimento.ToString("dd/MM/yyyy") + "\n"
+                    + "DataCriacao: " + this.DataCriacao.ToString("dd/MM/yyyy") + "\n");
         }
-
 
         public override bool Equals(Object? obj)
         {
@@ -58,7 +90,8 @@ namespace FeirasEspinho
             return (this.Username.Equals(u.Username) &&
                        this.Password.Equals(u.Password) &&
                        this.Email.Equals(u.Email) &&
-                       this.DataNascimento.Equals(u.DataNascimento));
+                       this.DataNascimento.Equals(u.DataNascimento) &&
+                       this.DataCriacao.Equals(u.DataCriacao));
         }
 
         public virtual object Clone()
@@ -66,11 +99,22 @@ namespace FeirasEspinho
             return MemberwiseClone();
         }
 
-        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento,DataCriacao).GetHashCode();
 
-        public bool CheckCredenciais(String username, String password)
+
+
+        // verificacao de credenciais: 1) caso (email inserido no menu de login) != (email da classe utilizador em que a funcao é invocada) retorna false                                                                                                                              
+        //                             2) caso os usernames sejam iguais, retorna true se a password for igual     
+        //                             3) se os users condizem mas a password seja errada, retorna uma excecao, a dizer que a password está errada
+        public virtual bool CheckCredenciais(String email, String password)
         {
-            return ( this.Username.Equals(username) && this.Password.Equals(password) ) ? true : false;
+
+            if (!(this.Email.Equals(email))) return false;
+
+            if(this.Email.Equals(email) && this.Password.Equals(password)) return true;
+
+            throw new PasswordInvalidaException("passwords nao condizem...");
+            
         }
 
 
@@ -86,11 +130,11 @@ namespace FeirasEspinho
         {
         }
 
-        public Administrador(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
+        public Administrador(String username, String password, String email, DateTime dataNascimento, DateTime dataCriacao) : base(username, password, email, dataNascimento,dataCriacao)
         {
         }
 
-        public Administrador(Administrador u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
+        public Administrador(Administrador u) : base(u.Username, u.Password, u.Email, u.DataNascimento,u.DataCriacao)
         {
         }
 
@@ -112,7 +156,7 @@ namespace FeirasEspinho
             return base.Equals(obj);
         }
 
-        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento,DataCriacao).GetHashCode();
     }
 
 
@@ -125,11 +169,11 @@ namespace FeirasEspinho
         {
         }
 
-        public Cliente(String username, String password, String email, DateTime dataNascimento) : base(username, password, email, dataNascimento)
+        public Cliente(String username, String password, String email, DateTime dataNascimento, DateTime dataCriacao) : base(username, password, email, dataNascimento, dataCriacao)
         {
         }
 
-        public Cliente(Cliente u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
+        public Cliente(Cliente u) : base(u.Username, u.Password, u.Email, u.DataNascimento,u.DataCriacao)
         {
         }
 
@@ -151,7 +195,7 @@ namespace FeirasEspinho
             return base.Equals(obj);
         }
 
-        public override int GetHashCode() => (Username, Password, Email, DataNascimento).GetHashCode();
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento,DataCriacao).GetHashCode();
 
     }
 
@@ -162,21 +206,27 @@ namespace FeirasEspinho
     public class Feirante : Utilizador
     {
         //no modelo lógico, a classe Feirante é a única que tem um numero de conta associado...
-        protected int nr_conta {get; set;}
+        public int iDconta;
+
+        public int IDconta
+        {
+            get { return iDconta; }
+            set { iDconta = value; }
+        }
 
         public Feirante() : base()
         {
-            this.nr_conta = 0;
+            this.IDconta = 0;
         }
 
-        public Feirante(String username, String password, String email, DateTime dataNascimento, int nr_conta) : base(username, password, email, dataNascimento)
+        public Feirante(String username, String password, String email, DateTime dataNascimento,DateTime dataCriacao, int IDconta) : base(username, password, email, dataNascimento,dataCriacao)
         {
-            this.nr_conta = nr_conta;
+            this.IDconta = IDconta;
         }
 
-        public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento)
+        public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento,u.DataCriacao)
         {
-            this.nr_conta = u.nr_conta;
+            this.IDconta = u.IDconta;
         }
 
         public override Feirante Clone()
@@ -186,7 +236,7 @@ namespace FeirasEspinho
 
         public override String ToString()
         {
-            return ("FEIRANTE\n" + base.ToString() + "Numero da conta: " + this.nr_conta + "\n");
+            return ("FEIRANTE\n" + base.ToString() + "Numero da conta: " + this.IDconta + "\n");
         }
 
         public override Boolean Equals(Object? obj)
@@ -195,24 +245,26 @@ namespace FeirasEspinho
             if (this == obj) return true;
 
             Feirante f = (Feirante)obj;
-            return ( base.Equals(obj) && (this.nr_conta == f.nr_conta) );
+            return ( base.Equals(obj) && (this.IDconta == f.IDconta) );
         }
 
-        public override int GetHashCode() => (Username, Password, Email, DataNascimento,nr_conta).GetHashCode();
+        public override int GetHashCode() => (Username, Password, Email, DataNascimento,DataCriacao,IDconta).GetHashCode();
 
 
     }
+
     /*
     public class Teste
     {
         static void Main(String[] args)
         {
+
             CultureInfo portugal = new CultureInfo("PT-pt");
             //testes
-            Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000", "dd/MM/yyyy", portugal));
-            Administrador a2 = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000","dd/MM/yyyy",portugal));
-            Cliente c = new Cliente("Joao", "456", "jose@hotmail.com", DateTime.ParseExact("24/10/1999", "dd/MM/yyyy", portugal));
-            Feirante f = new Feirante("Miguel", "789", "miguel@sapo.pt", DateTime.ParseExact("31/10/2000", "dd/MM/yyyy", portugal),4);
+            Administrador a = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000", "dd/MM/yyyy", portugal), DateTime.Now);
+            Administrador a2 = new Administrador("Eduardo", "123", "braga@gmail.com", DateTime.ParseExact("24/10/2000","dd/MM/yyyy",portugal), DateTime.Now);
+            Cliente c = new Cliente("Joao", "456", "jose@hotmail.com", DateTime.ParseExact("24/10/1999", "dd/MM/yyyy", portugal), DateTime.Now);
+            Feirante f = new Feirante("Miguel", "789", "miguel@sapo.pt", DateTime.ParseExact("31/10/2000", "dd/MM/yyyy", portugal), DateTime.Now,4);
 
             Console.WriteLine(a.ToString());
             Console.WriteLine(a2.ToString());
