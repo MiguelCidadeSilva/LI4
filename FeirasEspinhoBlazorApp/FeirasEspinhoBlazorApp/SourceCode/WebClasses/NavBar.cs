@@ -1,11 +1,10 @@
-﻿using static FeirasEspinhoBlazorApp.Shared.NavMenu;
-
-namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
+﻿namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
 {
     public class NavBar
     {
         private Dictionary<int, List<Opcao>> menus = new Dictionary<int, List<Opcao>>();
         public enum menusNomes { Cliente, Admin, Feirante, Login, Geral };
+        private static NavBar instance = null;
         private void InicializeLoginNav()
         {
             int lo = (int)menusNomes.Login;
@@ -21,7 +20,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
             int cl = (int)menusNomes.Cliente;
             this.menus[cl] = new List<Opcao>
             {
-                new Opcao("Consultar Feiras", "oi oi-dashboard", ""),
+                new Opcao("Consultar Feiras", "oi oi-list", ""),
                 new Opcao("Leilões", "oi oi-euro", ""),
                 new Opcao("Negociações", "oi oi-transfer", "")
             };
@@ -35,33 +34,33 @@ namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
         private void InicializeAdminNav()
         {
             int ad = (int)menusNomes.Admin;
-            this.menus[ad] = new List<Opcao>();
+            menus[ad] = new List<Opcao>();
         }
         private void InicializeGeralNav()
         {
-            int cl = (int)menusNomes.Cliente;
-            int ad = (int)menusNomes.Admin;
-            int fe = (int)menusNomes.Feirante;
             int ge = (int)menusNomes.Geral;
-            this.menus[ge] = new List<Opcao>();
-            this.menus[ge].ForEach(op =>
+            this.menus[ge] = new List<Opcao>
             {
-                this.menus[cl].Add(op);
-                this.menus[ad].Add(op);
-                this.menus[fe].Add(op);
-            });
+                new Opcao("Logout", "oi oi-account-logout", "login")
+            };
         }
-        public List<Opcao> getMenu(int menuApresentar)
+        public List<Opcao> GetMenu(int menuApresentar)
         {
             return this.menus[menuApresentar];
         }
-        public NavBar()
+        private NavBar()
         {
             this.InicializeLoginNav();
             this.InicializeClientNav();
             this.InicializeFeiranteNav();
             this.InicializeAdminNav();
             this.InicializeGeralNav();
+        }
+        public static NavBar GetInstance()
+        {
+            if (instance == null)
+                instance = new NavBar();
+            return instance;
         }
     }
 }

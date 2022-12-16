@@ -9,19 +9,11 @@
 
 
 <div>
-	<button class="buttonA" @onclick="Logout">Logout</button>
+	<BottomComponent />
 </div>
 
 @code
 {
 	[Parameter, EditorRequired]
 	public Utilizador user { get; set; }
-
-	public void Logout()
-	{
-		NavMenu.menuApresentar = (int)NavBar.menusNomes.Login;
-		NavMenu.Current.Refresh();
-		_navigationManager.NavigateTo("login");
-
-	}
 }
