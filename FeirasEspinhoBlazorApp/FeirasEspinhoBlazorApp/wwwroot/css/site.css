@@ -157,3 +157,11 @@ input[type="radio"] {
     input[type="radio"]:checked {
         background-color: #555555;
     }
+
+.bottom_aligner 
+{
+    height: 7%;
+    position: absolute;
+    left: 15%;
+    bottom: 0px;
+}

@@ -54,9 +54,8 @@
 			// método a perguntar à base de dados se existe
 			if(existe)
 			{
-				NavBar bar = NavMenu.getInstance();
-				NavMenu.menuApresentar = (int) NavBar.menusNomes.Cliente;
-				NavMenu.Current.Refresh();
+				NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
+				NavMenu.GetInstance().Refresh();
 				_navigationManager.NavigateTo("user");
 			}
 			else
