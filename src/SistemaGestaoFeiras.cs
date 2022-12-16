@@ -12,9 +12,11 @@ namespace FeirasEspinho
 {	
 	public class SistemaFeiras : Exception
 	{
-		private Dictionary<String, Cliente> mapClientes;
-		private Dictionary<String, Administrador> mapAdmins;
-		private Dictionary<String, Feirante> mapFeirantes;
+		private Dictionary<String, Cliente> mapClientes; //todos os clientes		||
+		private Dictionary<String, Administrador> mapAdmins; // todos os feirantes  || UTILIZADORES(key --> email)
+		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
+
+		//private Dictionary<String, Feira> mapFeiras;     implementar os getters/setters da feira e dos seus componentes...
 
 
         public Dictionary<String,Cliente> MapClientes
@@ -38,7 +40,12 @@ namespace FeirasEspinho
             set { mapFeirantes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
         }
 
-        //protected Dictionary<String,List<Feira> > MapFeiras { get; set; }
+    //  public Dictionary<String, Feira> MapFeiras
+	//	{ 
+    //        get { return mapFeiras; }
+	//
+    //        set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
+    //  }
 
         public SistemaFeiras()
 		{
@@ -48,11 +55,13 @@ namespace FeirasEspinho
 			// MapFeiras = new Dictionary<String, new List<Feira>() >();
 		}
 
-		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins, Dictionary<String,Feirante> MapFeirantes )
+		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
+							 Dictionary<String,Feirante> MapFeirantes)
 		{
 			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+			//this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
         }
 
 		public SistemaFeiras(SistemaFeiras sf)
@@ -60,6 +69,7 @@ namespace FeirasEspinho
 			this.MapClientes = sf.MapClientes;
 			this.MapAdmins = sf.MapAdmins;
 			this.MapFeirantes = sf.MapFeirantes;
+			//this.MapFeiras = sf.MapFeiras;
         }
 
 		public override String ToString()
@@ -144,6 +154,8 @@ namespace FeirasEspinho
 			String key = u.Email;
 			if (MapClientes.ContainsKey(key) || MapAdmins.ContainsKey(key) || MapFeirantes.ContainsKey(key))
 				throw new EmailInvalidoException("Email já está associado a uma conta...");
+			if (u.Password.Length < 8)
+				throw new PasswordInvalidaException("Password tem menos de 8 caracteres...");
 
 			if(u is FeirasEspinho.Cliente)
 			{
@@ -170,9 +182,6 @@ namespace FeirasEspinho
 			throw new RegistoInvalido("Registo abortado, algo correu mal!");
 
 		}
-
-
-
 
 
 		public class Teste

@@ -41,6 +41,8 @@ namespace FeirasEspinho
             //obj += combinedString;
             return obj;
         }
+
+
         public void AddStand(string feirante, string? stand)
         {
             Stands.Add(feirante, stand);

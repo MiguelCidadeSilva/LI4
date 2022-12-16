@@ -11,9 +11,9 @@ namespace FeirasEspinho
     // SUPERCLASSE USER
     public abstract class Utilizador : Exception
     {
-        private String username;
-        private String password;
-        private String email;
+        private String? username;
+        private String? password;
+        private String? email;
         private DateTime dataNascimento;
         private DateTime dataCriacao;
 
