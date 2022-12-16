@@ -6,19 +6,64 @@ namespace FeirasEspinho
 {
     internal class Feira
     {
-        private int IdFeira { get; set; }
-        private string? Nome { get; set; }
-        private DateTime DataInicio { get; set; }
-        private DateTime DataFim { get; set; }
-        private float PrecoCandidatura { get; set; }
-        private string? CriadorEmail { get; set; }
-        private int Categoria { get; set; }
-        private Hashtable Stands { get; set; }
-        private Hashtable Leiloes { get; set; }
+        private int iDFeira;
+        public int IDFeira
+        {
+            get { return iDFeira; }
+            set { iDFeira = value; }
+        }
+        private string? nome;
+        public string? Nome
+        {
+            get { return nome; }
+            set { nome = value; }
+        }
+        private DateTime dataInicio;
+        public DateTime DataInicio
+        {
+            get { return dataInicio; }
+            set { dataInicio = value; }
+        }
+        private DateTime dataFim;
+        public DateTime DataFim
+        {
+            get { return dataFim; }
+            set { dataFim = value; }
+        }
+        private float precoCandidatura;
+        public float PrecoCandidatura
+        {
+            get { return precoCandidatura; }
+            set { precoCandidatura = value; }
+        }
+        private string? criadorEmail;
+        public string? CriadorEmail
+        {
+            get { return criadorEmail;}
+            set { criadorEmail = value; }
+        }
+        private int categoria;
+        public int Categoria
+        {
+            get { return categoria; }
+            set { categoria = value; }
+        }
+        private Hashtable stands;
+        public Hashtable Stands
+        {
+            get { return stands; }
+            set { stands = value; }
+        }
+        private Hashtable leiloes;
+        public Hashtable Leiloes
+        {
+            get { return leiloes; }
+            set { leiloes = value; }
+        }
 
         public Feira(int idFeira, string nome, DateTime dataI, DateTime dataF, float precoCand, string criadorEmail, int categoria)
         {
-            this.IdFeira = idFeira;
+            this.iDFeira = idFeira;
             this.Nome = nome;
             this.DataInicio = dataI;
             this.DataFim = dataF;
@@ -30,7 +75,7 @@ namespace FeirasEspinho
         }
         public override string ToString()
         {
-            string obj = "Feira: " + IdFeira + ", Nome: " + Nome + ", Datai: " + DataInicio.ToString() + ", Dataf: " + DataFim.ToString() + ", " +
+            string obj = "Feira: " + IDFeira + ", Nome: " + Nome + ", Datai: " + DataInicio.ToString() + ", Dataf: " + DataFim.ToString() + ", " +
                 "Preço Candidatura: " + PrecoCandidatura + ", Email Criador : " + CriadorEmail + ", Categoria: " + Categoria + "\nStands: \n";
             foreach (DictionaryEntry de in Stands)
             {
