@@ -12,12 +12,35 @@ namespace FeirasEspinho
 {	
 	public class SistemaFeiras : Exception
 	{
-		public Dictionary<String,Cliente> MapClientes  { get; set; }
-		public Dictionary<String,Administrador> MapAdmins  { get; set; }
-		public Dictionary<String, Feirante> MapFeirantes { get; set; }
-		//protected Dictionary<String,List<Feira> > MapFeiras { get; set; }
+		private Dictionary<String, Cliente> mapClientes;
+		private Dictionary<String, Administrador> mapAdmins;
+		private Dictionary<String, Feirante> mapFeirantes;
 
-		public SistemaFeiras()
+
+        public Dictionary<String,Cliente> MapClientes
+		{
+			get { return mapClientes; }
+
+			set { mapClientes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
+		}
+
+		public Dictionary<String,Administrador> MapAdmins
+        {
+            get { return mapAdmins; }
+
+            set { mapAdmins = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
+        }
+
+        public Dictionary<String, Feirante> MapFeirantes
+        {
+            get { return mapFeirantes; }
+
+            set { mapFeirantes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
+        }
+
+        //protected Dictionary<String,List<Feira> > MapFeiras { get; set; }
+
+        public SistemaFeiras()
 		{
 			MapClientes = new Dictionary<String, Cliente>();
 			MapAdmins = new Dictionary<String,Administrador>();
@@ -32,12 +55,11 @@ namespace FeirasEspinho
             this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
         }
 
-
 		public SistemaFeiras(SistemaFeiras sf)
 		{
-			this.MapClientes = sf.MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapAdmins = sf.MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapFeirantes = sf.MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+			this.MapClientes = sf.MapClientes;
+			this.MapAdmins = sf.MapAdmins;
+			this.MapFeirantes = sf.MapFeirantes;
         }
 
 		public override String ToString()
@@ -114,6 +136,9 @@ namespace FeirasEspinho
 
         }
 
+		//		Registo: Da maneira que fiz, não existem emails repetidos no sistema, mesmo que sejam tipos de utilizador diferentes.
+		//				 Se o email ainda nao estiver registado no sistema, adiciona ao dicionario do tipo de utilizador que queres ser ao registar-te	
+		//
 		public void Registo(Utilizador u)
 		{
 			String key = u.Email;
@@ -157,12 +182,13 @@ namespace FeirasEspinho
 
 				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now);
 				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, 2);
+				Administrador a = new Administrador("Maria", "whatinthefuck", "ze@gmail.com", DateTime.MinValue, DateTime.Now);
 				SistemaFeiras sf = new SistemaFeiras();
 				try
 				{
 				sf.Registo(f);
 				sf.Registo(c);
-				sf.Registo(f);
+				sf.Registo(a);
 				}
 				catch(Exception ex)
 				{
