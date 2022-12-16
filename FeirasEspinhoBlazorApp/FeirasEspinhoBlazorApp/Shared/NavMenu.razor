@@ -12,10 +12,18 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         @foreach (Opcao op in lista)
-        {
+        {  
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href=@op.Link Match="NavLinkMatch.All">
                     <span class=@op.Simbolo aria-hidden="true"></span> @op.Texto
+                </NavLink>
+            </div>
+        }
+        @if(show)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login" Match="NavLinkMatch.All" @onclick="Logout">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                 </NavLink>
             </div>
         }
@@ -24,6 +32,7 @@
 
 @code
 {
+    public bool show = false;
     public List<Opcao> lista { get; set; }
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -44,5 +53,10 @@
     public void Refresh()
     {
         StateHasChanged();
+    }
+    public void Logout()
+    {
+        show = false;
+        lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Login);
     }
 }

@@ -39,10 +39,13 @@
         private void InicializeGeralNav()
         {
             int ge = (int)menusNomes.Geral;
-            this.menus[ge] = new List<Opcao>
-            {
-                new Opcao("Logout", "oi oi-account-logout", "login")
-            };
+            this.menus[ge] = new List<Opcao>();
+            int cl = (int)menusNomes.Cliente;
+            int ad = (int)menusNomes.Admin;
+            int fe = (int)menusNomes.Feirante;
+            menus[cl].AddRange(menus[ge]);
+            menus[ad].AddRange(menus[ge]);
+            menus[fe].AddRange(menus[ge]);
         }
         public List<Opcao> GetMenu(int menuApresentar)
         {

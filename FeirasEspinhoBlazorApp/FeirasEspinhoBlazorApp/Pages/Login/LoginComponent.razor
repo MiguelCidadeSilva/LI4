@@ -55,6 +55,7 @@
 			if(existe)
 			{
 				NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
+				NavMenu.GetInstance().show = true;
 				NavMenu.GetInstance().Refresh();
 				_navigationManager.NavigateTo("user");
 			}
