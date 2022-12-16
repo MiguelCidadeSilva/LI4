@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @inject NavigationManager _navigationManager
+@using SourceCode.WebClasses;
 
 <PageTitle>Página de autenticação</PageTitle>
 
@@ -43,7 +44,7 @@
 	}
 	private void verificaCredencais()
 	{
-		bool existe = false;
+		bool existe = true;
 		if(email.Length == 0 || password.Length == 0)
 		{
 			this.erro = 2;
@@ -53,14 +54,13 @@
 			// método a perguntar à base de dados se existe
 			if(existe)
 			{
-				_navigationManager.NavigateTo("");
+				NavBar bar = NavMenu.getInstance();
+				NavMenu.menuApresentar = (int) NavBar.menusNomes.Cliente;
+				NavMenu.Current.Refresh();
+				_navigationManager.NavigateTo("user");
 			}
 			else
 				this.erro = 1;
 		}
-	}
-	public void FechaAlerta()
-	{
-		this.erro = 0;
 	}
 }

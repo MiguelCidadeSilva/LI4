@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using SourceCode.WebClasses;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Feiras Virtuais de Espinho</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,11 +11,11 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        @foreach (Opcao op in this.menuApresentar)
+        @foreach (Opcao op in getInstance().getMenu(menuApresentar))
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href=@op.link Match="NavLinkMatch.All">
-                    <span class=@op.simbolo aria-hidden="true"></span> @op.texto
+                <NavLink class="nav-link" href=@op.Link Match="NavLinkMatch.All">
+                    <span class=@op.Simbolo aria-hidden="true"></span> @op.Texto
                 </NavLink>
             </div>
         }
@@ -22,51 +24,28 @@
 
 @code
 {
-    public class Opcao
-    {
-        public string texto { get; set; }
-        public string simbolo { get; set; }
-        public string link { get; set; }
-        public Opcao(string texto, string simbolo, string link)
-        {
-            this.texto = texto;
-            this.simbolo = simbolo;
-            this.link = link;
-        }
-    }
+    public static int menuApresentar { get; set; }
     private bool collapseNavMenu = true;
-    private Dictionary<int, List<Opcao>> menus = new Dictionary<int, List<Opcao>>();
-    private List<Opcao> menuApresentar = new List<Opcao>();
-    private enum menusNomes { Cliente, Admin, Feirante, Login, Geral };
-
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
+    private static NavBar menu = null;
+    public static NavMenu Current { get; private set; }
     protected override void OnInitialized()
     {
-        int cl = (int)menusNomes.Cliente;
-        int ad = (int)menusNomes.Admin;
-        int fe = (int)menusNomes.Feirante;
-        int lo = (int)menusNomes.Login;
-        int ge = (int)menusNomes.Geral;
-        this.menus[cl] = new List<Opcao>();
-        this.menus[ad] = new List<Opcao>();
-        this.menus[fe] = new List<Opcao>();
-        this.menus[lo] = new List<Opcao>();
-        this.menus[ge] = new List<Opcao>();
-        this.menus[lo].Add(new Opcao("Início", "oi oi-home", ""));
-        this.menus[lo].Add(new Opcao("Login", "oi oi-account-login", "login"));
-        this.menus[lo].Add(new Opcao("Criar Conta", "oi oi-person", "createacc"));
-        foreach (Opcao op in this.menus[ge])
-        {
-            this.menus[cl].Add(op);
-            this.menus[ad].Add(op);
-            this.menus[fe].Add(op);
-        }
-        this.menuApresentar = this.menus[lo];
+        menuApresentar = (int)NavBar.menusNomes.Login;
+        Current = this;
     }
-
+    public static NavBar getInstance()
+    {
+        if (menu == null)
+            menu = new NavBar();
+        return menu;
+    }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    public void Refresh()
+    {
+        StateHasChanged();
     }
 }

@@ -1,0 +1,27 @@
+﻿@page "/user"
+@using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
+@using FeirasEspinhoBlazorApp.SourceCode.WebClasses;
+@inject NavigationManager _navigationManager
+
+<PageTitle>Página de utilizador</PageTitle>
+
+<h3>Bem vindo</h3>
+
+
+<div>
+	<button class="buttonA" @onclick="Logout">Logout</button>
+</div>
+
+@code
+{
+	[Parameter, EditorRequired]
+	public Utilizador user { get; set; }
+
+	public void Logout()
+	{
+		NavMenu.menuApresentar = (int)NavBar.menusNomes.Login;
+		NavMenu.Current.Refresh();
+		_navigationManager.NavigateTo("login");
+
+	}
+}
