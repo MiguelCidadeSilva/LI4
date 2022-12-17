@@ -12,11 +12,11 @@
 	<main>
 		@if (erro != 0)
 		{
-			<NotificationComponent mensagem="@codigosErro[erro]" sucess="false" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
 		}
 		else if (sucess)
 		{
-			<NotificationComponent mensagem="@sucmensagem" sucess= "true"/>
+			<WarningComponent mensagem="@sucmensagem" sucess="true" />
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -79,10 +79,10 @@
 	protected override void OnInitialized()
 	{
 		this.selected = 0;
-		this.codigosErro.Add(1, "Campos incompletos");
-		this.codigosErro.Add(2, "Passwords diferentes");
-		this.codigosErro.Add(3, "Data inválida");
-		this.codigosErro.Add(4, "Opção não selecionada");
+		this.codigosErro[1] = "Campos incompletos";
+		this.codigosErro[2] = "Passwords diferentes";
+		this.codigosErro[3] = "Data inválida";
+		this.codigosErro[4] = "Opção não selecionada";
 	}
 	private void LimpaCampos()
 	{

@@ -71,7 +71,6 @@ a, .btn-link {
 
 .buttonA {
     background-color: lightgray;
-    border: none;
     color: black;
     padding: 5px 10px;
     text-align: center;
@@ -100,7 +99,7 @@ input[type=text], input[type=password] {
 }
 
 .alert {
-    background-color: #f44336; /* Red */
+    background-color: #f44336;
     color: white;
     margin-bottom: 15px;
     padding: 10px 20px;
@@ -108,7 +107,7 @@ input[type=text], input[type=password] {
 }
 
 .sucess {
-    background-color: limegreen; /* Red */
+    background-color: limegreen;
 }
 
 .buttonAlerta {
@@ -164,4 +163,41 @@ input[type="radio"] {
     position: absolute;
     left: 15%;
     bottom: 0px;
+}
+
+table {
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+th {
+    background-color: black;
+    color: white;
+}
+tr{
+    height:50px;
+}
+
+.small_td {
+    width:200px;
+}
+
+.evenRow {
+    background-color: #f2f2f2;
+}
+
+.buttonTable1 {
+    padding: 5px 5px;
+    background-color: yellow;
+}
+.buttonTable2 {
+    padding: 5px 5px;
+    background-color: lime;
+}
+
+.selected_row{
+    background-color:orange;
 }

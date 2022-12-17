@@ -20,7 +20,7 @@
             int cl = (int)menusNomes.Cliente;
             this.menus[cl] = new List<Opcao>
             {
-                new Opcao("Consultar Feiras", "oi oi-list", ""),
+                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras"),
                 new Opcao("Leilões", "oi oi-euro", ""),
                 new Opcao("Negociações", "oi oi-transfer", "")
             };
@@ -39,7 +39,10 @@
         private void InicializeGeralNav()
         {
             int ge = (int)menusNomes.Geral;
-            this.menus[ge] = new List<Opcao>();
+            this.menus[ge] = new List<Opcao> 
+            {
+                new Opcao("Notificações","oi oi-bell","")
+            };
             int cl = (int)menusNomes.Cliente;
             int ad = (int)menusNomes.Admin;
             int fe = (int)menusNomes.Feirante;

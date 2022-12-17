@@ -12,7 +12,7 @@
 	<main>
 		@if (erro != 0)
 		{
-			<NotificationComponent mensagem="@codigosErro[erro]" sucess="false" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -39,8 +39,8 @@
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	protected override void OnInitialized()
 	{
-		this.codigosErro.Add(1, "Dados de acesso incorretos");
-		this.codigosErro.Add(2, "Campos incompletos");
+		this.codigosErro[1] = "Dados de acesso incorretos";
+		this.codigosErro[2] = "Campos incompletos";
 	}
 	private void verificaCredencais()
 	{
