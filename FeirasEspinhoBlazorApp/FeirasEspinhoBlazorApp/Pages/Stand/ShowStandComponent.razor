@@ -1,0 +1,68 @@
+﻿@page "/showstand"
+@using SourceCode.WebClasses;
+@inject NavigationManager navigationManager
+
+<div>
+	<h3>Bem vindo ao stand</h3>
+	<br />
+	@if (erro != 0)
+	{
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+	}
+	<div>
+		<table>
+			<tbody>
+				<tr>
+					<th>Produto</th>
+					<th>Preço</th>
+					<th>Stock</th>
+					<th>Quantidade</th>
+				</tr>
+				@foreach (var produto in tabelContent.Content)
+				{
+					<tr class=@tabelContent.Cssclasses[produto.Key] @onclick="() => tabelContent.SelectedRow(produto.Key)">
+						<td> @produto.Key</td>
+						<td> @produto.Value.Item1</td>
+						<td> @produto.Value.Item2</td>
+						<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @bind-value="@quantidades[produto.Key]" /></td>
+					</tr>
+				}
+			</tbody>
+		</table></div>
+	<br />
+	<div>
+		<br />
+		<label><b>Preço total</b></label>
+		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly" />
+	</div>
+	<br />
+	<div>
+		<button class="buttonA buttonTable1">Comprar Rápida</button>
+		<button class="buttonA buttonTable2">Negociar</button>
+		<button class="buttonA">Retroceder</button>
+	</div>
+</div>
+
+@code
+{
+	private Table<string> tabelContent;
+	private int erro = 0;
+	private float precoTotal = 0;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
+	protected override void OnInitialized()
+	{
+		List<(int, string,int)> conteudo = new List<(int, string,int)>();
+		conteudo.Add((1, "abc",3));
+		conteudo.Add((2, "def",3));
+		conteudo.Add((3, "ghi",3));
+		conteudo.Add((4, "jkl",3));
+		this.tabelContent = new Table<string>(conteudo);
+		conteudo.ForEach(t => quantidades[t.Item1] = 0);
+		codigosErro[1] = "Nenhum stand selecionado";
+	}
+	protected override void OnAfterRender(bool firstRender)
+	{
+		precoTotal = quantidades.Keys.ToList().Select(id => tabelContent.Content[id].Item2 * quantidades[id]).Sum();
+	}
+}

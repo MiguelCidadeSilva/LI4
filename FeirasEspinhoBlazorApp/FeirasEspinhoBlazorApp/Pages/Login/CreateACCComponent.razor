@@ -1,6 +1,6 @@
 ﻿@page "/createacc"
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
-@inject NavigationManager _navigationManager;
+@inject NavigationManager navigationManager;
 
 <PageTitle>Página de criação de conta</PageTitle>
 
@@ -20,27 +20,27 @@
 		}
 		<div>
 			<label><b>Email</b></label>
-			<input type="text" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
+			<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
 		</div>
 		<br />
 		<div>
 			<label><b>Nome de utilizador</b></label>
-			<input type="text" id="name" name="name" placeholder="Insira o seu nome de utilizador" @bind-value="name"/>
+			<input type="text" class="tb" id="name" name="name" placeholder="Insira o seu nome de utilizador" @bind-value="name" />
 		</div>
 		<br />
 		<div>
 			<label><b>Data de nascimento (DD-MM-AAAA)</b></label>
-			<input type="text" id="bornDate" name="bornDate" placeholder="Insira a sua data de nascimento" @bind-value="bornDate" />
+			<input type="text" class="tb" id="bornDate" name="bornDate" placeholder="Insira a sua data de nascimento" @bind-value="bornDate" />
 		</div>
 		<br />
 		<div>
 			<label> <b>Palavra passe</b> </label>
-			<input type="password" id="password" name="password" @bind-value="password" />
+			<input type="password" class="tb" id="password" name="password" @bind-value="password" />
 		</div>
 		<br />
 		<div>
 			<label> <b>Repita a palvra passe</b> </label>
-			<input type="password" id="passwordRepeat" name="passwordRepeat" @bind-value="passwordRepat"/>
+			<input type="password" class="tb" id="passwordRepeat" name="passwordRepeat" @bind-value="passwordRepat"/>
 		</div>
 		<br />
 		<div>
@@ -53,7 +53,7 @@
 		{
 			<div>
 				<label><b>Número da conta bancária</b></label>
-				<input type="text" id="numConta" name="numConta" placeholder="Insira a número da sua conta bancária" @bind-value="numConta" />
+				<input type="text" class="tb" id="numConta" name="numConta" placeholder="Insira a número da sua conta bancária" @bind-value="numConta" />
 			</div>
 			<br />
 		}

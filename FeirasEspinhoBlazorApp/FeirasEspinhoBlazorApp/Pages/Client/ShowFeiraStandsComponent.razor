@@ -1,0 +1,110 @@
+﻿@page "/showfeirastands"
+@using SourceCode.WebClasses;
+@inject NavigationManager navigationManager
+
+<PageTitle>Stands</PageTitle>
+
+<div>
+	@if (showAvaliacao)
+	{
+		<div class="popup">
+			<h2 style="text-align: center">Avalie o Stand</h2>
+			<br />
+			<div>
+				<input type="radio" name="nota1" value="nota1" @onclick="() => Avalia(1)" checked=@(avaliacao == 1) /><b> Nota 1</b>
+				<br />
+				<input type="radio" name="nota2" value="nota2" @onclick="() => Avalia(2)" checked=@(avaliacao == 2) /><b> Nota 2</b>
+				<br />
+				<input type="radio" name="nota3" value="nota3" @onclick="() => Avalia(3)" checked=@(avaliacao == 3) /><b> Nota 3</b>
+				<br />
+				<input type="radio" name="nota4" value="nota4" @onclick="() => Avalia(4)" checked=@(avaliacao == 4) /><b> Nota 4</b>
+				<br />
+				<input type="radio" name="nota5" value="nota5" @onclick="() => Avalia(5)" checked=@(avaliacao == 5) /><b> Nota 5</b>
+			</div>
+		</div>
+
+	}
+	else
+	{	
+		<h3>Stands disponíveis</h3>
+		<br />
+		@if (erro != 0)
+		{
+				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+		}
+		<div>
+			<table>
+				<tbody>
+					<tr>
+						<th>Id</th>
+						<th>Feirante</th>
+						<th>Data Criação</th>
+						<th>Categoria</th>
+						<th>Avaliação</th>
+					</tr>
+					@foreach (var stand in tabelContent.Content)
+					{
+							<tr class=@tabelContent.Cssclasses[stand.Key] @onclick="() => tabelContent.SelectedRow(stand.Key)">
+								<td> @stand.Key</td>
+							</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
+			<button class="buttonA buttonTable1" @onclick="ConsultarStand">Consultar Stand</button>
+			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+		</div>
+	}
+</div>
+@code {
+	private int avaliacao = -1;
+	private bool showAvaliacao = false;
+	private Table<string> tabelContent;
+	private int erro = 0;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	protected override void OnInitialized()
+	{
+		List<(int, string, int)> conteudo = new List<(int, string, int)>();
+		conteudo.Add((1, "abc", 2));
+		conteudo.Add((2, "def", 3));
+		conteudo.Add((3, "ghi", 4));
+		conteudo.Add((4, "jkl", 5));
+		this.tabelContent = new Table<string>(conteudo);
+		codigosErro[1] = "Nenhum stand selecionad";
+	}
+	public void ConsultarStand()
+	{
+		if (tabelContent.IdValid())
+		{
+			erro = 0;
+			navigationManager.NavigateTo("showstand");
+		}
+		else
+		{
+			erro = 1;
+		}
+	}
+
+	public void ConsultarLeiloes()
+	{
+		if (tabelContent.IdValid())
+		{
+			erro = 0;
+		}
+		else
+		{
+			erro = 1;
+		}
+	}
+	public void Avalia(int avaliacao)
+	{
+		this.avaliacao = avaliacao;
+	}
+	public void Retroceder()
+	{
+		showAvaliacao = true;
+	}
+}

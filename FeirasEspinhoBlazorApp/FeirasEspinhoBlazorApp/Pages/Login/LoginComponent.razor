@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@inject NavigationManager _navigationManager
+@inject NavigationManager navigationManager
 @using SourceCode.WebClasses;
 
 <PageTitle>Página de autenticação</PageTitle>
@@ -16,12 +16,12 @@
 		}
 		<div>
 			<label><b>Email</b></label>
-			<input type="text" id="email" name="email" placeholder="Insira o seu email"  @bind-value="email"/>
+			<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
 		</div>
 		<br />
 		<div>
 			<label> <b>Palavra passe</b> </label>
-			<input type="password" id="password" name="password" @bind-value="password" />
+			<input type="password" class="tb" id="password" name="password" @bind-value="password" />
 		</div>
 		<br />
 		<div>
@@ -57,7 +57,7 @@
 				NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
 				NavMenu.GetInstance().show = true;
 				NavMenu.GetInstance().Refresh();
-				_navigationManager.NavigateTo("user");
+				navigationManager.NavigateTo("user");
 			}
 			else
 				this.erro = 1;

@@ -1,100 +1,87 @@
 ﻿@page "/showfeiras"
+@using SourceCode.WebClasses;
 
+@inject NavigationManager navigationManager
 
 <PageTitle>Feiras</PageTitle>
 
 <h3>Feiras disponíveis</h3>
 <br />
-@if(erro != 0)
-{
-	<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
-}
-
-<table>
-	<tbody>
-		<tr>	
-			<th>Id</th>
-			<th>Nome</th>
-			<th>Data Início</th>
-			<th>Data Fim</th>
-			<th>Categoria</th>
-			<th>Avaliação</th>
-		</tr>
-		@foreach(var feira in feiras)
-		{
-			<tr class=@cssclasses[feira.Key] @onclick="() => SelectedRow(feira.Key)">
-				<td> @feira.Key</td>
-				<td> @feira.Value.Item1</td>
-				<td> @feira.Value.Item2</td>
-				<td> @feira.Value.Item2</td>
-				<td> @feira.Value.Item2</td>
-				<td> @feira.Value.Item2</td>
+<div>
+	@if (erro != 0)
+	{
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+	}
+	<div>
+		<table>
+			<tbody>
+				<tr>	
+					<th>Id</th>
+				<th>Nome</th>
+				<th>Data Início</th>
+				<th>Data Fim</th>
+				<th>Categoria</th>
+				<th>Avaliação</th>
 			</tr>
-		}
-	</tbody>
-</table>
-<br />
-<button class="buttonA buttonTable1" @onclick="ConsultarStand">Consultar Stands</button>
-<button class="buttonA buttonTable2" @onclick="ConsultarLeilao">Consultar Leilões</button>
+			@foreach (var feira in tabelContent.Content)
+			{
+				<tr class=@tabelContent.Cssclasses[feira.Key] @onclick="() => tabelContent.SelectedRow(feira.Key)">
+					<td> @feira.Key</td>
+					<td> @feira.Value.Item1</td>
+					<td> @feira.Value.Item2</td>
+					<td> @feira.Value.Item2</td>
+					<td> @feira.Value.Item2</td>
+					<td> @feira.Value.Item2</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<div>
 
-@code 
+			<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
+			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+	</div>
+</div>
+
+@code
 {
-	private Dictionary<int,(string,int)> feiras;
-	private Dictionary<int,string> cssclasses;
-	private string oldcssclasse;
-	private int idFeira = -1;
+	private Table<string> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	protected override void OnInitialized()
 	{
-		this.feiras = new Dictionary<int, (string, int)>();
-		this.cssclasses = new Dictionary<int, string>();
-		this.feiras[1] = ("abc", 2);
-		this.feiras[2] = ("def", 3);
-		this.feiras[3] = ("ghi", 4);
-		this.feiras[4] = ("jkl", 5);
-		List<int> list = feiras.Keys.ToList();
-		for(int i = 0; i < list.Count(); i++)
-		{
-			if (i % 2 == 0)
-				cssclasses[list[i]] = "evenRow";
-			else
-				cssclasses[list[i]] = "";
-		}
-		codigosErro[1] = "Nenhuma linha selecionada";
-		// buscar feiras às base de dados
+		List<(int, string, int)> conteudo = new List<(int, string, int)>();
+		conteudo.Add((1, "abc", 2));
+		conteudo.Add((2, "def", 3));
+		conteudo.Add((3, "ghi", 4));
+		conteudo.Add((4, "jkl", 5));
+		this.tabelContent = new Table<string>(conteudo);
+		codigosErro[1] = "Nenhuma feira selecionada";
 	}
-	public void SelectedRow(int row)
+	public void ConsultarStands()
 	{
-		if(row != idFeira)
-		{
-			if (idFeira != -1)
-			{
-				cssclasses[idFeira] = oldcssclasse;
-			}
-			oldcssclasse = cssclasses[row];
-			idFeira = row;
-			cssclasses[row] = "selected_row";
-		}
-	}
-	public void ConsultarStand()
-	{
-		if (idFeira == -1)
-			erro = 1;
-		else
+		if (tabelContent.IdValid())
 		{
 			erro = 0;
+			navigationManager.NavigateTo("showfeirastands");
+		}
+		else
+		{
+			erro = 1;
 		}
 	}
 
-	public void ConsultarLeilao()
+	public void ConsultarLeiloes()
 	{
-		if (idFeira == -1)
-			erro = 1;
-		else
+		if (tabelContent.IdValid())
 		{
 			erro = 0;
-
+		}
+		else
+		{
+			erro = 1;
 		}
 	}
 }

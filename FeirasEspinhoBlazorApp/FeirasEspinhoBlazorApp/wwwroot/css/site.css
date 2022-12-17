@@ -83,7 +83,7 @@ a, .btn-link {
     text-decoration: none;
 }
 
-input[type=text], input[type=password] {
+.tb {
     width: 100%;
     padding: 8px 20px;
     margin: 8px 0;
@@ -91,6 +91,10 @@ input[type=text], input[type=password] {
     border: 1px solid #ccc;
     box-sizing: border-box;
     border-radius: 12px;
+}
+
+.tb_smaller {
+    width: 13%;
 }
 
 .nounderline {
@@ -170,7 +174,7 @@ table {
     font-weight: bold;
     width: 100%;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 th {
@@ -196,4 +200,14 @@ tr{
 
 .selected_row{
     background-color:orange;
+}
+
+
+.popup {
+    width: 420px;
+    padding: 30px 40px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 12px;
 }
