@@ -1,5 +1,4 @@
-﻿using Dapper;
-using static System.Net.Mime.MediaTypeNames;
+﻿using static System.Net.Mime.MediaTypeNames;
 using System.Data;
 using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 using Microsoft.AspNetCore.Http;
@@ -18,9 +17,9 @@ namespace FeirasEspinhoBlazorApp.Data
 		public void Create(Utilizador utilizador)
 		{
 			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+			using (SqlCommand command = new SqlCommand("INSERT INTO [dbo].[Cliente] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection))
 			{
 				connection.Open();
-				SqlCommand command = new SqlCommand("INSERT INTO [dbo].[Cliente] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
 				command.Parameters.AddWithValue("@email", utilizador.email);
 				command.Parameters.AddWithValue("@nome", utilizador.username);
 				command.Parameters.AddWithValue("@password", utilizador.password);
@@ -46,11 +45,11 @@ namespace FeirasEspinhoBlazorApp.Data
 		{
 			List<Utilizador> r = new List<Utilizador>();
 			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+			using (SqlCommand command = new SqlCommand("SELECT * FROM [Cliente]", connection))
 			{
 				connection.Open();
-				SqlCommand command = new SqlCommand("SELECT * FROM [Cliente]", connection);
 				SqlDataReader response = command.ExecuteReader();
-				while(response.Read())
+				while (response.Read())
 				{
 					Utilizador utilizador = new Utilizador();
 					utilizador.email = response.GetFieldValue<string>("email");
