@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Runtime.CompilerServices;
 using FeirasEspinho;
-
 using System.Xml.Linq;
 using System.Globalization;
 
@@ -16,7 +15,7 @@ namespace FeirasEspinho
 		private Dictionary<String, Administrador> mapAdmins; // todos os feirantes  || UTILIZADORES(key --> email)
 		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
 
-		//private Dictionary<String, Feira> mapFeiras;     implementar os getters/setters da feira e dos seus componentes...
+		private Dictionary<String, List<Feira>> mapFeiras;     
 
 
         public Dictionary<String,Cliente> MapClientes
@@ -40,28 +39,28 @@ namespace FeirasEspinho
             set { mapFeirantes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
         }
 
-    //  public Dictionary<String, Feira> MapFeiras
-	//	{ 
-    //        get { return mapFeiras; }
-	//
-    //        set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
-    //  }
+       public Dictionary<String, List<Feira>> MapFeiras
+		{ 
+            get { return mapFeiras; }
+
+			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value)); }
+        }
 
         public SistemaFeiras()
 		{
 			MapClientes = new Dictionary<String, Cliente>();
 			MapAdmins = new Dictionary<String,Administrador>();
 			MapFeirantes= new Dictionary<String,Feirante>();
-			// MapFeiras = new Dictionary<String, new List<Feira>() >();
+			MapFeiras = new Dictionary<String,List<Feira>>();
 		}
 
 		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
-							 Dictionary<String,Feirante> MapFeirantes)
+							 Dictionary<String,Feirante> MapFeirantes, Dictionary<String,List<Feira>> MapFeiras)
 		{
 			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			//this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
+			this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value));
         }
 
 		public SistemaFeiras(SistemaFeiras sf)
@@ -69,7 +68,7 @@ namespace FeirasEspinho
 			this.MapClientes = sf.MapClientes;
 			this.MapAdmins = sf.MapAdmins;
 			this.MapFeirantes = sf.MapFeirantes;
-			//this.MapFeiras = sf.MapFeiras;
+			this.MapFeiras = sf.MapFeiras;
         }
 
 		public override String ToString()
@@ -99,6 +98,7 @@ namespace FeirasEspinho
                 s += ("\n" + par.Value.ToString());
             }
 
+
             return s;
 
 		}
@@ -106,6 +106,9 @@ namespace FeirasEspinho
 		//nao senti a necessidade de clonar a classe principal. Talvez irei implementar isso no futuro
 
 
+		//
+		//	LOGIN: Verifica se a password é válida,e verifica as credenciais com a função verificaCredenciais da classe Utilizador
+		//
 		public void Login(String email, String password)
 		{
 			if (password.Length < 8)
@@ -179,8 +182,32 @@ namespace FeirasEspinho
 				return;
             }
 
-			throw new RegistoInvalido("Registo abortado, algo correu mal!");
+			throw new RegistoInvalidoException("Registo abortado, algo correu mal...");
 
+		}
+
+        //Quando a data final é null, é uma feira permanente
+        //Não precisamos de verificar se já acabou quando implementarmos essa funcionalidade no sistema
+        public void CriarFeira(Utilizador u, int id_feira, String nome_Feira,DateTime? data_Final, float preco_candidatura, int categoria_feira )
+		{
+			if (u is not FeirasEspinho.Administrador)
+				throw new PermissaoInvalidaException("Funcionalidade restrita a Administradores.");
+			
+			//Caso o admin em questão já adicionou feiras no passado
+			String key = u.Email;
+			if(MapFeiras.ContainsKey(key))
+			{
+				MapFeiras[key].Add( new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
+											  preco_candidatura, key, categoria_feira) );
+			}
+			else
+			{
+				MapFeiras.Add(key,new List<Feira>());
+				MapFeiras[key].Add( new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
+                                              preco_candidatura, key, categoria_feira) );
+            }
+
+			Console.WriteLine("Administrador(a) " + u.Username + " criou a feira " + nome_Feira + ".\n");
 		}
 
 
@@ -191,29 +218,18 @@ namespace FeirasEspinho
 
 				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now);
 				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, 2);
-				Administrador a = new Administrador("Maria", "whatinthefuck", "ze@gmail.com", DateTime.MinValue, DateTime.Now);
+				Administrador a = new Administrador("Maria", "whatinthefuck", "maria@gmail.com", DateTime.ParseExact("12/12/1994", "d/M/yyyy", null), DateTime.Now);
 				SistemaFeiras sf = new SistemaFeiras();
-				try
-				{
 				sf.Registo(f);
 				sf.Registo(c);
 				sf.Registo(a);
-				}
-				catch(Exception ex)
-				{
-					Console.WriteLine(ex.Message);
-				}
-				
-				Console.WriteLine(sf.ToString());
-				try
-				{
 				sf.Login("sweeper@gmail.com","123456789");
 				sf.Login("ze@gmail.com", "bananas123");
-				}
-				catch(Exception ex)
-				{
-				Console.WriteLine(ex.Message);
-				}
+				sf.Login("maria@gmail.com", "whatinthefuck");
+				sf.CriarFeira(a, 1, "Feira do Congo", null, 19.90f, 3);
+
+
+
 				
 
 				
