@@ -15,7 +15,7 @@
 	{
 		<WarningComponent mensagem="@sucessMessage" sucess="true" page="5"/>
 	}
-	<div>
+	<div class="tableFixHead">
 		<table>
 			<tbody>
 				<tr>
@@ -81,6 +81,9 @@
 		conteudo.Add((2, "def",3));
 		conteudo.Add((3, "ghi",3));
 		conteudo.Add((4, "jkl",3));
+		conteudo.Add((5, "jkl",3));
+		conteudo.Add((6, "jkl",3));
+		conteudo.Add((7, "jkl",3));
 		this.tabelContent = new Table<string>(conteudo);
 		conteudo.ForEach(t => quantidades[t.Item1] = 0);
 		codigosErro[1] = "Nenhum stand selecionado";

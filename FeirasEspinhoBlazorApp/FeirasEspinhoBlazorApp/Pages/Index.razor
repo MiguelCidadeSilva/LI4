@@ -4,59 +4,69 @@
 
 <PageTitle>Feiras Virtuais de Espinho</PageTitle>
 
-<h1>Feiras Virtuais de Espinho</h1>
-<br />
 <div>
-	Este projeto desenvolvido no âmbito da UC Laboratório de Informática IV no ano letivo 2022/23
+	<h1>
+		Feiras Virtuais de Espinho
+	</h1>
+	<div id="imgcorner">
+		<img class="img_topright" src="/uminho.png" />
+		<img class="img_topright2" src="/EspinhoCity.png" />
+	</div>
+</div>
+<br />
+<div class="w-50">
+	<p>Este website foi desenvolvido por alunos da Universidade do Minho do curso Licenciatura em Engenharia Informática
+		no âmbito da UC Laboratório de Informática IV no ano letivo 2022/23.</p>
+	<p>
+		Autores do projeto:
+		<ul>
+			<li>© José Carvalho</li>
+			<li>© Miguel Silva</li>
+			<li>© José Mendes</li>
+			<li>© Eduardo Henriques</li>
+		</ul>
+	</p>
+
 </div>
 <br />
 <div>
 	Website de auxilio às feiras de espinho.
 </div>
 
-<table>
-	<tbody>
-		<tr>
-			<th>Email</th>
-			<th>Nome</th>
-			<th>Password</th>
-			<th>Data Criação</th>
-			<th>Data Nascimento</th>
-		</tr>
-		@foreach (Utilizador user in lista)
-		{
+<div class="tableFixHead">
+	<table>
+		<thead>
 			<tr>
-				<td> @user.email</td>
-				<td> @user.username</td>
-				<td> @user.password</td>
-				<td> @user.dataCriacao</td>
-				<td> @user.dataNascimento</td>
+				<th>Email</th>
+				<th>Nome</th>
+				<th>Password</th>
+				<th>Data Criação</th>
+				<th>Data Nascimento</th>
 			</tr>
-		}
-	</tbody>
-</table>
-<button class="buttonA" @onclick="Create">Create</button>
+		</thead>
+		<tbody>
+			@foreach (Utilizador user in lista)
+			{
+					<tr>
+						<td> @user.email</td>
+						<td> @user.username</td>
+						<td> @user.password</td>
+						<td> @user.dataCriacao</td>
+						<td> @user.dataNascimento</td>
+					</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+
 
 @code
 {
-	int num = 36;
 	private List<Utilizador> lista = new List<Utilizador>();
 	protected override void OnInitialized()
 	{
 		UtilizadoresDAO connection = UtilizadoresDAO.GetInstance();
-		lista = connection.ListAll();
-	}
-	public void Create()
-	{
-		UtilizadoresDAO connection = UtilizadoresDAO.GetInstance();
-		Utilizador user = new Utilizador();
-		user.email = "abc"+ num;
-		num++;
-		user.username = "abc1";
-		user.password = "abc1";
-		user.dataCriacao = DateTime.Now;
-		user.dataNascimento = DateTime.Now;
-		connection.Create(user);
 		lista = connection.ListAll();
 	}
 }

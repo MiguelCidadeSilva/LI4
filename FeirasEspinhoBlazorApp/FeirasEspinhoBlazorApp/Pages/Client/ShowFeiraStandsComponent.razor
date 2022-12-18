@@ -32,7 +32,7 @@
 		{
 			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="4"/>
 		}
-		<div>
+		<div class="tableFixHead">
 			<table>
 				<tbody>
 					<tr>
@@ -73,6 +73,9 @@
 		conteudo.Add((2, "def", 3));
 		conteudo.Add((3, "ghi", 4));
 		conteudo.Add((4, "jkl", 5));
+		conteudo.Add((5, "jkl", 3));
+		conteudo.Add((6, "jkl", 3));
+		conteudo.Add((7, "jkl", 3));
 		this.tabelContent = new Table<string>(conteudo);
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
