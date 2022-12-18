@@ -79,13 +79,13 @@ public class Negociacao
 
         public override int GetHashCode() => (IdNegociacao,PrecoBase,PrecoNegociacao,Sucesso,Resposta).GetHashCode();
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (this == obj) return true;
             if (obj == null || (obj is not Negociacao)) return false;
 
             Negociacao n = (Negociacao)obj;
-            if ( (n.IdNegociacao == this.IdNegociacao) && (QuaseIgual(n.PrecoBase,this.PrecoBase,0.01f)) && (QuaseIgual(n.PrecoNegociacao,this.PrecoNegociacao,0.01f))
+            if ( (n.IdNegociacao == this.IdNegociacao) && (QuaseIgual(n.PrecoBase,this.PrecoBase,0.001f)) && (QuaseIgual(n.PrecoNegociacao,this.PrecoNegociacao,0.01f))
                 && (n.Sucesso.CompareTo(this.Sucesso) == 0) && (n.Resposta.CompareTo(this.Resposta) == 0) ) 
                     return true;
 
@@ -94,7 +94,7 @@ public class Negociacao
 
 
         //funcao auxiliar para comparar floats
-        bool QuaseIgual(float x, float y, float tolerancia)
+        public bool QuaseIgual(float x, float y, float tolerancia)
         {
             var diff = Math.Abs(x - y);
             return diff <= tolerancia ||

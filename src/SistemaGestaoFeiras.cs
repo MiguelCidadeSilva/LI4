@@ -251,6 +251,14 @@ namespace FeirasEspinho
 				sf.Login("maria@gmail.com", "whatinthefuck");
 				sf.CriarFeira(a, 1, "Feira do Congo", null, 19.90f, 3);
 
+				Venda v = new Venda();
+				Venda v2 = v.Clone();
+				v2.Preco = 3.65f;
+				v.Preco = 3.64f;
+				Console.WriteLine(v.ToString());
+				Console.WriteLine(v2.ToString());
+				Console.WriteLine(v.Equals(v2));
+
 
 
 

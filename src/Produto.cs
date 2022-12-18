@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FeirasEspinho;
 
 namespace FeirasEspinho
 {
@@ -94,16 +95,20 @@ namespace FeirasEspinho
             return new Produto(this);
         }
 
+        public override int GetHashCode() => (IdProduto, Nome, IdSubCategoria, Stand, Stock, Preco, Disponivel).GetHashCode();
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null) return false;
             if (this == obj) return true;
 
             Produto p = (Produto) obj;
+            Negociacao n = new Negociacao(); // a classe negociacao tem o método para comparar dois floats, estou a instanciar a classe para usar a funcao
 
-            //por acabar
-            return true;
+            return (p.Disponivel.CompareTo(this.Disponivel) == 0 && n.QuaseIgual(this.Preco,p.Preco,0.01f)
+                    && this.Nome.Equals(p.Nome) && this.IdProduto == p.IdProduto
+                    && this.IdSubCategoria == p.IdSubCategoria && this.Stand == p.Stand
+                    && this.Stock == p.Stock);
         }
 
     }
