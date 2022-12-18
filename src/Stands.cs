@@ -8,13 +8,48 @@ namespace FeirasEspinho
 {
     public class Stands
     {
-        public int IdStand { get; set; }
-        public bool Negociavel { get; set; }
-        public int Consultantes { get; set; } // nº de visitantes de um stand
-        public DateTime DataCriacao { get; set; }
-        public string? EmailDono { get; set; }
-        public int Categoria { get; set; }
-        public List <Produto> Produtos { get; set; }
+        private int idStand;
+        public int IdStand
+        {
+            get { return IdStand; }
+            set { IdStand = value; }
+        }
+        private bool negociavel;
+        public bool Negociavel
+        {
+            get { return negociavel; }
+            set { negociavel = value; }
+        }
+        private int consultantes;  // nº de visitantes de um stand
+        public int Consultantes
+        {
+            get { return consultantes; }
+            set { consultantes = value; }
+        }
+        public DateTime dataCriacao;
+        private DateTime DataCriacao
+        {
+            get { return dataCriacao; }
+            set { dataCriacao = value; }
+        }
+        private string? emailDono;
+        public string? EmailDono
+        {
+            get { return emailDono; }
+            set { emailDono = value; }
+        }
+        public int categoria;
+        public int Categoria
+        {
+            get { return categoria; }
+            set { categoria = value; }
+        }
+        private List<Produto> produtos;
+        public List<Produto> Produtos
+        {
+            get { return produtos; }
+            set { produtos = value; }
+        }
 
         public Stands(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto) 
         {

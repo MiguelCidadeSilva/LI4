@@ -127,7 +127,6 @@ namespace FeirasEspinho
 
 		}
 
-		//nao senti a necessidade de clonar a classe principal. Talvez irei implementar isso no futuro
 
 
 		//

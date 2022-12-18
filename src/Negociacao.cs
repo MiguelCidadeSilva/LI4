@@ -75,7 +75,6 @@ public class Negociacao
                         "\nPreco Atual: " + this.PrecoNegociacao.ToString("c2") + "\nSucesso: " + (this.Sucesso ? "SIM" : "NAO") +
                         "\nResposta do Cliente: " + (this.Resposta ? "SIM\n" : "NAO\n") );
 
-
         }
 
         public override int GetHashCode() => (IdNegociacao,PrecoBase,PrecoNegociacao,Sucesso,Resposta).GetHashCode();
@@ -106,8 +105,6 @@ public class Negociacao
         {
             return new Negociacao(this);
         }
-
-
 
 
 
