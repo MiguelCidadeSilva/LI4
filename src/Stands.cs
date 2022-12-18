@@ -15,6 +15,7 @@ namespace FeirasEspinho
         public string? EmailDono { get; set; }
         public int Categoria { get; set; }
         public List <Produto> Produtos { get; set; }
+
         public Stands(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto) 
         {
             IdStand = idStand;
@@ -25,7 +26,9 @@ namespace FeirasEspinho
             Categoria = categoria;
             Produtos = produto;
         }
+
         public Stands() { }
+
         public Stands(int idStand, bool negociavel, DateTime dataCriacao, string emailDono, int categoria)
         {
             IdStand = idStand;

@@ -11,11 +11,14 @@ namespace FeirasEspinho
 {	
 	public class SistemaFeiras : Exception
 	{
+
 		private Dictionary<String, Cliente> mapClientes; //todos os clientes		||
 		private Dictionary<String, Administrador> mapAdmins; // todos os feirantes  || UTILIZADORES(key --> email)
 		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
 
-		private Dictionary<String, List<Feira>> mapFeiras;     
+		private Dictionary<String, List<Feira>> mapFeiras;
+		private Dictionary<int, Stands> mapStands;
+		private Dictionary<int, Produto> mapProdutos;
 
 
         public Dictionary<String,Cliente> MapClientes
@@ -46,21 +49,40 @@ namespace FeirasEspinho
 			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value)); }
         }
 
+        public Dictionary<int, Stands> MapStands
+        {
+            get { return mapStands; }
+
+            set { mapStands = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
+        }
+
+        public Dictionary<int, Produto> MapProdutos
+        {
+            get { return mapProdutos; }
+				
+            set { mapProdutos = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
+        }
+
         public SistemaFeiras()
 		{
 			MapClientes = new Dictionary<String, Cliente>();
 			MapAdmins = new Dictionary<String,Administrador>();
 			MapFeirantes= new Dictionary<String,Feirante>();
 			MapFeiras = new Dictionary<String,List<Feira>>();
+			MapStands = new Dictionary<int, Stands>();
+			MapProdutos = new Dictionary<int, Produto>();
 		}
 
 		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
-							 Dictionary<String,Feirante> MapFeirantes, Dictionary<String,List<Feira>> MapFeiras)
+							 Dictionary<String,Feirante> MapFeirantes, Dictionary<String,List<Feira>> MapFeiras,
+							 Dictionary<int,Stands> MapStands, Dictionary<int,Produto> MapProdutos)
 		{
 			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
 			this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value));
+			this.MapStands = MapStands.ToDictionary(entry => entry.Key, entry => entry.Value);
+			this.MapProdutos = MapProdutos.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
 
 		public SistemaFeiras(SistemaFeiras sf)
@@ -69,6 +91,8 @@ namespace FeirasEspinho
 			this.MapAdmins = sf.MapAdmins;
 			this.MapFeirantes = sf.MapFeirantes;
 			this.MapFeiras = sf.MapFeiras;
+			this.MapStands= sf.MapStands;
+			this.MapProdutos= sf.MapProdutos;
         }
 
 		public override String ToString()
@@ -230,10 +254,10 @@ namespace FeirasEspinho
 
 
 
-				
 
-				
-			}
+
+
+            }
 
 		}
 		/*
