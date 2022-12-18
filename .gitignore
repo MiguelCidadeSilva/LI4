@@ -10,3 +10,4 @@
 /.gitignore
 /FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp.sln
 /src/obj/Debug/net6.0
+/FeirasEspinhoBlazorApp/FeirasEspinhoBlazorApp/Data/ConnectionDAO.cs
