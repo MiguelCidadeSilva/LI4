@@ -1,0 +1,32 @@
+﻿@page "/fastpurchase"
+@inject NavigationManager navigationManager
+
+<h3>Compra rápida</h3>
+<br />
+
+<div>
+	<div>
+		<label><b>Insira o número do cartão</b></label>
+		<input type="text" class="tb" id="nrcartao" name="nrcartao" placeholder="xxxxxxxx" @bind-value="numeroCartao" />
+	</div>
+	<br />
+	<div>
+		<button class="buttonA buttonTable1" @onclick="Confirmar">Confirmar</button>
+		<button class="buttonA buttonTable2" @onclick="Cancelar">Cancelar</button>
+	</div>
+</div>
+
+@code 
+{
+	private string numeroCartao = "";
+	public void Confirmar()
+	{
+		navigationManager.NavigateTo($"showstand/{true}/Compra realizada com sucesso");
+
+	}
+	public void Cancelar()
+	{
+		navigationManager.NavigateTo($"showstand/{2}");
+	}
+
+}

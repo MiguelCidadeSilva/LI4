@@ -1,0 +1,32 @@
+﻿@page "/negociation"
+@inject NavigationManager navigationManager
+
+<h3>Negociação</h3>
+<br />
+
+<div>
+	<div>
+		<label><b>Insira o valor que pretende pagar</b></label>
+		<input type="text" class="tb" id="precoNegocicao" name="precoNegocicao" placeholder="xxxxxxxx" @bind-value="valorapagar" />
+	</div>
+	<br />
+	<div>
+		<button class="buttonA buttonTable1" @onclick="Confirmar">Confirmar</button>
+		<button class="buttonA buttonTable2" @onclick="Cancelar">Cancelar</button>
+	</div>
+</div>
+
+@code
+{
+	private string valorapagar = "";
+	public void Confirmar()
+	{
+		navigationManager.NavigateTo($"showstand/{true}/Negociação registada");
+
+	}
+	public void Cancelar()
+	{
+		navigationManager.NavigateTo($"showstand/{3}");
+	}
+
+}

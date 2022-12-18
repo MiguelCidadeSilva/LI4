@@ -1,11 +1,15 @@
 ﻿@page "/warning"
+@using Pages.Login;
+@using Pages.Client;
+@using Pages.Stand;
 
 @if(sucess)
 {
 	<div class="alert sucess">
 		<div class="d-table w-100">
-			<p class="d-table-cell"><b>@mensagem</b></p>
-		</div>
+			<p class="d-table-cell w-100"><b>@mensagem</b></p>
+			<button class="buttonAlerta buttonSucess d-table-cell tar" @onclick="FechaAlerta">&times</button>
+		</div> 
 	</div>
 	<br />
 }
@@ -13,7 +17,8 @@ else
 {
 	<div class="alert">
 		<div class="d-table w-100">
-			<p class="d-table-cell"><b>@mensagem</b></p>
+			<p class="d-table-cell w-100"><b>@mensagem</b></p>
+			<button class="buttonAlerta d-table-cell tar" @onclick="FechaAlerta">&times</button>
 		</div>
 	</div>
 	<br />
@@ -25,4 +30,33 @@ else
 	public string mensagem { get; set; }
 	[Parameter, EditorRequired]
 	public bool sucess { get; set; }
+	[Parameter, EditorRequired]
+	public int page { get; set; }
+
+	public void FechaAlerta()
+	{
+		switch (page)
+		{
+			case 1:
+				// Login Page
+				LoginComponent.GetInstace().CleanWarning();
+				break;
+			case 2:
+				// Create ACC Page
+				CreateACCComponent.GetInstance().CleanWarning();
+				break;
+			case 3:
+				// Show Feiras
+				ShowFeirasComponent.GetInstace().CleanWarning();
+				break;
+			case 4:
+				// Show Feiras Stande
+				ShowFeiraStandsComponent.GetInstace().CleanWarning();
+				break;
+			case 5:
+				// Show Stand
+				ShowStandComponent.GetInstance().CleanWarning();
+				break;
+		}
+	}
 }

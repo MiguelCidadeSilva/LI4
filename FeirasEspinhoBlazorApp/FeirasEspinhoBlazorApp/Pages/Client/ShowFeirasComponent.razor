@@ -10,7 +10,7 @@
 <div>
 	@if (erro != 0)
 	{
-		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="3"/>
 	}
 	<div>
 		<table>
@@ -50,8 +50,10 @@
 	private Table<string> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static ShowFeirasComponent showFeiras;
 	protected override void OnInitialized()
 	{
+		showFeiras = this;
 		List<(int, string, int)> conteudo = new List<(int, string, int)>();
 		conteudo.Add((1, "abc", 2));
 		conteudo.Add((2, "def", 3));
@@ -59,6 +61,15 @@
 		conteudo.Add((4, "jkl", 5));
 		this.tabelContent = new Table<string>(conteudo);
 		codigosErro[1] = "Nenhuma feira selecionada";
+	}
+	public static ShowFeirasComponent GetInstace()
+	{
+		return showFeiras;
+	}
+	public void CleanWarning()
+	{
+		this.erro = 0;
+		StateHasChanged();
 	}
 	public void ConsultarStands()
 	{

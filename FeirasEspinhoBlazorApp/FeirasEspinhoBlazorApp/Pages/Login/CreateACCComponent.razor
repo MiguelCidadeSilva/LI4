@@ -12,11 +12,11 @@
 	<main>
 		@if (erro != 0)
 		{
-			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="2" />
 		}
 		else if (sucess)
 		{
-			<WarningComponent mensagem="@sucmensagem" sucess="true" />
+			<WarningComponent mensagem="@sucmensagem" sucess="true" page="2" />
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -76,13 +76,19 @@
 	protected string password = "";
 	protected string passwordRepat = "";
 	protected string numConta = "";
+	private static CreateACCComponent createACC;
 	protected override void OnInitialized()
 	{
+		createACC = this;
 		this.selected = 0;
 		this.codigosErro[1] = "Campos incompletos";
 		this.codigosErro[2] = "Passwords diferentes";
 		this.codigosErro[3] = "Data inválida";
 		this.codigosErro[4] = "Opção não selecionada";
+	}
+	public static CreateACCComponent GetInstance()
+	{
+		return createACC;
 	}
 	private void LimpaCampos()
 	{
@@ -132,5 +138,12 @@
 	public void Selected(int novoValor)
 	{
 		this.selected = novoValor;
+	}
+
+	public void CleanWarning()
+	{
+		this.erro = 0;
+		sucess = false;
+		StateHasChanged();
 	}
 }

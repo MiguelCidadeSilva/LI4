@@ -1,4 +1,6 @@
 ﻿@page "/showstand"
+@page "/showstand/{sucessStr}/{sucessMessage}"
+@page "/showstand/{erroStr}"
 @using SourceCode.WebClasses;
 @inject NavigationManager navigationManager
 
@@ -7,7 +9,11 @@
 	<br />
 	@if (erro != 0)
 	{
-		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5"/>
+	}
+	else if (sucess)
+	{
+		<WarningComponent mensagem="@sucessMessage" sucess="true" page="5"/>
 	}
 	<div>
 		<table>
@@ -20,11 +26,11 @@
 				</tr>
 				@foreach (var produto in tabelContent.Content)
 				{
-					<tr class=@tabelContent.Cssclasses[produto.Key] @onclick="() => tabelContent.SelectedRow(produto.Key)">
+					<tr class=@tabelContent.Cssclasses[produto.Key]>
 						<td> @produto.Key</td>
 						<td> @produto.Value.Item1</td>
 						<td> @produto.Value.Item2</td>
-						<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @bind-value="@quantidades[produto.Key]" /></td>
+						<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Key)"/></td>
 					</tr>
 				}
 			</tbody>
@@ -38,21 +44,38 @@
 	</div>
 	<br />
 	<div>
-		<button class="buttonA buttonTable1">Comprar Rápida</button>
-		<button class="buttonA buttonTable2">Negociar</button>
+		<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
+		<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
 		<button class="buttonA">Retroceder</button>
 	</div>
 </div>
-
 @code
 {
+	[Parameter]
+	public string sucessStr { get; set; }
+	[Parameter]
+	public string sucessMessage { get; set; }
+	[Parameter]
+	public string erroStr { get; set; }
+	private int erro;
+	private int count = 0;
+	private int count2 = 0;
 	private Table<string> tabelContent;
-	private int erro = 0;
+	private bool sucess;
 	private float precoTotal = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
+	private static ShowStandComponent stand;
+	protected override void OnParametersSet()
+	{
+		if(!int.TryParse(erroStr, out erro))
+			erro = 0;
+		if (!bool.TryParse(sucessStr, out sucess))
+			sucess = false ;
+	}
 	protected override void OnInitialized()
 	{
+		stand = this;
 		List<(int, string,int)> conteudo = new List<(int, string,int)>();
 		conteudo.Add((1, "abc",3));
 		conteudo.Add((2, "def",3));
@@ -61,9 +84,45 @@
 		this.tabelContent = new Table<string>(conteudo);
 		conteudo.ForEach(t => quantidades[t.Item1] = 0);
 		codigosErro[1] = "Nenhum stand selecionado";
+		codigosErro[2] = "Compra cancelada";
+		codigosErro[3] = "Negociação cancelada";
 	}
-	protected override void OnAfterRender(bool firstRender)
+	public static ShowStandComponent GetInstance()
 	{
+		return stand;
+	}
+	public void CleanWarning()
+	{
+		this.erro = 0;
+		sucess = false;
+		StateHasChanged();
+	}
+	private void RecalculaPrecoTotal(ChangeEventArgs args, int key)
+	{
+		float number;
+		if(float.TryParse(args.Value.ToString(),out number))
+		{
+			count++;
+			quantidades[key] = number;
+		}
+		else
+		{
+			count2++;
+			quantidades[key] = 0;
+		}
 		precoTotal = quantidades.Keys.ToList().Select(id => tabelContent.Content[id].Item2 * quantidades[id]).Sum();
+	}
+	public void CompraRapida()
+	{
+		navigationManager.NavigateTo("fastpurchase");
+	}
+	public void Negociar()
+	{
+		navigationManager.NavigateTo("negociation");
+		
+	}
+	public void Retroceder()
+	{
+		
 	}
 }

@@ -30,7 +30,7 @@
 		<br />
 		@if (erro != 0)
 		{
-				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="4"/>
 		}
 		<div>
 			<table>
@@ -65,6 +65,7 @@
 	private Table<string> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
 		List<(int, string, int)> conteudo = new List<(int, string, int)>();
@@ -73,7 +74,16 @@
 		conteudo.Add((3, "ghi", 4));
 		conteudo.Add((4, "jkl", 5));
 		this.tabelContent = new Table<string>(conteudo);
-		codigosErro[1] = "Nenhum stand selecionad";
+		codigosErro[1] = "Nenhum stand selecionado";
+	}
+	public static ShowFeiraStandsComponent GetInstace()
+	{
+		return showBancas;
+	}
+	public void CleanWarning()
+	{
+		this.erro = 0;
+		StateHasChanged();
 	}
 	public void ConsultarStand()
 	{

@@ -12,7 +12,7 @@
 	<main>
 		@if (erro != 0)
 		{
-			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -37,10 +37,21 @@
 	private string email = "";
 	private string password = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static LoginComponent login;
 	protected override void OnInitialized()
 	{
+		login = this;
 		this.codigosErro[1] = "Dados de acesso incorretos";
 		this.codigosErro[2] = "Campos incompletos";
+	}
+	public static LoginComponent GetInstace()
+	{
+		return login;
+	}
+	public void CleanWarning()
+	{
+		this.erro = 0;
+		StateHasChanged();
 	}
 	private void verificaCredencais()
 	{
