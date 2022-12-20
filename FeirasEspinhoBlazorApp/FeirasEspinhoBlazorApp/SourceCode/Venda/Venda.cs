@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FeirasEspinho;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Venda
 {
     public class Venda
     {
@@ -54,13 +53,13 @@ namespace FeirasEspinho
 
         public Venda()
         {
-            this.IdVenda = 0;
-            this.Data = DateTime.MinValue;
-            this.Preco = 0;
-            this.EmailCliente = "";
-            this.IdFeira = 0;
-            this.Negociacao= null;
-            this.IdStand= 0;
+            IdVenda = 0;
+            Data = DateTime.MinValue;
+            Preco = 0;
+            EmailCliente = "";
+            IdFeira = 0;
+            Negociacao = null;
+            IdStand = 0;
         }
 
         public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
@@ -76,11 +75,11 @@ namespace FeirasEspinho
 
         public Venda(Venda v)
         {
-            IdVenda= v.IdVenda;
+            IdVenda = v.IdVenda;
             Data = v.Data;
-            Preco= v.Preco;
-            EmailCliente= v.EmailCliente;
-            IdFeira= v.IdFeira;
+            Preco = v.Preco;
+            EmailCliente = v.EmailCliente;
+            IdFeira = v.IdFeira;
             Negociacao = v.Negociacao;
             IdStand = v.IdStand;
 
@@ -88,11 +87,11 @@ namespace FeirasEspinho
 
         public override string ToString()
         {
-            String s = "====VENDA===\n";
-            return (s + "ID da Venda: " + IdVenda + "\nData: " + this.Data.ToString("dd/MM/yyyy") + "\nPreco " + Preco.ToString("c2") +
+            string s = "====VENDA===\n";
+            return s + "ID da Venda: " + IdVenda + "\nData: " + Data.ToString("dd/MM/yyyy") + "\nPreco " + Preco.ToString("c2") +
                         "\nEmail do Cliente: " + EmailCliente + "\nID da Feira :" + IdFeira +
                         "\nNegociacao: " + (Negociacao == null ? "nao existe" : Negociacao) +
-                        "\nID do Stand: " + IdStand + "\n"); 
+                        "\nID do Stand: " + IdStand + "\n";
         }
 
         public Venda Clone()
@@ -100,7 +99,7 @@ namespace FeirasEspinho
             return new Venda(this);
         }
 
-        public override int GetHashCode() => (IdVenda,Data,Preco,EmailCliente, IdFeira, Negociacao,IdStand).GetHashCode();
+        public override int GetHashCode() => (IdVenda, Data, Preco, EmailCliente, IdFeira, Negociacao, IdStand).GetHashCode();
 
         public override bool Equals(object? obj)
         {
@@ -109,11 +108,11 @@ namespace FeirasEspinho
 
             Negociacao n = new Negociacao();
 
-            Venda v = (Venda) obj;
-            return (this.IdVenda == v.IdVenda && this.Data.Equals(v.Data) && n.QuaseIgual(v.Preco, this.Preco, 0.001f)
-                    && this.EmailCliente.Equals(v.EmailCliente) && this.IdFeira == v.IdFeira
-                    && this.Negociacao == v.Negociacao
-                    && this.IdStand == v.IdStand);
+            Venda v = (Venda)obj;
+            return IdVenda == v.IdVenda && Data.Equals(v.Data) && n.QuaseIgual(v.Preco, Preco, 0.001f)
+                    && EmailCliente.Equals(v.EmailCliente) && IdFeira == v.IdFeira
+                    && Negociacao == v.Negociacao
+                    && IdStand == v.IdStand;
         }
 
     }

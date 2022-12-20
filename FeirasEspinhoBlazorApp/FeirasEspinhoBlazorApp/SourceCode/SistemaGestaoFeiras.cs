@@ -3,13 +3,16 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Runtime.CompilerServices;
-using FeirasEspinho;
 using System.Xml.Linq;
 using System.Globalization;
+using FeirasEspinhoBlazorApp.SourceCode.Stand;
+using FeirasEspinhoBlazorApp.SourceCode.Feira;
+using FeirasEspinhoBlazorApp.SourceCode.Venda;
+using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinho
-{	
-	public class SistemaFeiras : Exception
+{
+    public class SistemaFeiras : Exception
 	{
 
 		private Dictionary<String, Cliente> mapClientes; //todos os clientes		||
@@ -183,21 +186,21 @@ namespace FeirasEspinho
 			if (u.Password.Length < 8)
 				throw new PasswordInvalidaException("Password tem menos de 8 caracteres...");
 
-			if(u is FeirasEspinho.Cliente)
+			if(u is Cliente)
 			{
 				Cliente c = (Cliente) u;
 				MapClientes[key] = c;
 				Console.WriteLine("Registado " + c.Username + " com sucesso");
 				return;
 			}
-			else if (u is FeirasEspinho.Administrador)
+			else if (u is Administrador)
 			{
 				Administrador a = (Administrador) u;
 				MapAdmins[key] = a;
                 Console.WriteLine("Registado " + a.Username + " com sucesso");
 				return;
             }
-			else if (u is FeirasEspinho.Feirante)
+			else if (u is Feirante)
 			{
 				Feirante f = (Feirante) u;
 				MapFeirantes[key] = f;
@@ -213,7 +216,7 @@ namespace FeirasEspinho
         //Não precisamos de verificar se já acabou quando implementarmos essa funcionalidade no sistema
         public void CriarFeira(Utilizador u, int id_feira, String nome_Feira,DateTime? data_Final, float preco_candidatura, int categoria_feira )
 		{
-			if (u is not FeirasEspinho.Administrador)
+			if (u is not Administrador)
 				throw new PermissaoInvalidaException("Funcionalidade restrita a Administradores.");
 			
 			//Caso o admin em questão já adicionou feiras no passado

@@ -1,11 +1,10 @@
 ﻿using System;
-using FeirasEspinho;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Venda
 {
-    
-public class Negociacao
-{
+
+    public class Negociacao
+    {
 
         private int idNegociacao;
         public int IdNegociacao
@@ -41,7 +40,7 @@ public class Negociacao
         public Negociacao()
         {
             IdNegociacao = 0;
-            PrecoNegociacao=0;
+            PrecoNegociacao = 0;
             PrecoBase = 0;
             Sucesso = false;
             Resposta = false;
@@ -53,7 +52,7 @@ public class Negociacao
             precoBase = um_preco_base;
             precoNegociacao = um_preco;
             Sucesso = bit_sucessso;
-            Resposta= bit_resposta;
+            Resposta = bit_resposta;
         }
 
         public Negociacao(Negociacao n)
@@ -67,27 +66,27 @@ public class Negociacao
 
         //criar negociacao no contexto da aplicacao
 
-        public override String ToString()
+        public override string ToString()
         {
             string s = "";
             s += "===NEGOCIACAO===\n";
-            return (s + "ID-Negociacao: " + this.IdNegociacao + "\nPreco Base: " + this.PrecoBase.ToString("c2") +
-                        "\nPreco Atual: " + this.PrecoNegociacao.ToString("c2") + "\nSucesso: " + (this.Sucesso ? "SIM" : "NAO") +
-                        "\nResposta do Cliente: " + (this.Resposta ? "SIM\n" : "NAO\n") );
+            return s + "ID-Negociacao: " + IdNegociacao + "\nPreco Base: " + PrecoBase.ToString("c2") +
+                        "\nPreco Atual: " + PrecoNegociacao.ToString("c2") + "\nSucesso: " + (Sucesso ? "SIM" : "NAO") +
+                        "\nResposta do Cliente: " + (Resposta ? "SIM\n" : "NAO\n");
 
         }
 
-        public override int GetHashCode() => (IdNegociacao,PrecoBase,PrecoNegociacao,Sucesso,Resposta).GetHashCode();
+        public override int GetHashCode() => (IdNegociacao, PrecoBase, PrecoNegociacao, Sucesso, Resposta).GetHashCode();
 
         public override bool Equals(object? obj)
         {
             if (this == obj) return true;
-            if (obj == null || (obj is not Negociacao)) return false;
+            if (obj == null || obj is not Negociacao) return false;
 
             Negociacao n = (Negociacao)obj;
-            if ( (n.IdNegociacao == this.IdNegociacao) && (QuaseIgual(n.PrecoBase,this.PrecoBase,0.001f)) && (QuaseIgual(n.PrecoNegociacao,this.PrecoNegociacao,0.01f))
-                && (n.Sucesso.CompareTo(this.Sucesso) == 0) && (n.Resposta.CompareTo(this.Resposta) == 0) ) 
-                    return true;
+            if (n.IdNegociacao == IdNegociacao && QuaseIgual(n.PrecoBase, PrecoBase, 0.001f) && QuaseIgual(n.PrecoNegociacao, PrecoNegociacao, 0.01f)
+                && n.Sucesso.CompareTo(Sucesso) == 0 && n.Resposta.CompareTo(Resposta) == 0)
+                return true;
 
             return false;
         }

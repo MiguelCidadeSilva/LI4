@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FeirasEspinho;
+using FeirasEspinhoBlazorApp.SourceCode.Venda;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Stand
 {
     public class Produto
     {
@@ -82,7 +82,7 @@ namespace FeirasEspinho
             Stand = p.Stand;
             Stock = p.Stock;
             p.Preco = p.Preco;
-            Disponivel= p.Disponivel;
+            Disponivel = p.Disponivel;
         }
 
         public override string ToString()
@@ -102,13 +102,13 @@ namespace FeirasEspinho
             if (obj == null) return false;
             if (this == obj) return true;
 
-            Produto p = (Produto) obj;
+            Produto p = (Produto)obj;
             Negociacao n = new Negociacao(); // a classe negociacao tem o método para comparar dois floats, estou a instanciar a classe para usar a funcao
 
-            return (p.Disponivel.CompareTo(this.Disponivel) == 0 && n.QuaseIgual(this.Preco,p.Preco,0.01f)
-                    && this.Nome.Equals(p.Nome) && this.IdProduto == p.IdProduto
-                    && this.IdSubCategoria == p.IdSubCategoria && this.Stand == p.Stand
-                    && this.Stock == p.Stock);
+            return p.Disponivel.CompareTo(Disponivel) == 0 && n.QuaseIgual(Preco, p.Preco, 0.01f)
+                    && Nome.Equals(p.Nome) && IdProduto == p.IdProduto
+                    && IdSubCategoria == p.IdSubCategoria && Stand == p.Stand
+                    && Stock == p.Stock;
         }
 
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Stand
 {
     public class Stands
     {
@@ -51,7 +51,7 @@ namespace FeirasEspinho
             set { produtos = value; }
         }
 
-        public Stands(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto) 
+        public Stands(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
         {
             IdStand = idStand;
             Negociavel = negociavel;

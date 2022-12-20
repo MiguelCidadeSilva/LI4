@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Feira
 {
     public class Leiloes
     {
         private int id;
         public int Id
         {
-            get { return id; } 
+            get { return id; }
             set { id = value; }
         }
         private DateTime date;
@@ -67,8 +67,8 @@ namespace FeirasEspinho
         {
             this.id = id;
             this.date = date;
-            this.valorMinimo = valormMinimo;
-            this.valorMaximo = valormMaximo;
+            valorMinimo = valormMinimo;
+            valorMaximo = valormMaximo;
             this.produto = produto;
             this.quantidade = quantidade;
             this.stand = stand;

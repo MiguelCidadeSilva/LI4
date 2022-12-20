@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using FeirasEspinho;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode.Feira
 {
     public class Feira
     {
@@ -40,7 +39,7 @@ namespace FeirasEspinho
         private string? criadorEmail;
         public string? CriadorEmail
         {
-            get { return criadorEmail;}
+            get { return criadorEmail; }
             set { criadorEmail = value; }
         }
         private int categoria;
@@ -64,35 +63,35 @@ namespace FeirasEspinho
 
         public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria)
         {
-            this.IDFeira = idFeira;
-            this.Nome = nome;
-            this.DataInicio = dataI;
-            this.DataFim = dataF;
-            this.PrecoCandidatura = precoCand;
-            this.CriadorEmail = criadorEmail;
-            this.Categoria = categoria;
-            this.Stands = new Hashtable();
-            this.Leiloes = new Hashtable();
+            IDFeira = idFeira;
+            Nome = nome;
+            DataInicio = dataI;
+            DataFim = dataF;
+            PrecoCandidatura = precoCand;
+            CriadorEmail = criadorEmail;
+            Categoria = categoria;
+            Stands = new Hashtable();
+            Leiloes = new Hashtable();
         }
 
         public Feira(Feira f)
         {
-            this.IDFeira = f.IDFeira;
-            this.Nome = f.Nome;
-            this.DataInicio= f.DataInicio;
-            this.DataFim= f.DataFim;
-            this.PrecoCandidatura= f.PrecoCandidatura;
-            this.CriadorEmail= f.CriadorEmail;
-            this.Categoria= f.Categoria;
-            this.Stands = f.Stands;
-            this.Leiloes = f.Leiloes;
+            IDFeira = f.IDFeira;
+            Nome = f.Nome;
+            DataInicio = f.DataInicio;
+            DataFim = f.DataFim;
+            PrecoCandidatura = f.PrecoCandidatura;
+            CriadorEmail = f.CriadorEmail;
+            Categoria = f.Categoria;
+            Stands = f.Stands;
+            Leiloes = f.Leiloes;
         }
 
-        
+
         public override string ToString()
         {
             string obj = "Feira: " + IDFeira + ", Nome: " + Nome + ", Datai: " + DataInicio.ToString() +
-                         ", Dataf: " + ( DataFim.Equals(null) ? "[FEIRA PERMANENTE]" : DataFim.ToString() ) + ", " +
+                         ", Dataf: " + (DataFim.Equals(null) ? "[FEIRA PERMANENTE]" : DataFim.ToString()) + ", " +
                          "Preço Candidatura: " + PrecoCandidatura + ", Email Criador : " + CriadorEmail +
                          ", Categoria: " + Categoria + "\nStands: \n";
             foreach (DictionaryEntry de in Stands)
@@ -117,15 +116,15 @@ namespace FeirasEspinho
 
             Feira f = obj as Feira;
 
-            return (f.IDFeira.Equals(this.IDFeira) &&
-                   f.Nome.Equals(this.Nome) &&
-                   f.DataInicio.Equals(this.DataInicio) &&
-                   f.DataFim.Equals(this.DataFim) &&
-                   f.PrecoCandidatura.Equals(this.PrecoCandidatura) &&
-                   f.CriadorEmail.Equals(this.CriadorEmail) &&
-                   f.Stands.Equals(this.Stands) &&
-                   f.Leiloes.Equals(this.Leiloes));
-            
+            return f.IDFeira.Equals(IDFeira) &&
+                   f.Nome.Equals(Nome) &&
+                   f.DataInicio.Equals(DataInicio) &&
+                   f.DataFim.Equals(DataFim) &&
+                   f.PrecoCandidatura.Equals(PrecoCandidatura) &&
+                   f.CriadorEmail.Equals(CriadorEmail) &&
+                   f.Stands.Equals(Stands) &&
+                   f.Leiloes.Equals(Leiloes);
+
         }
 
         public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, Stands, Leiloes).GetHashCode();
