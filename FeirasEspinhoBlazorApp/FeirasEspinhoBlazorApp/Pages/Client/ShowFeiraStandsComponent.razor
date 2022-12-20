@@ -1,6 +1,8 @@
-﻿@page "/showfeirastands"
+﻿@page "/showfeirastands/{feiraStr}"
 @using SourceCode.WebClasses;
-@using SourceCode.Stand;
+@using SourceCode.Stands;
+@using SourceCode.Feiras;
+@using System.Text.Json;
 @inject NavigationManager navigationManager
 
 <PageTitle>Stands</PageTitle>
@@ -67,6 +69,9 @@
 	}
 </div>
 @code {
+	[Parameter]
+	public string feiraStr { get; set; }
+	private Feira feira;
 	private int avaliacao = -1;
 	private bool showAvaliacao = false;
 	private Table<Stand> tabelContent;
@@ -100,7 +105,9 @@
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
-			navigationManager.NavigateTo("showstand");
+			Stand s = tabelContent.GetElement();
+			string standStr = s.IdStand.ToString();
+			navigationManager.NavigateTo($"showstand/{standStr}");
 		}
 		else
 		{

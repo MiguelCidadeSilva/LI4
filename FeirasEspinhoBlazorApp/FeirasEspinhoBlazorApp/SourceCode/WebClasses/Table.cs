@@ -5,7 +5,7 @@
 		private List<(Tipo, int)> content;
 		private Dictionary<int, string> cssclasses;
 		private string oldcssclasse;
-		private int idFeira = -1;
+		private int index = -1;
 
 		private void defineCss()
 		{
@@ -51,20 +51,24 @@
 
 		public void SelectedRow(int row)
 		{
-			if (row != idFeira)
+			if (row != index)
 			{
-				if (idFeira != -1)
+				if (index != -1)
 				{
-					cssclasses[idFeira] = oldcssclasse;
+					cssclasses[index] = oldcssclasse;
 				}
 				oldcssclasse = cssclasses[row];
-				idFeira = row;
+				index = row;
 				cssclasses[row] = "selected_row";
 			}
 		}
+		public Tipo GetElement()
+		{
+			return this.content[index].Item1;
+		}
 		public bool IdValid()
 		{
-			return idFeira != -1;
+			return index != -1;
 		}
 	}
 }

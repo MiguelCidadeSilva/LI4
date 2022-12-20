@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 
-namespace FeirasEspinhoBlazorApp.SourceCode.Feira
+namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 {
     public class Feira
     {

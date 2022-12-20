@@ -1,8 +1,10 @@
-﻿@page "/showstand"
-@page "/showstand/{sucessStr}/{sucessMessage}"
-@page "/showstand/{erroStr}"
+﻿@page "/showstand/{standStr}"
+@page "/showstand/{standStr}/{sucessStr}/{sucessMessage}"
+@page "/showstand/{standStr}/{erroStr}"
 @using SourceCode.WebClasses;
-@using SourceCode.Stand;
+@using SourceCode.Stands;
+@using SourceCode;
+@using System.Text.Json;
 @inject NavigationManager navigationManager
 
 <div>
@@ -60,6 +62,9 @@
 	public string sucessMessage { get; set; }
 	[Parameter]
 	public string erroStr { get; set; }
+	[Parameter]
+	public string standStr { get; set; }
+	private Stand stand;
 	private int erro;
 	private int count = 0;
 	private int count2 = 0;
@@ -68,7 +73,7 @@
 	private float precoTotal = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
-	private static ShowStandComponent stand;
+	private static ShowStandComponent standComponent;
 	protected override void OnParametersSet()
 	{
 		if(!int.TryParse(erroStr, out erro))
@@ -78,7 +83,7 @@
 	}
 	protected override async void OnInitialized()
 	{
-		stand = this;
+		standComponent = this;
 		List<Produto> conteudo = new List<Produto>();
 		conteudo.Add(new Produto(1, "bra",1,2,3,4f,true));
 		conteudo.Add(new Produto(2, "por",1,2,3,4f,true));
@@ -96,7 +101,7 @@
 	}
 	public static ShowStandComponent GetInstance()
 	{
-		return stand;
+		return standComponent;
 	}
 	public void CleanWarning()
 	{

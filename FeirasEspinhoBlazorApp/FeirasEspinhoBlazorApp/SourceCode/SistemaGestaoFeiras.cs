@@ -5,12 +5,12 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using System.Globalization;
-using FeirasEspinhoBlazorApp.SourceCode.Stand;
-using FeirasEspinhoBlazorApp.SourceCode.Feira;
-using FeirasEspinhoBlazorApp.SourceCode.Venda;
+using FeirasEspinhoBlazorApp.SourceCode.Stands;
+using FeirasEspinhoBlazorApp.SourceCode.Feiras;
+using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
-namespace FeirasEspinho
+namespace FeirasEspinhoBlazorApp.SourceCode
 {
     public class SistemaFeiras : Exception
 	{
@@ -135,10 +135,10 @@ namespace FeirasEspinho
 		//
 		//	LOGIN: Verifica se a password é válida,e verifica as credenciais com a função verificaCredenciais da classe Utilizador
 		//
-		public void Login(String email, String password)
+		public int Login(String email, String password)
 		{
 			if (password.Length < 8)
-				throw new PasswordInvalidaException("Password tem de ter 8 ou mais caracteres...burro\n");
+				throw new PasswordInvalidaException("Password tem de ter 8 ou mais caracteres\n");
 			
 			//			VERIFICACAO CLIENTES
             foreach (KeyValuePair<String, Cliente> par in this.MapClientes)
@@ -146,8 +146,7 @@ namespace FeirasEspinho
 				Cliente s = new Cliente(par.Value);
 				if (s.CheckCredenciais(email, password))
                 {
-                    Console.WriteLine("[CLIENTE]Login bem sucedido - Bem vindo, " + s.Username + "!");
-                    return;
+                    return 0;
                 }
             }
 			//			VERIFICACAO ADMINISTRADORES
@@ -156,8 +155,7 @@ namespace FeirasEspinho
 				Administrador a = new Administrador(par.Value);
 				if (a.CheckCredenciais(email, password))
 				{
-					Console.WriteLine("[ADMINISTRADOR]Login bem sucedido - Bem vindo, " + a.Username + "!");
-					return;
+					return 1;
 				}
 			}
 			//			VERIFICACAO FEIRANTES
@@ -166,12 +164,11 @@ namespace FeirasEspinho
                 Feirante f = new Feirante(par.Value);
 				if (f.CheckCredenciais(email, password))
                 {
-                    Console.WriteLine("[FEIRANTE]Login bem sucedido - Bem vindo, " + f.Username + "!");
-                    return;
+                    return 2;
                 }
             }
 
-			throw new EmailInvalidoException("email não está registado, regista-te...burro");
+			throw new EmailInvalidoException("email não está registado, regista-te");
 
         }
 
@@ -190,21 +187,18 @@ namespace FeirasEspinho
 			{
 				Cliente c = (Cliente) u;
 				MapClientes[key] = c;
-				Console.WriteLine("Registado " + c.Username + " com sucesso");
 				return;
 			}
 			else if (u is Administrador)
 			{
 				Administrador a = (Administrador) u;
 				MapAdmins[key] = a;
-                Console.WriteLine("Registado " + a.Username + " com sucesso");
 				return;
             }
 			else if (u is Feirante)
 			{
 				Feirante f = (Feirante) u;
 				MapFeirantes[key] = f;
-                Console.WriteLine("Registado " + f.Username + " com sucesso");
 				return;
             }
 
@@ -232,8 +226,6 @@ namespace FeirasEspinho
 				MapFeiras[key].Add( new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
                                               preco_candidatura, key, categoria_feira) );
             }
-
-			Console.WriteLine("Administrador(a) " + u.Username + " criou a feira " + nome_Feira + ".\n");
 		}
 
 

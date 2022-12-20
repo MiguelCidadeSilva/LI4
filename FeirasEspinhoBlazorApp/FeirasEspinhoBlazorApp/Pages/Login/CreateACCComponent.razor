@@ -1,5 +1,6 @@
 ﻿@page "/createacc"
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
+@using FeirasEspinhoBlazorApp.SourceCode;
 @inject NavigationManager navigationManager;
 
 <PageTitle>Página de criação de conta</PageTitle>
@@ -85,6 +86,8 @@
 		this.codigosErro[2] = "Passwords diferentes";
 		this.codigosErro[3] = "Data inválida";
 		this.codigosErro[4] = "Opção não selecionada";
+		this.codigosErro[5] = "Número de cartão inválido";
+		this.codigosErro[6] = "";
 	}
 	public static CreateACCComponent GetInstance()
 	{
@@ -120,19 +123,40 @@
 			this.erro = 4;
 		else
 		{
-			Utilizador utilizador;
+			Utilizador utilizador = null;
+			bool b = false;
 			switch (selected)
 			{
 				case 1:
-					//utilizador = new Cliente(name, password, email, date);
+					b = true;
+					utilizador = new Cliente(name, password, email, date, DateTime.Now);
 					break;
 				case 2:
-					//utilizador = new Feirante(name, password, email, date,2);
+					b = true;
+					int num = 0;
+					if (int.TryParse(numConta, out num))
+						utilizador = new Feirante(name, password, email, date, DateTime.Now, num);
+					else
+						this.erro = 5;
 					break;
 			}
-			this.sucess = true;
-			// adicionar variavel utilizador à base de dados
-			this.LimpaCampos();
+			if(b && this.erro == 0)
+			{
+				try
+				{
+					SistemaFeiras sistemaFeiras = new SistemaFeiras();
+					sistemaFeiras.Registo(utilizador);
+					this.sucess = true;
+					// adicionar variavel utilizador à base de dados
+					this.LimpaCampos();
+				}
+				catch(Exception e)
+				{
+					this.erro = 6;
+					codigosErro[6] = e.Message;
+
+				}
+			}
 		}
 	}
 	public void Selected(int novoValor)

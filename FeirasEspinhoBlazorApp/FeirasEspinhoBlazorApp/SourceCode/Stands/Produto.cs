@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FeirasEspinhoBlazorApp.SourceCode.Venda;
+using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 
-namespace FeirasEspinhoBlazorApp.SourceCode.Stand
+namespace FeirasEspinhoBlazorApp.SourceCode.Stands
 {
     public class Produto
     {

@@ -1,6 +1,7 @@
 ﻿@page "/showfeiras"
 @using SourceCode.WebClasses;
-@using SourceCode.Feira;
+@using SourceCode.Feiras;
+@using System.Text.Json;
 
 @inject NavigationManager navigationManager
 
@@ -82,7 +83,9 @@
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
-			navigationManager.NavigateTo("showfeirastands");
+			Feira feira = tabelContent.GetElement();
+			string feiraStr = feira.IDFeira.ToString();
+			navigationManager.NavigateTo($"showfeirastands/{feiraStr}");
 		}
 		else
 		{

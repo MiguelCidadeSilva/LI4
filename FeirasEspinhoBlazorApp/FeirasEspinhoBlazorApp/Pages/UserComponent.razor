@@ -1,14 +1,20 @@
-﻿@page "/user"
+﻿@page "/user/{email}"
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 @using FeirasEspinhoBlazorApp.SourceCode.WebClasses;
+@using System.Text.Json;
 @inject NavigationManager navigationManager
 
 <PageTitle>Página de utilizador</PageTitle>
 
-<h3>Bem vindo</h3>
+<h3>Bem vindo @email</h3>
 
 @code
 {
-	[Parameter, EditorRequired]
-	public Utilizador user { get; set; }
+	[Parameter]
+	public string email { get; set;  }
+	private Utilizador user;
+	protected override void OnInitialized()
+	{
+		//user = JsonSerializer.Deserialize<Utilizador>(userStr);
+	}
 }

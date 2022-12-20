@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeirasEspinhoBlazorApp.SourceCode.Feira
+namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 {
     public class Leiloes
     {

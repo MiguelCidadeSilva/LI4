@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeirasEspinhoBlazorApp.SourceCode.Stand
+namespace FeirasEspinhoBlazorApp.SourceCode.Stands
 {
     public class Stand
     {

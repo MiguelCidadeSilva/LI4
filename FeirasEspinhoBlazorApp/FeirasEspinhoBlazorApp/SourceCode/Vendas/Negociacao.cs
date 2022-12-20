@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FeirasEspinhoBlazorApp.SourceCode.Venda
+namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
 {
 
     public class Negociacao
