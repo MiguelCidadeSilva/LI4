@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace FeirasEspinhoBlazorApp.SourceCode.Stand
 {
-    public class Stands
+    public class Stand
     {
         private int idStand;
         public int IdStand
         {
-            get { return IdStand; }
-            set { IdStand = value; }
+            get { return idStand; }
+            set { idStand = value; }
         }
         private bool negociavel;
         public bool Negociavel
@@ -26,8 +26,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stand
             get { return consultantes; }
             set { consultantes = value; }
         }
-        public DateTime dataCriacao;
-        private DateTime DataCriacao
+        private DateTime dataCriacao;
+        public DateTime DataCriacao
         {
             get { return dataCriacao; }
             set { dataCriacao = value; }
@@ -51,7 +51,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stand
             set { produtos = value; }
         }
 
-        public Stands(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
+        public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
         {
             IdStand = idStand;
             Negociavel = negociavel;
@@ -62,9 +62,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stand
             Produtos = produto;
         }
 
-        public Stands() { }
+        public Stand() { }
 
-        public Stands(int idStand, bool negociavel, DateTime dataCriacao, string emailDono, int categoria)
+        public Stand(int idStand, bool negociavel, DateTime dataCriacao, string emailDono, int categoria)
         {
             IdStand = idStand;
             Negociavel = negociavel;

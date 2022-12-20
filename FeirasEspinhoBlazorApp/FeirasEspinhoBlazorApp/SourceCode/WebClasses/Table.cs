@@ -2,43 +2,51 @@
 {
 	public class Table<Tipo>
 	{
-		private Dictionary<int, (Tipo, int)> content;
+		private List<(Tipo, int)> content;
 		private Dictionary<int, string> cssclasses;
 		private string oldcssclasse;
 		private int idFeira = -1;
-		public Table(List<(int, Tipo, int)> conteudo)
+
+		private void defineCss()
 		{
-			content = new Dictionary<int, (Tipo, int)>();
-			conteudo.ForEach(c => content[c.Item1] = (c.Item2, c.Item3));
-			cssclasses = new Dictionary<int, string>();
-			List<int> list = content.Keys.ToList();
-			for (int i = 0; i < list.Count(); i++)
+			for (int i = 0; i < content.Count(); i++)
 			{
 				if (i % 2 == 0)
-					cssclasses[list[i]] = "evenRow";
+					cssclasses[i] = "evenRow";
 				else
-					cssclasses[list[i]] = "";
+					cssclasses[i] = "";
 			}
+		}
+		public Table(List<(Tipo, int)> conteudo)
+		{
+			content = new List<(Tipo, int)>(conteudo);
+			cssclasses = new Dictionary<int, string>();
+			defineCss();
 			// buscar feiras às base de dados
 		}
 
-		public Table(List<(int, Tipo)> conteudo)
+		public Table(List<Tipo> conteudo)
 		{
-			content = new Dictionary<int, (Tipo, int)>();
-			conteudo.ForEach(c => content[c.Item1] = (c.Item2, 0));
+			content = new List<(Tipo, int)>();
+			conteudo.ForEach(c => content.Add((c,0)));
 			cssclasses = new Dictionary<int, string>();
-			List<int> list = content.Keys.ToList();
-			for (int i = 0; i < list.Count(); i++)
-			{
-				if (i % 2 == 0)
-					cssclasses[list[i]] = "evenRow";
-				else
-					cssclasses[list[i]] = "";
-			}
+			defineCss();
 			// buscar feiras às base de dados
 		}
 
-		public Dictionary<int, (Tipo, int)> Content { get => content;}
+		public List<(int, Tipo, int)> Content 
+		{
+			get {
+				List<(int, Tipo, int)> res = new List<(int, Tipo, int)>();
+				int i = 0;
+				foreach (var item in content)
+				{
+					res.Add((i, item.Item1, item.Item2));
+					i++;
+				}
+				return res;
+			}
+		}
 		public Dictionary<int, string> Cssclasses { get => cssclasses; }
 
 		public void SelectedRow(int row)

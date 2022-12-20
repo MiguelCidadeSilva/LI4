@@ -33,40 +33,9 @@
 	Website de auxilio às feiras de espinho.
 </div>
 
-<div class="tableFixHead">
-	<table>
-		<thead>
-			<tr>
-				<th>Email</th>
-				<th>Nome</th>
-				<th>Password</th>
-				<th>Data Criação</th>
-				<th>Data Nascimento</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (Utilizador user in lista)
-			{
-					<tr>
-						<td> @user.email</td>
-						<td> @user.username</td>
-						<td> @user.password</td>
-						<td> @user.dataCriacao</td>
-						<td> @user.dataNascimento</td>
-					</tr>
-			}
-		</tbody>
-	</table>
-</div>
-
 
 
 @code
 {
-	private List<Utilizador> lista = new List<Utilizador>();
-	protected override void OnInitialized()
-	{
-		UtilizadoresDAO connection = UtilizadoresDAO.GetInstance();
-		lista = connection.ListAll();
-	}
+
 }

@@ -1,5 +1,6 @@
 ﻿@page "/showfeirastands"
 @using SourceCode.WebClasses;
+@using SourceCode.Stand;
 @inject NavigationManager navigationManager
 
 <PageTitle>Stands</PageTitle>
@@ -34,7 +35,7 @@
 		}
 		<div class="tableFixHead">
 			<table>
-				<tbody>
+				<thead>
 					<tr>
 						<th>Id</th>
 						<th>Feirante</th>
@@ -42,11 +43,17 @@
 						<th>Categoria</th>
 						<th>Avaliação</th>
 					</tr>
+				</thead>
+				<tbody>
 					@foreach (var stand in tabelContent.Content)
 					{
-							<tr class=@tabelContent.Cssclasses[stand.Key] @onclick="() => tabelContent.SelectedRow(stand.Key)">
-								<td> @stand.Key</td>
-							</tr>
+						<tr class=@tabelContent.Cssclasses[stand.Item1] @onclick="() => tabelContent.SelectedRow(stand.Item1)">
+								<td> @stand.Item2.IdStand</td>
+								<td> @stand.Item2.EmailDono</td>
+								<td> @stand.Item2.DataCriacao</td>
+								<td> @stand.Item2.Categoria</td>
+								<td> @stand.Item3</td>
+						</tr>
 					}
 				</tbody>
 			</table>
@@ -62,21 +69,21 @@
 @code {
 	private int avaliacao = -1;
 	private bool showAvaliacao = false;
-	private Table<string> tabelContent;
+	private Table<Stand> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
-		List<(int, string, int)> conteudo = new List<(int, string, int)>();
-		conteudo.Add((1, "abc", 2));
-		conteudo.Add((2, "def", 3));
-		conteudo.Add((3, "ghi", 4));
-		conteudo.Add((4, "jkl", 5));
-		conteudo.Add((5, "jkl", 3));
-		conteudo.Add((6, "jkl", 3));
-		conteudo.Add((7, "jkl", 3));
-		this.tabelContent = new Table<string>(conteudo);
+		List<(Stand, int)> conteudo = new List<(Stand, int)>();
+		conteudo.Add((new Stand(1,false,DateTime.Now,"abc",2), 2));
+		conteudo.Add((new Stand(2,false,DateTime.Now,"abc",2), 3));
+		conteudo.Add((new Stand(3,false,DateTime.Now,"abc",2), 4));
+		conteudo.Add((new Stand(4,false,DateTime.Now,"abc",2), 5));
+		conteudo.Add((new Stand(5,false,DateTime.Now,"abc",2), 3));
+		conteudo.Add((new Stand(6,false,DateTime.Now,"abc",2), 3));
+		conteudo.Add((new Stand(7,false,DateTime.Now,"abc",2), 3));
+		this.tabelContent = new Table<Stand>(conteudo);
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
 	public static ShowFeiraStandsComponent GetInstace()

@@ -20,7 +20,7 @@ namespace FeirasEspinho
 		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
 
 		private Dictionary<String, List<Feira>> mapFeiras;
-		private Dictionary<int, Stands> mapStands;
+		private Dictionary<int, Stand> mapStands;
 		private Dictionary<int, Produto> mapProdutos;
 
 
@@ -52,7 +52,7 @@ namespace FeirasEspinho
 			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value)); }
         }
 
-        public Dictionary<int, Stands> MapStands
+        public Dictionary<int, Stand> MapStands
         {
             get { return mapStands; }
 
@@ -72,13 +72,13 @@ namespace FeirasEspinho
 			MapAdmins = new Dictionary<String,Administrador>();
 			MapFeirantes= new Dictionary<String,Feirante>();
 			MapFeiras = new Dictionary<String,List<Feira>>();
-			MapStands = new Dictionary<int, Stands>();
+			MapStands = new Dictionary<int, Stand>();
 			MapProdutos = new Dictionary<int, Produto>();
 		}
 
 		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
 							 Dictionary<String,Feirante> MapFeirantes, Dictionary<String,List<Feira>> MapFeiras,
-							 Dictionary<int,Stands> MapStands, Dictionary<int,Produto> MapProdutos)
+							 Dictionary<int,Stand> MapStands, Dictionary<int,Produto> MapProdutos)
 		{
 			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());

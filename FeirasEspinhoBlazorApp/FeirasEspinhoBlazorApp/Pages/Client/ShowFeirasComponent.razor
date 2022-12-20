@@ -1,5 +1,6 @@
 ﻿@page "/showfeiras"
 @using SourceCode.WebClasses;
+@using SourceCode.Feira;
 
 @inject NavigationManager navigationManager
 
@@ -14,24 +15,26 @@
 	}
 	<div class="tableFixHead">
 		<table>
-			<tbody>
-				<tr>	
+			<thead>
+				<tr>
 					<th>Id</th>
-				<th>Nome</th>
-				<th>Data Início</th>
-				<th>Data Fim</th>
-				<th>Categoria</th>
-				<th>Avaliação</th>
-			</tr>
+					<th>Nome</th>
+					<th>Data Início</th>
+					<th>Data Fim</th>
+					<th>Categoria</th>
+					<th>Avaliação</th>
+				</tr>
+			</thead>
+			<tbody>
 			@foreach (var feira in tabelContent.Content)
 			{
-				<tr class=@tabelContent.Cssclasses[feira.Key] @onclick="() => tabelContent.SelectedRow(feira.Key)">
-					<td> @feira.Key</td>
-					<td> @feira.Value.Item1</td>
-					<td> @feira.Value.Item2</td>
-					<td> @feira.Value.Item2</td>
-					<td> @feira.Value.Item2</td>
-					<td> @feira.Value.Item2</td>
+					<tr class=@tabelContent.Cssclasses[feira.Item1] @onclick="() => tabelContent.SelectedRow(feira.Item1)">
+					<td> @feira.Item2.IDFeira</td>
+					<td> @feira.Item2.Nome</td>
+					<td> @feira.Item2.DataInicio</td>
+					<td> @feira.Item2.DataFim</td>
+					<td> @feira.Item2.Categoria</td>
+					<td> @feira.Item3</td>
 				</tr>
 			}
 			</tbody>
@@ -47,22 +50,22 @@
 
 @code
 {
-	private Table<string> tabelContent;
+	private Table<Feira> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
 	protected override void OnInitialized()
 	{
 		showFeiras = this;
-		List<(int, string, int)> conteudo = new List<(int, string, int)>();
-		conteudo.Add((1, "abc", 2));
-		conteudo.Add((2, "def", 3));
-		conteudo.Add((3, "ghi", 4));
-		conteudo.Add((4, "jkl", 5));
-		conteudo.Add((5, "jkl", 3));
-		conteudo.Add((6, "jkl", 3));
-		conteudo.Add((7, "jkl", 3));
-		this.tabelContent = new Table<string>(conteudo);
+		List<(Feira, int)> conteudo = new List<(Feira, int)>();
+		conteudo.Add((new Feira(1, "abc", DateTime.Now, null, 20.0f, "abc", 1), 2));
+		conteudo.Add((new Feira(2, "def", DateTime.Now, null, 30.0f, "def", 1), 3));
+		conteudo.Add((new Feira(3, "ghi", DateTime.Now, null, 40.0f, "ghi", 1), 4));
+		conteudo.Add((new Feira(4, "jkl", DateTime.Now, null, 50.0f, "jkl", 1), 5));
+		conteudo.Add((new Feira(5, "mno", DateTime.Now, null, 60.0f, "mno", 1), 3));
+		conteudo.Add((new Feira(6, "pqr", DateTime.Now, null, 70.0f, "stu", 1), 3));
+		conteudo.Add((new Feira(7, "stu", DateTime.Now, null, 80.0f, "stu", 1), 3));
+		this.tabelContent = new Table<Feira>(conteudo);
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}
 	public static ShowFeirasComponent GetInstace()
