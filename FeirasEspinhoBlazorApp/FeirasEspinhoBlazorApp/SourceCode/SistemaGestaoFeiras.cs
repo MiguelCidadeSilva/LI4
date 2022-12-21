@@ -228,8 +228,31 @@ namespace FeirasEspinhoBlazorApp.SourceCode
             }
 		}
 
+		public Stand getStand(int idStand)
+		{
+			return mapStands[idStand];
+        }
 
-		public class Teste
+        public Feira getFeira(int idFeira)
+        {
+            return mapFeiras[idFeira];
+        }
+
+		public Utilizador GetUtilizador(string emailUtilizador)
+		{
+			Utilizador user = mapAdmins.GetValueOrDefault(emailUtilizador);
+			if(user == null)
+			{
+				user = mapClientes.GetValueOrDefault(emailUtilizador);
+			}
+			if(user == null)
+			{
+				user = mapClientes.GetValueOrDefault(emailUtilizador);
+			}
+			return user;
+		}
+
+        public class Teste
 		{
 			static void Main(String[] args)
 			{
