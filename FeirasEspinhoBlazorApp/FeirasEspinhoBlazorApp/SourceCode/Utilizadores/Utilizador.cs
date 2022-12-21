@@ -45,7 +45,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
             get { return dataCriacao; }
             set { dataCriacao = value; }
         }
-        public List<string> Notificacoes
+        public List<string>? Notificacoes
         {
             get { return notificacoes; }
             set { notificacoes = value; }

@@ -129,13 +129,13 @@
 			{
 				case 1:
 					b = true;
-					utilizador = new Cliente(name, password, email, date, DateTime.Now);
+					utilizador = new Cliente(name, password, email, date, DateTime.Now, new List<String>());
 					break;
 				case 2:
 					b = true;
 					int num = 0;
 					if (int.TryParse(numConta, out num))
-						utilizador = new Feirante(name, password, email, date, DateTime.Now, num);
+						utilizador = new Feirante(name, password, email, date, DateTime.Now,new List<string>(),num);
 					else
 						this.erro = 5;
 					break;
