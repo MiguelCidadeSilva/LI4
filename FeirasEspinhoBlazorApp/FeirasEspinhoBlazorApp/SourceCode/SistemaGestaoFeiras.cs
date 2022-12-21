@@ -256,9 +256,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 
 
-
-
-
             }
 
 		}
