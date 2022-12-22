@@ -2,52 +2,62 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Feiras;
 @using System.Text.Json;
-
-@inject NavigationManager navigationManager
+@using FeirasEspinhoBlazorApp.Pages.Leilao;
 
 <PageTitle>Feiras</PageTitle>
 
-<h3>Feiras disponíveis</h3>
-<br />
-<div>
-	@if (erro != 0)
-	{
-		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="3"/>
-	}
-	<div class="tableFixHead">
-		<table>
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Nome</th>
-					<th>Data Início</th>
-					<th>Data Fim</th>
-					<th>Categoria</th>
-					<th>Avaliação</th>
-				</tr>
-			</thead>
-			<tbody>
-			@foreach (var feira in tabelContent.Content)
-			{
-					<tr class=@tabelContent.Cssclasses[feira.Item1] @onclick="() => tabelContent.SelectedRow(feira.Item1)">
-					<td> @feira.Item2.IDFeira</td>
-					<td> @feira.Item2.Nome</td>
-					<td> @feira.Item2.DataInicio</td>
-					<td> @feira.Item2.DataFim</td>
-					<td> @feira.Item2.Categoria</td>
-					<td> @feira.Item3</td>
-				</tr>
-			}
-			</tbody>
-		</table>
-	</div>
+@if(showFeira)
+{
+	<ShowFeiraStandsComponent idFeira="@feiraSelecionada"/>
+}
+else if (showLeilao)
+{
+	<ShowLeiloesComponent idFeira="@feiraSelecionada"/>
+}
+else
+{
+	<h3>Feiras disponíveis</h3>
 	<br />
 	<div>
+		@if (erro != 0)
+		{
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="3"/>
+		}
+		<div class="tableFixHead">
+			<table>
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Nome</th>
+						<th>Data Início</th>
+						<th>Data Fim</th>
+						<th>Categoria</th>
+						<th>Avaliação</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var feira in tabelContent.Content)
+					{
+							<tr class=@tabelContent.Cssclasses[feira.Item1] @onclick="() => tabelContent.SelectedRow(feira.Item1)">
+							<td> @feira.Item2.IDFeira</td>
+							<td> @feira.Item2.Nome</td>
+							<td> @feira.Item2.DataInicio</td>
+							<td> @feira.Item2.DataFim</td>
+							<td> @feira.Item2.Categoria</td>
+							<td> @feira.Item3</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
 
-			<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
-			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+				<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
+				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+		</div>
 	</div>
-</div>
+}
 
 @code
 {
@@ -55,6 +65,9 @@
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
+	private bool showFeira = false;
+	private bool showLeilao = false;
+	private int feiraSelecionada = 0;
 	protected override void OnInitialized()
 	{
 		showFeiras = this;
@@ -84,8 +97,9 @@
 		{
 			erro = 0;
 			Feira feira = tabelContent.GetElement();
-			string feiraStr = feira.IDFeira.ToString();
-			navigationManager.NavigateTo($"showfeirastands/{feiraStr}");
+			feiraSelecionada = feira.IDFeira;
+			showFeira = true;
+			showLeilao = false;
 		}
 		else
 		{
@@ -98,10 +112,22 @@
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
+			Feira feira = tabelContent.GetElement();
+			feiraSelecionada = feira.IDFeira;
+			showLeilao = true;
+			showFeira = false;
 		}
 		else
 		{
 			erro = 1;
 		}
+	}
+
+	public void GetBack()
+	{
+		showLeilao = false;
+		showFeira = false;
+		tabelContent.Unselect();
+		StateHasChanged();
 	}
 }

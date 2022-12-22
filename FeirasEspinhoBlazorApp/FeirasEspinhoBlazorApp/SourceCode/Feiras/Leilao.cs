@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 {
-    public class Leiloes
+    public class Leilao
     {
         private int id;
         public int Id
@@ -62,8 +62,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return bidAtual; }
             set { bidAtual = value; }
         }
-        public Leiloes() { }
-        public Leiloes(int id, DateTime date, float valormMinimo, float valormMaximo, int produto, int quantidade, int stand, int feira, int bidAtual)
+        public Leilao() { }
+        public Leilao(int id, DateTime date, float valormMinimo, float valormMaximo, int produto, int quantidade, int stand, int feira, int bidAtual)
         {
             this.id = id;
             this.date = date;

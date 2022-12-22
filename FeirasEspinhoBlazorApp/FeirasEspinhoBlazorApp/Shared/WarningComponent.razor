@@ -2,6 +2,7 @@
 @using Pages.Login;
 @using Pages.Client;
 @using Pages.Stand;
+@using Pages.Leilao;
 
 @if(sucess)
 {
@@ -56,6 +57,10 @@ else
 			case 5:
 				// Show Stand
 				ShowStandComponent.GetInstance().CleanWarning();
+				break;
+			case 6:
+				// Show Leiloes
+				ShowLeiloesComponent.GetInstance().CleanWarning();
 				break;
 		}
 	}

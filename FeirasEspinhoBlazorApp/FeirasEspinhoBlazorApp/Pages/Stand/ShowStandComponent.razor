@@ -1,75 +1,86 @@
-﻿@page "/showstand/{standStr}"
-@page "/showstand/{standStr}/{sucessStr}/{sucessMessage}"
-@page "/showstand/{standStr}/{erroStr}"
+﻿@page "/showstand"
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
 @using SourceCode;
+@using FeirasEspinhoBlazorApp.Pages.Client;
 @using System.Text.Json;
-@inject NavigationManager navigationManager
 
-<div>
-	<h3>Bem vindo ao stand</h3>
-	<br />
-	@if (erro != 0)
-	{
-		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5"/>
-	}
-	else if (sucess)
-	{
-		<WarningComponent mensagem="@sucessMessage" sucess="true" page="5"/>
-	}
-	<div class="tableFixHead">
-		<table>
-			<thead>
-				<tr>
-					<th>Produto</th>
-					<th>Preço</th>
-					<th>Stock</th>
-					<th>Quantidade</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var produto in tabelContent.Content)
-				{
-					<tr class=@tabelContent.Cssclasses[produto.Item1]>
-						<td> @produto.Item2.IdProduto</td>
-						<td> @produto.Item2.Preco</td>
-						<td> @produto.Item2.Stock</td>
-						<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)"/></td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
-	<br />
+<PageTitle>Stand</PageTitle>
+
+@if(fastPurchase)
+{
+	<FastPurchaseComponent />
+}
+else if (negociation)
+{
+
+	<NegociationComponent />
+}
+else
+{
 	<div>
+		<h3>Bem vindo ao stand</h3>
 		<br />
-		<label><b>Preço total</b></label>
-		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly" />
+		@if (erro != 0)
+		{
+				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5"/>
+		}
+		else if (sucess)
+		{
+			<WarningComponent mensagem="@sucessMessage" sucess="true" page="5"/>
+		}
+		<div class="tableFixHead">
+			<table>
+				<thead>
+					<tr>
+						<th>Produto</th>
+						<th>Preço</th>
+						<th>Stock</th>
+						<th>Quantidade</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var produto in tabelContent.Content)
+					{
+							<tr class=@tabelContent.Cssclasses[produto.Item1]>
+								<td> @produto.Item2.IdProduto</td>
+								<td> @produto.Item2.Preco</td>
+								<td> @produto.Item2.Stock</td>
+								<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)"/></td>
+							</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
+			<br />
+			<label><b>Preço total</b></label>
+			<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly" />
+		</div>
+		<br />
+		<div>
+			<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
+			<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+		</div>
 	</div>
-	<br />
-	<div>
-		<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
-		<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
-		<button class="buttonA">Retroceder</button>
-	</div>
-</div>
+}
 @code
 {
-	[Parameter]
+	[Parameter, EditorRequired]
+	public int idStand { get; set; }
 	public string sucessStr { get; set; }
-	[Parameter]
 	public string sucessMessage { get; set; }
-	[Parameter]
 	public string erroStr { get; set; }
-	[Parameter]
-	public string standStr { get; set; }
 	private Stand stand;
 	private int erro;
 	private int count = 0;
 	private int count2 = 0;
 	private Table<Produto> tabelContent;
 	private bool sucess;
+	private bool fastPurchase = false;
+	private bool negociation = false;
 	private float precoTotal = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
@@ -126,15 +137,36 @@
 	}
 	public void CompraRapida()
 	{
-		navigationManager.NavigateTo("fastpurchase");
+		fastPurchase = true;
+		negociation = false;
 	}
 	public void Negociar()
 	{
-		navigationManager.NavigateTo("negociation");
-		
+		negociation = true;
+		fastPurchase = false;
+
 	}
 	public void Retroceder()
 	{
-		
+		ShowFeiraStandsComponent showFeirasStandsComponent = ShowFeiraStandsComponent.GetInstace();
+		showFeirasStandsComponent.GetBack();
+	}
+	public void ShowStand(int cod)
+	{
+		sucess = false;
+		this.erro = cod;
+		fastPurchase = false;
+		negociation = false;
+		StateHasChanged();
+	}
+
+	public void ShowStand(string message)
+	{
+		this.erro = 0;
+		sucess = true;
+		sucessMessage = message;
+		fastPurchase = false;
+		negociation = false;
+		StateHasChanged();
 	}
 }
