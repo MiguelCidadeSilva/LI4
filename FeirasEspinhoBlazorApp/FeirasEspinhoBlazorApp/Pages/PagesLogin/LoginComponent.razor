@@ -78,6 +78,7 @@ else
 		{
 			loginSucess = true;
 			Utilizador user = new Cliente("abc", "abc", "abc", DateTime.Now, DateTime.Now, new List<string>());
+			NavBar.GetInstance().LoginCL(email);
 			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
 			NavMenu.GetInstance().show = true;
 			NavMenu.GetInstance().Refresh();

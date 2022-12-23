@@ -1,0 +1,35 @@
+﻿@page "/showleilao"
+@using SourceCode.Feiras;
+
+<PageTitle>Leilão</PageTitle>
+<h3>Bem vindo ao Leilão</h3>
+
+<div>
+
+</div>
+<div>
+	<label><b>Valor da licitação</b></label>
+	<input type="text" class="tb" id="valorLicitação" name="nrcartao" placeholder="xxxxxxxx" @bind-value="valorLicitação" />
+</div>
+<div>
+	<button class="buttonA buttonTable1" @onclick="Licitar">Licitar</button>
+	<button class="buttonA buttonTable2" @onclick="Voltar">Voltar</button>
+</div>
+
+@code 
+{
+	[Parameter, EditorRequired]
+	public int idLeilao { get; set; }
+	private float valorLicitação;
+	private Leilao leilao;
+	private void Licitar()
+	{
+
+	}
+	private void Voltar()
+	{
+		ShowLeiloesComponent.GetInstance().GetBack();
+	}
+
+
+}

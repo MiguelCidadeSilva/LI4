@@ -1,0 +1,8 @@
+﻿@page "/showleiloescliente/{emailCL}"
+
+<ShowLeiloesComponent idFeira="0" emailCL="@emailCL" idStand="-1"/>
+
+@code {
+	[Parameter, EditorRequired]
+	public string emailCL { get; set; }
+}

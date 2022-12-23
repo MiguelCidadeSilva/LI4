@@ -2,7 +2,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
 @using SourceCode;
-@using FeirasEspinhoBlazorApp.Pages.Client;
+@using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 @using System.Text.Json;
 
 <PageTitle>Stand</PageTitle>
@@ -14,7 +14,7 @@
 else if (negociation)
 {
 
-	<NegociationComponent />
+	<StartNegociationComponent />
 }
 else
 {
@@ -23,7 +23,7 @@ else
 		<br />
 		@if (erro != 0)
 		{
-				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5"/>
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5"/>
 		}
 		else if (sucess)
 		{

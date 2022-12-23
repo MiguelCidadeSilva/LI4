@@ -1,0 +1,74 @@
+﻿@page "/shownegociacoes/{email}"
+@using SourceCode.Vendas;
+@using SourceCode.WebClasses;
+
+<PageTitle>Negociações</PageTitle>
+@if(showNegociation)
+{
+	<NegociationComponent idVenda="idVenda"/>
+}
+else
+{
+	<h3>Negociações</h3>
+	<div class="tableFixHead">
+		<table>
+			<thead>
+				<tr>
+					<th>Pedido</th>
+					<th>Preço</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var venda in table.Content)
+				{
+					<tr class=@table.Cssclasses[venda.Item1] @onclick="() => table.SelectedRow(venda.Item1)">
+						<td> @venda.Item2.Negociacao</td>
+						<td> @venda.Item2.Preco</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<button class="buttonA buttonTable1" @onclick="Consultar">Consultar</button>
+	</div>
+}
+
+@code 
+{
+	[Parameter,EditorRequired]
+	public string email {get; set;}
+	private Table<Venda> table;
+	private bool showNegociation;
+	private int idVenda;
+	private static ShowNegociacoesComponent showNegociacoes;
+
+	protected override void OnInitialized()
+	{
+		// public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
+		List<Venda> l = new List<Venda>
+		{
+			new Venda(1,DateTime.Now,20.0f, "abc", 1, 2,3)
+		};
+		table = new Table<Venda>(l);
+		showNegociacoes = this;
+	}
+	public static ShowNegociacoesComponent GetInstance()
+	{
+		return showNegociacoes;
+	}
+	private void Consultar()
+	{
+		if(table.IdValid())
+		{
+			Venda venda = table.GetElement();
+			idVenda = venda.IdVenda;
+			showNegociation = true;
+		}
+	}
+	public void GetBack()
+	{
+		showNegociation = false;
+		StateHasChanged();
+	}
+}

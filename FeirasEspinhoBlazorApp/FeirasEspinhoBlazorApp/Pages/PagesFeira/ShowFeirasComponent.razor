@@ -2,7 +2,8 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Feiras;
 @using System.Text.Json;
-@using FeirasEspinhoBlazorApp.Pages.Leilao;
+@using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
+@inject NavigationManager navigationManager
 
 <PageTitle>Feiras</PageTitle>
 
@@ -12,7 +13,7 @@
 }
 else if (showLeilao)
 {
-	<ShowLeiloesComponent idFeira="@feiraSelecionada"/>
+	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada"/>
 }
 else
 {
@@ -52,9 +53,8 @@ else
 		</div>
 		<br />
 		<div>
-
-				<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
-				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
+			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
 		</div>
 	</div>
 }
