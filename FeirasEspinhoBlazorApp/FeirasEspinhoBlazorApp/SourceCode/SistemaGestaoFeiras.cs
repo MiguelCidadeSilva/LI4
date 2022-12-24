@@ -9,6 +9,7 @@ using FeirasEspinhoBlazorApp.SourceCode.Stands;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
+using System.Linq;
 
 namespace FeirasEspinhoBlazorApp.SourceCode
 {
@@ -19,6 +20,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private Dictionary<String, Administrador> mapAdmins; // todos os feirantes  || UTILIZADORES(key --> email)
 		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
 
+		private Dictionary<String, List<Notificacao>> mapNotificacao;
 		private Dictionary<String, List<Feira>> mapFeiras;
 		private Dictionary<int, Stand> mapStands;
 		private Dictionary<int, Produto> mapProdutos;
@@ -44,27 +46,32 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
             set { mapFeirantes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
         }
+        public Dictionary<String, List<Notificacao>> MapNotificacao
+        {
+            get { return mapNotificacao; }
 
-       public Dictionary<String, List<Feira>> MapFeiras
-		{ 
+            set { mapNotificacao = value.ToDictionary(entry => entry.Key, entry => new List<Notificacao>(entry.Value)); }
+        }
+        public Dictionary<String, List<Feira>> MapFeiras
+	    { 
             get { return mapFeiras; }
 
 			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value)); }
         }
 
         public Dictionary<int, Stand> MapStands
-        {
-            get { return mapStands; }
+		{
+			get { return mapStands; }
 
-            set { mapStands = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
-        }
-
+			set { mapStands = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
+		}
         public Dictionary<int, Produto> MapProdutos
         {
             get { return mapProdutos; }
 				
             set { mapProdutos = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
         }
+        
 
         public SistemaFeiras()
 		{
@@ -233,11 +240,25 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			return mapStands[idStand];
         }
 
-        public Feira getFeira(int idFeira)
+        public Feira getFeira(string emailFeirante, int idFeira)
         {
-            return mapFeiras[idFeira];
+            List<Feira> lista = mapFeiras[emailFeirante];
+			foreach(Feira feira in lista)
+			{
+				if (feira.IDFeira == idFeira) { return feira;}
+			}
+			return null;
         }
-
+		public void AddNotificacao(string emailUser,Notificacao not)
+		{
+            List<Notificacao> lista;
+            if (!mapNotificacao.TryGetValue(emailUser, out lista))
+            {
+                lista = new List<Notificacao>();
+                mapNotificacao[emailUser] = lista;
+            }
+            lista.Add(not);
+        }
 		public Utilizador GetUtilizador(string emailUtilizador)
 		{
 			Utilizador user = mapAdmins.GetValueOrDefault(emailUtilizador);

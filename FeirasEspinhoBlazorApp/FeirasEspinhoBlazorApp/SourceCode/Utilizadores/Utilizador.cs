@@ -14,7 +14,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
         private string? email;
         private DateTime dataNascimento;
         private DateTime dataCriacao;
-        private List<string> notificacoes;
 
         public string? Username
         {
@@ -45,12 +44,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
             get { return dataCriacao; }
             set { dataCriacao = value; }
         }
-        public List<string> Notificacoes
-        {
-            get { return notificacoes; }
-            set { notificacoes = value; }
-        }
-
         public Utilizador()
         {
             Username = "";
@@ -58,17 +51,15 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
             Email = "";
             DataNascimento = DateTime.MinValue;
             DataCriacao = DateTime.MinValue;
-            Notificacoes = new List<string>();
         }
 
-        public Utilizador(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao, List<string> notificacoes)
+        public Utilizador(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao)
         {
             Username = username;
             Password = password;
             Email = email;
             DataNascimento = dataNascimento;
             DataCriacao = dataCriacao;
-            Notificacoes= notificacoes;
         }
 
         public Utilizador(Utilizador u)
@@ -136,11 +127,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
         {
         }
 
-        public Administrador(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao, List<string> notificacoes) : base(username, password, email, dataNascimento, dataCriacao, notificacoes)
+        public Administrador(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao) : base(username, password, email, dataNascimento, dataCriacao)
         {
         }
 
-        public Administrador(Administrador u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao,u.Notificacoes)
+        public Administrador(Administrador u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao)
         {
         }
 
@@ -175,11 +166,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
         {
         }
 
-        public Cliente(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao, List<string> notificacoes) : base(username, password, email, dataNascimento, dataCriacao, notificacoes)
+        public Cliente(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao) : base(username, password, email, dataNascimento, dataCriacao)
         {
         }
 
-        public Cliente(Cliente u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao, u.Notificacoes)
+        public Cliente(Cliente u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao)
         {
         }
 
@@ -225,12 +216,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
             IDconta = 0;
         }
 
-        public Feirante(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao, List<string> notificacoes, int IDconta) : base(username, password, email, dataNascimento, dataCriacao,notificacoes)
+        public Feirante(string username, string password, string email, DateTime dataNascimento, DateTime dataCriacao, int IDconta) : base(username, password, email, dataNascimento, dataCriacao)
         {
             this.IDconta = IDconta;
         }
 
-        public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao,u.Notificacoes)
+        public Feirante(Feirante u) : base(u.Username, u.Password, u.Email, u.DataNascimento, u.DataCriacao)
         {
             IDconta = u.IDconta;
         }

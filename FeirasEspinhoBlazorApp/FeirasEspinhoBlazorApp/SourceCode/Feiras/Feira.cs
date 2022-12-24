@@ -1,5 +1,8 @@
-﻿using System;
+﻿using FeirasEspinhoBlazorApp.SourceCode.Stands;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
@@ -7,58 +10,58 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
     public class Feira
     {
         private int iDFeira;
+        private DateTime dataInicio;
+        private DateTime? dataFim;
+        private float precoCandidatura;
+        private string? criadorEmail;
+        private int categoria;
+        private Dictionary <string, List<Stand>> listaStands;
+        private Dictionary<string, List<Leiloes>> listaLeiloes;
+        private string? nome;
         public int IDFeira
         {
             get { return iDFeira; }
             set { iDFeira = value; }
         }
-        private string? nome;
         public string? Nome
         {
             get { return nome; }
             set { nome = value; }
         }
-        private DateTime dataInicio;
         public DateTime DataInicio
         {
             get { return dataInicio; }
             set { dataInicio = value; }
         }
-        private DateTime? dataFim;
         public DateTime? DataFim
         {
             get { return dataFim; }
             set { dataFim = value; }
         }
-        private float precoCandidatura;
         public float PrecoCandidatura
         {
             get { return precoCandidatura; }
             set { precoCandidatura = value; }
         }
-        private string? criadorEmail;
         public string? CriadorEmail
         {
             get { return criadorEmail; }
             set { criadorEmail = value; }
         }
-        private int categoria;
         public int Categoria
         {
             get { return categoria; }
             set { categoria = value; }
         }
-        private Hashtable stands;
-        public Hashtable Stands
+        public Dictionary<string, List<Stand>> ListaStands
         {
-            get { return stands; }
-            set { stands = value; }
+            get { return listaStands; }
+            set { listaStands = value; }
         }
-        private Hashtable leiloes;
-        public Hashtable Leiloes
+        public Dictionary<string, List<Leiloes>> ListaLeiloes
         {
-            get { return leiloes; }
-            set { leiloes = value; }
+            get { return listaLeiloes; }
+            set { listaLeiloes = value; }
         }
 
         public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria)
@@ -70,8 +73,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             PrecoCandidatura = precoCand;
             CriadorEmail = criadorEmail;
             Categoria = categoria;
-            Stands = new Hashtable();
-            Leiloes = new Hashtable();
+            ListaStands = new Dictionary<string, List<Stand>>();
+            ListaLeiloes = new Dictionary<string, List<Leiloes>>();
         }
 
         public Feira(Feira f)
@@ -83,8 +86,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             PrecoCandidatura = f.PrecoCandidatura;
             CriadorEmail = f.CriadorEmail;
             Categoria = f.Categoria;
-            Stands = f.Stands;
-            Leiloes = f.Leiloes;
+            ListaStands = f.ListaStands;
+            ListaLeiloes = f.ListaLeiloes;
         }
 
 
@@ -94,9 +97,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
                          ", Dataf: " + (DataFim.Equals(null) ? "[FEIRA PERMANENTE]" : DataFim.ToString()) + ", " +
                          "Preço Candidatura: " + PrecoCandidatura + ", Email Criador : " + CriadorEmail +
                          ", Categoria: " + Categoria + "\nStands: \n";
-            foreach (DictionaryEntry de in Stands)
+            foreach (var (key, value) in ListaStands)
             {
-                string str = "\nKey = " + de.Key + "Value = " + de.Value;
+                string str = "\nKey = " +key + "Value = " + key;
                 obj += str;
             }
             //string combinedString = string.Join("\n", Stands.Values.Cast<string>());
@@ -122,21 +125,33 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
                    f.DataFim.Equals(DataFim) &&
                    f.PrecoCandidatura.Equals(PrecoCandidatura) &&
                    f.CriadorEmail.Equals(CriadorEmail) &&
-                   f.Stands.Equals(Stands) &&
-                   f.Leiloes.Equals(Leiloes);
+                   f.ListaStands.Equals(ListaStands) &&
+                   f.ListaLeiloes.Equals(ListaLeiloes);
 
         }
 
         public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, Stands, Leiloes).GetHashCode();
 
 
-        public void AddStand(string feirante, string? stand)
+        public void AddStand(string feirante, Stand stand)
         {
-            Stands.Add(feirante, stand);
+            List<Stand> lista;
+            if (!ListaStands.TryGetValue(feirante, out lista))
+            {
+                lista = new List<Stand>();
+                ListaStands[feirante] = lista;
+            }
+            lista.Add(stand);
         }
-        public void AddLeilao(string feirante, string? leilao)
+        public void AddLeilao(string feirante, Leiloes leilao)
         {
-            Leiloes.Add(feirante, leilao);
+            List<Leiloes> lista;
+            if (!ListaLeiloes.TryGetValue(feirante, out lista))
+            {
+                lista = new List<Leiloes>();
+                ListaLeiloes[feirante] = lista;
+            }
+            lista.Add(leilao);
         }
 
     }
