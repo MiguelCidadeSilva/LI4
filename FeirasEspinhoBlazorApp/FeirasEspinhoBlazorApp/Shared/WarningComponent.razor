@@ -1,7 +1,8 @@
 ﻿@page "/warning"
-@using Pages.Login;
-@using Pages.Client;
-@using Pages.Stand;
+@using Pages.PagesLogin;
+@using Pages.PagesFeira;
+@using Pages.PagesStand;
+@using Pages.PagesLeilao;
 
 @if(sucess)
 {
@@ -56,6 +57,10 @@ else
 			case 5:
 				// Show Stand
 				ShowStandComponent.GetInstance().CleanWarning();
+				break;
+			case 6:
+				// Show Leiloes
+				ShowLeiloesComponent.GetInstance().CleanWarning();
 				break;
 		}
 	}

@@ -1,8 +1,10 @@
-﻿@page "/showfeirastands/{feiraStr}"
+﻿@page "/showfeirastands"
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
 @using SourceCode.Feiras;
 @using System.Text.Json;
+@using FeirasEspinhoBlazorApp.Pages.PagesStand;
+@using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
 
 <PageTitle>Stands</PageTitle>
@@ -10,22 +12,16 @@
 <div>
 	@if (showAvaliacao)
 	{
-		<div class="popup">
-			<h2 style="text-align: center">Avalie o Stand</h2>
-			<br />
-			<div>
-				<input type="radio" name="nota1" value="nota1" @onclick="() => Avalia(1)" checked=@(avaliacao == 1) /><b> Nota 1</b>
-				<br />
-				<input type="radio" name="nota2" value="nota2" @onclick="() => Avalia(2)" checked=@(avaliacao == 2) /><b> Nota 2</b>
-				<br />
-				<input type="radio" name="nota3" value="nota3" @onclick="() => Avalia(3)" checked=@(avaliacao == 3) /><b> Nota 3</b>
-				<br />
-				<input type="radio" name="nota4" value="nota4" @onclick="() => Avalia(4)" checked=@(avaliacao == 4) /><b> Nota 4</b>
-				<br />
-				<input type="radio" name="nota5" value="nota5" @onclick="() => Avalia(5)" checked=@(avaliacao == 5) /><b> Nota 5</b>
-			</div>
-		</div>
+		<EvaluationComponent avaliacaoStr="Avalie o Stand"/>
 
+	}
+	else if (showStand)
+	{
+		<ShowStandComponent idStand="@idStand"/>
+	}
+	else if (showLeilao)
+	{
+		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand"/>
 	}
 	else
 	{	
@@ -51,7 +47,7 @@
 					{
 						<tr class=@tabelContent.Cssclasses[stand.Item1] @onclick="() => tabelContent.SelectedRow(stand.Item1)">
 								<td> @stand.Item2.IdStand</td>
-								<td> @stand.Item2.EmailDono</td>
+								<td> @nomes[stand.Item2.EmailDono]</td>
 								<td> @stand.Item2.DataCriacao</td>
 								<td> @stand.Item2.Categoria</td>
 								<td> @stand.Item3</td>
@@ -69,17 +65,22 @@
 	}
 </div>
 @code {
-	[Parameter]
-	public string feiraStr { get; set; }
+	[Parameter, EditorRequired]
+	public int idFeira { get; set; }
 	private Feira feira;
 	private int avaliacao = -1;
 	private bool showAvaliacao = false;
+	private bool showStand = false;
+	private bool showLeilao = false;
+	private int idStand = 0;
+	private Dictionary<string, string> nomes = new Dictionary<string, string>();
 	private Table<Stand> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
+		showBancas = this;
 		List<(Stand, int)> conteudo = new List<(Stand, int)>();
 		conteudo.Add((new Stand(1,false,DateTime.Now,"abc",2), 2));
 		conteudo.Add((new Stand(2,false,DateTime.Now,"abc",2), 3));
@@ -88,6 +89,7 @@
 		conteudo.Add((new Stand(5,false,DateTime.Now,"abc",2), 3));
 		conteudo.Add((new Stand(6,false,DateTime.Now,"abc",2), 3));
 		conteudo.Add((new Stand(7,false,DateTime.Now,"abc",2), 3));
+		nomes["abc"] = "BRAGA";
 		this.tabelContent = new Table<Stand>(conteudo);
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
@@ -106,8 +108,10 @@
 		{
 			erro = 0;
 			Stand s = tabelContent.GetElement();
-			string standStr = s.IdStand.ToString();
-			navigationManager.NavigateTo($"showstand/{standStr}");
+			idStand = s.IdStand;
+			showStand = true;
+			showAvaliacao = false;
+			showLeilao = false;
 		}
 		else
 		{
@@ -120,6 +124,11 @@
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
+			Stand s = tabelContent.GetElement();
+			idStand = s.IdStand;
+			showStand = false;
+			showAvaliacao = false;
+			showLeilao = true;
 		}
 		else
 		{
@@ -130,8 +139,17 @@
 	{
 		this.avaliacao = avaliacao;
 	}
+	public void GetBack()
+	{
+		showStand = false;
+		showAvaliacao = false;
+		showLeilao = false;
+		tabelContent.Unselect();
+		StateHasChanged();
+	}
 	public void Retroceder()
 	{
-		showAvaliacao = true;
+		ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
+		showFeirasComponent.GetBack();
 	}
 }

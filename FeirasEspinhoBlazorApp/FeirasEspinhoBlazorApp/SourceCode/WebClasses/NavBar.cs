@@ -16,15 +16,26 @@
             };
         }
         private void InicializeClientNav()
-        {
-            int cl = (int)menusNomes.Cliente;
-            this.menus[cl] = new List<Opcao>
+		{
+			int cl = (int)menusNomes.Cliente;
+			this.menus[cl] = new List<Opcao>
             {
-                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras"),
-                new Opcao("Leilões", "oi oi-euro", ""),
-                new Opcao("Negociações", "oi oi-transfer", "")
+                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras")
             };
         }
+        public void LoginCL(string email)
+		{
+			int cl = (int)menusNomes.Cliente;
+			this.menus[cl].Add(new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email));
+			this.menus[cl].Add(new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/"+email));
+		}
+        public void LogoutCL()
+        {
+			int cl = (int)menusNomes.Cliente;
+            int len = this.menus[cl].Count;
+            this.menus[cl].RemoveAt(len - 1);
+			this.menus[cl].RemoveAt(len - 2);
+		}
 
         private void InicializeFeiranteNav()
         {
@@ -41,7 +52,7 @@
             int ge = (int)menusNomes.Geral;
             this.menus[ge] = new List<Opcao> 
             {
-                new Opcao("Notificações","oi oi-bell","")
+                new Opcao("Notificações","oi oi-bell","notifications")
             };
             int cl = (int)menusNomes.Cliente;
             int ad = (int)menusNomes.Admin;

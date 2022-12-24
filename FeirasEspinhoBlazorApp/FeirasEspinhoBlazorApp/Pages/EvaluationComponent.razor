@@ -1,0 +1,27 @@
+﻿
+<div class="popup">
+	<h2 style="text-align: center">@avaliacaoStr</h2>
+	<br />
+	<div>
+		<input type="radio" name="nota1" value="nota1" @onclick="() => Avalia(1)" checked=@(avaliacao == 1) /><b> Nota 1</b>
+		<br />
+		<input type="radio" name="nota2" value="nota2" @onclick="() => Avalia(2)" checked=@(avaliacao == 2) /><b> Nota 2</b>
+		<br />
+		<input type="radio" name="nota3" value="nota3" @onclick="() => Avalia(3)" checked=@(avaliacao == 3) /><b> Nota 3</b>
+		<br />
+		<input type="radio" name="nota4" value="nota4" @onclick="() => Avalia(4)" checked=@(avaliacao == 4) /><b> Nota 4</b>
+		<br />
+		<input type="radio" name="nota5" value="nota5" @onclick="() => Avalia(5)" checked=@(avaliacao == 5) /><b> Nota 5</b>
+	</div>
+</div>
+@code 
+{
+	[Parameter, EditorRequired]
+	public string avaliacaoStr { get; set; }
+	private int avaliacao;
+
+	public void Avalia(int avaliacao)
+	{
+		this.avaliacao = avaliacao;
+	}
+}

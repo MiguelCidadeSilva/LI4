@@ -1,5 +1,4 @@
-﻿@page "/negociation"
-@inject NavigationManager navigationManager
+﻿@page "/startnegociation"
 
 <h3>Negociação</h3>
 <br />
@@ -21,12 +20,13 @@
 	private string valorapagar = "";
 	public void Confirmar()
 	{
-		navigationManager.NavigateTo($"showstand/{true}/Negociação registada");
+		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
+		showStandComponent.ShowStand("Negociação registada");
 
 	}
 	public void Cancelar()
 	{
-		navigationManager.NavigateTo($"showstand/{3}");
+		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
+		showStandComponent.ShowStand(3);
 	}
-
 }

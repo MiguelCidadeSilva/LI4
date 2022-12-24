@@ -56,7 +56,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 	    { 
             get { return mapFeiras; }
 
-			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value)); }
+			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
         }
 
         public Dictionary<int, Stand> MapStands
@@ -78,19 +78,19 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			MapClientes = new Dictionary<String, Cliente>();
 			MapAdmins = new Dictionary<String,Administrador>();
 			MapFeirantes= new Dictionary<String,Feirante>();
-			MapFeiras = new Dictionary<String,List<Feira>>();
+			MapFeiras = new Dictionary<int,Feira>();
 			MapStands = new Dictionary<int, Stand>();
 			MapProdutos = new Dictionary<int, Produto>();
 		}
 
 		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
-							 Dictionary<String,Feirante> MapFeirantes, Dictionary<String,List<Feira>> MapFeiras,
+							 Dictionary<String,Feirante> MapFeirantes, Dictionary<int,Feira> MapFeiras,
 							 Dictionary<int,Stand> MapStands, Dictionary<int,Produto> MapProdutos)
 		{
 			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
             this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => new List<Feira>(entry.Value));
+			this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
 			this.MapStands = MapStands.ToDictionary(entry => entry.Key, entry => entry.Value);
 			this.MapProdutos = MapProdutos.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
@@ -221,18 +221,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 				throw new PermissaoInvalidaException("Funcionalidade restrita a Administradores.");
 			
 			//Caso o admin em questão já adicionou feiras no passado
-			String key = u.Email;
-			if(MapFeiras.ContainsKey(key))
-			{
-				MapFeiras[key].Add( new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
-											  preco_candidatura, key, categoria_feira) );
-			}
-			else
-			{
-				MapFeiras.Add(key,new List<Feira>());
-				MapFeiras[key].Add( new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
-                                              preco_candidatura, key, categoria_feira) );
-            }
+			int key = id_feira;
+				MapFeiras[key] =  new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
+											  preco_candidatura, u.Email, categoria_feira);
 		}
 
 		public Stand getStand(int idStand)
@@ -278,9 +269,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			static void Main(String[] args)
 			{
 
-				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now);
-				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, 2);
-				Administrador a = new Administrador("Maria", "whatinthefuck", "maria@gmail.com", DateTime.ParseExact("12/12/1994", "d/M/yyyy", null), DateTime.Now);
+				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now, new List<String>());
+				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, new List<String>(), 2);
+				Administrador a = new Administrador("Maria", "whatinthefuck", "maria@gmail.com", DateTime.ParseExact("12/12/1994", "d/M/yyyy", null), DateTime.Now,new List<String>());
 				SistemaFeiras sf = new SistemaFeiras();
 				sf.Registo(f);
 				sf.Registo(c);
@@ -297,9 +288,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 				Console.WriteLine(v.ToString());
 				Console.WriteLine(v2.ToString());
 				Console.WriteLine(v.Equals(v2));
-
-
-
 
 
 

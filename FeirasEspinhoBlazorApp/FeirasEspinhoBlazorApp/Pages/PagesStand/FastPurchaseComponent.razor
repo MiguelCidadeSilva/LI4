@@ -1,6 +1,7 @@
 ﻿@page "/fastpurchase"
-@inject NavigationManager navigationManager
+@inject NavigationManager navigation;
 
+<PageTitle>Compra rápida</PageTitle>
 <h3>Compra rápida</h3>
 <br />
 
@@ -21,12 +22,14 @@
 	private string numeroCartao = "";
 	public void Confirmar()
 	{
-		navigationManager.NavigateTo($"showstand/{true}/Compra realizada com sucesso");
+		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
+		showStandComponent.ShowStand("Compra registada");
 
 	}
 	public void Cancelar()
 	{
-		navigationManager.NavigateTo($"showstand/{2}");
+		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
+		showStandComponent.ShowStand(2);
 	}
 
 }

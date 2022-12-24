@@ -1,4 +1,4 @@
-﻿@page "/user/{email}"
+﻿@page "/user"
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 @using FeirasEspinhoBlazorApp.SourceCode.WebClasses;
 @using System.Text.Json;
@@ -10,7 +10,7 @@
 
 @code
 {
-	[Parameter]
+	[Parameter, EditorRequired]
 	public string email { get; set;  }
 	private Utilizador user;
 	protected override void OnInitialized()

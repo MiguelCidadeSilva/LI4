@@ -62,6 +62,17 @@
 				cssclasses[row] = "selected_row";
 			}
 		}
+		public void Unselect()
+		{
+			if(index != -1)
+			{
+				if (index % 2 == 0)
+					cssclasses[index] = "evenRow";
+				else
+					cssclasses[index] = "";
+				index = -1;
+			}
+		}
 		public Tipo GetElement()
 		{
 			return this.content[index].Item1;

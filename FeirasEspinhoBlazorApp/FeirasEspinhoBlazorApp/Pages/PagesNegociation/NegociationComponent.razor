@@ -1,0 +1,60 @@
+﻿@page "/negociation"
+@using SourceCode.Vendas;
+@using SourceCode.Stands;
+@using SourceCode.WebClasses;
+
+<PageTitle>Negociação</PageTitle>
+<h3>Negociação</h3>
+<br />
+<div>
+	<div>	
+		<label><b>Email Cliente</b></label>
+		<input type="text" class="tb tb_smaller" id="emailCL" name="emailCL" @bind-value="@venda.EmailCliente" readonly="readonly" />
+		<br />
+		<label><b>Email Feirante</b></label>
+		<input type="text" class="tb tb_smaller" id="emailFeirante" name="emailFeirante" @bind-value="@stand.EmailDono" readonly="readonly" />
+		<br />
+		<label><b>Stand</b></label>
+		<input type="text" class="tb tb_smaller" id="idStand" name="idStand" @bind-value="@venda.IdStand" readonly="readonly" />
+	</div>
+	<br />
+	<br />
+	<div>
+		<label><b>Preço Base</b></label>
+		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoBase" readonly="readonly" />
+		<br />
+		<label><b>Preço Proposto</b></label>
+		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoNegociacao" readonly="readonly" />
+	</div>
+	<br />
+	<div>
+		<button class="buttonA buttonTable1" @onclick="Aceitar">Aceitar</button>
+		<button class="buttonA buttonTable1" @onclick="Recusar">Recusar</button>
+		<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+		<button class="buttonA buttonTable2" @onclick="Voltar">Voltar</button>
+	</div>
+</div>
+@code 
+{
+	[Parameter, EditorRequired]
+	public int idVenda { get; set; }
+	private Venda venda;
+	private Negociacao negociacao;
+	private Stand stand;
+	private void Aceitar()
+	{
+
+	}
+	private void Recusar()
+	{
+
+	}
+	private void Negociar()
+	{
+
+	}
+	private void Voltar()
+	{
+		ShowNegociacoesComponent.GetInstance().GetBack();
+	}
+}

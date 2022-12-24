@@ -7,35 +7,41 @@
 
 <PageTitle>Página de autenticação</PageTitle>
 
-<h1>Feiras Virtuais de Espinho</h1>
-
-<br />
-
-<div class="page">
-	<main>
-		@if (erro != 0)
-		{
-			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
-		}
-		<div>
-			<label><b>Email</b></label>
-			<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
-		</div>
-		<br />
-		<div>
-			<label> <b>Palavra passe</b> </label>
-			<input type="password" class="tb" id="password" name="password" @bind-value="password" />
-		</div>
-		<br />
-		<div>
-			<button class="buttonA" @onclick="verificaCredencais">Autenticar</button>
-		</div>
-	</main>
-</div>
+@if (loginSucess)
+{
+	<UserComponent email="@email"/>
+}
+else
+	{
+	<h1>Feiras Virtuais de Espinho</h1>
+	<br />
+	<div class="page">
+		<main>
+			@if (erro != 0)
+			{
+				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
+			}
+			<div>
+				<label><b>Email</b></label>
+				<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
+			</div>
+			<br />
+			<div>
+				<label> <b>Palavra passe</b> </label>
+				<input type="password" class="tb" id="password" name="password" @bind-value="password" />
+			</div>
+			<br />
+			<div>
+				<button class="buttonA" @onclick="verificaCredencais">Autenticar</button>
+			</div>
+		</main>
+	</div>
+}
 
 
 @code 
 {
+	private bool loginSucess = false;
 	private int erro = 0;
 	private string email = "";
 	private string password = "";
@@ -47,6 +53,11 @@
 		this.codigosErro[1] = "Dados de acesso incorretos";
 		this.codigosErro[2] = "Campos incompletos";
 		this.codigosErro[3] = "";
+	}
+	private void CleanFields()
+	{
+		email = "";
+		password = "";
 	}
 	public static LoginComponent GetInstace()
 	{
@@ -65,37 +76,42 @@
 		}
 		else 
 		{
-
-			Utilizador user = new Cliente("abc", "abc", "abc", DateTime.Now, DateTime.Now);
+			loginSucess = true;
+			Utilizador user = new Cliente("abc", "abc", "abc", DateTime.Now, DateTime.Now, new List<string>());
+			NavBar.GetInstance().LoginCL(email);
 			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
 			NavMenu.GetInstance().show = true;
 			NavMenu.GetInstance().Refresh();
-			string userStr = JsonSerializer.Serialize(user);
-			navigationManager.NavigateTo($"/user/{email}");
 			/*
 			SistemaFeiras sistemaFeiras = new SistemaFeiras();
-			try
-			{
-				int existe = sistemaFeiras.Login(email, password);
-				switch (existe)
+				try
 				{
-					case 0:
+				int existe = sistemaFeiras.Login(email, password);
+						switch (existe)
+						{
+						case 0:
 						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
 						break;
-					case 1:
+						case 1:
 						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
 						break;
-					case 2:
+						case 2:
 						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
-						break;
-				}
+			break;
+			}
 			}
 			catch (Exception e)
-			{
+				{
 				this.erro = 3;
 				codigosErro[3] = e.Message;
 			}
 			// método a perguntar à base de dados se existe*/
 		}
+	}
+	public void Logout()
+	{
+		this.CleanFields();
+		this.loginSucess = false;
+		StateHasChanged();
 	}
 }
