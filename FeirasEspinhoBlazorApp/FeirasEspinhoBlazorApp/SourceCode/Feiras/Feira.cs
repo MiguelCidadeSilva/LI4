@@ -16,7 +16,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
         private string? criadorEmail;
         private int categoria;
         private Dictionary <string, List<Stand>> listaStands;
-        private Dictionary<string, List<Leiloes>> listaLeiloes;
+        private Dictionary<string, List<Leilao>> listaLeiloes;
         private string? nome;
         public int IDFeira
         {
@@ -58,7 +58,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return listaStands; }
             set { listaStands = value; }
         }
-        public Dictionary<string, List<Leiloes>> ListaLeiloes
+        public Dictionary<string, List<Leilao>> ListaLeiloes
         {
             get { return listaLeiloes; }
             set { listaLeiloes = value; }
@@ -74,7 +74,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             CriadorEmail = criadorEmail;
             Categoria = categoria;
             ListaStands = new Dictionary<string, List<Stand>>();
-            ListaLeiloes = new Dictionary<string, List<Leiloes>>();
+            ListaLeiloes = new Dictionary<string, List<Leilao>>();
         }
 
         public Feira(Feira f)
@@ -130,7 +130,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 
         }
 
-        public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, Stands, Leiloes).GetHashCode();
+        public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, ListaStands, ListaLeiloes).GetHashCode();
 
 
         public void AddStand(string feirante, Stand stand)
@@ -143,12 +143,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             }
             lista.Add(stand);
         }
-        public void AddLeilao(string feirante, Leiloes leilao)
+        public void AddLeilao(string feirante, Leilao leilao)
         {
-            List<Leiloes> lista;
+            List<Leilao> lista;
             if (!ListaLeiloes.TryGetValue(feirante, out lista))
             {
-                lista = new List<Leiloes>();
+                lista = new List<Leilao>();
                 ListaLeiloes[feirante] = lista;
             }
             lista.Add(leilao);

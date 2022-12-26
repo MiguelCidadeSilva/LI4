@@ -129,13 +129,13 @@
 			{
 				case 1:
 					b = true;
-					utilizador = new Cliente(name, password, email, date, DateTime.Now, new List<String>());
+					utilizador = new Cliente(name, password, email, date, DateTime.Now);
 					break;
 				case 2:
 					b = true;
 					int num = 0;
 					if (int.TryParse(numConta, out num))
-						utilizador = new Feirante(name, password, email, date, DateTime.Now,new List<string>(),num);
+						utilizador = new Feirante(name, password, email, date, DateTime.Now,num);
 					else
 						this.erro = 5;
 					break;
@@ -144,10 +144,9 @@
 			{
 				try
 				{
-					SistemaFeiras sistemaFeiras = new SistemaFeiras();
-					sistemaFeiras.Registo(utilizador);
+					SistemaFeiras sistema = SistemaFeiras.GetInstance();
+					sistema.Registo(utilizador);
 					this.sucess = true;
-					// adicionar variavel utilizador à base de dados
 					this.LimpaCampos();
 				}
 				catch(Exception e)

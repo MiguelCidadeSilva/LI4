@@ -21,9 +21,16 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
 
 		private Dictionary<String, List<Notificacao>> mapNotificacao;
-		private Dictionary<String, List<Feira>> mapFeiras;
+		private Dictionary<int, Feira> mapFeiras;
 		private Dictionary<int, Stand> mapStands;
 		private Dictionary<int, Produto> mapProdutos;
+
+		private static SistemaFeiras instance = new SistemaFeiras();
+
+		public static SistemaFeiras GetInstance()
+		{
+			return instance;
+		}
 
 
         public Dictionary<String,Cliente> MapClientes
@@ -52,7 +59,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
             set { mapNotificacao = value.ToDictionary(entry => entry.Key, entry => new List<Notificacao>(entry.Value)); }
         }
-        public Dictionary<String, List<Feira>> MapFeiras
+        public Dictionary<int, Feira> MapFeiras
 	    { 
             get { return mapFeiras; }
 
@@ -73,7 +80,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         }
         
 
-        public SistemaFeiras()
+        private SistemaFeiras()
 		{
 			MapClientes = new Dictionary<String, Cliente>();
 			MapAdmins = new Dictionary<String,Administrador>();
@@ -83,7 +90,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			MapProdutos = new Dictionary<int, Produto>();
 		}
 
-		public SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
+		private SistemaFeiras(Dictionary<String,Cliente> MapClientes, Dictionary<String,Administrador> MapAdmins,
 							 Dictionary<String,Feirante> MapFeirantes, Dictionary<int,Feira> MapFeiras,
 							 Dictionary<int,Stand> MapStands, Dictionary<int,Produto> MapProdutos)
 		{
@@ -95,7 +102,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			this.MapProdutos = MapProdutos.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
 
-		public SistemaFeiras(SistemaFeiras sf)
+		private SistemaFeiras(SistemaFeiras sf)
 		{
 			this.MapClientes = sf.MapClientes;
 			this.MapAdmins = sf.MapAdmins;
@@ -231,14 +238,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			return mapStands[idStand];
         }
 
-        public Feira getFeira(string emailFeirante, int idFeira)
+        public Feira getFeira(int idFeira)
         {
-            List<Feira> lista = mapFeiras[emailFeirante];
-			foreach(Feira feira in lista)
-			{
-				if (feira.IDFeira == idFeira) { return feira;}
-			}
-			return null;
+			return mapFeiras[idFeira];
         }
 		public void AddNotificacao(string emailUser,Notificacao not)
 		{
@@ -269,9 +271,9 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			static void Main(String[] args)
 			{
 
-				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now, new List<String>());
-				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, new List<String>(), 2);
-				Administrador a = new Administrador("Maria", "whatinthefuck", "maria@gmail.com", DateTime.ParseExact("12/12/1994", "d/M/yyyy", null), DateTime.Now,new List<String>());
+				Cliente c = new Cliente("Eduardo","123456789","sweeper@gmail.com", DateTime.ParseExact("4/1/2000","d/M/yyyy", null),DateTime.Now);
+				Feirante f = new Feirante("Jose", "bananas123", "ze@gmail.com", DateTime.MinValue, DateTime.Now, 2);
+				Administrador a = new Administrador("Maria", "whatinthefuck", "maria@gmail.com", DateTime.ParseExact("12/12/1994", "d/M/yyyy", null), DateTime.Now);
 				SistemaFeiras sf = new SistemaFeiras();
 				sf.Registo(f);
 				sf.Registo(c);
