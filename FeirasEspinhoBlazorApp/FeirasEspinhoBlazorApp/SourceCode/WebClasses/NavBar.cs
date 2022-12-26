@@ -8,8 +8,8 @@
         private void InicializeLoginNav()
         {
             int lo = (int)menusNomes.Login;
-            this.menus[lo] = new List<Opcao>
-            {
+            this.menus[lo] = new()
+			{
                 new Opcao("Início", "oi oi-home", ""),
                 new Opcao("Login", "oi oi-account-login", "login"),
                 new Opcao("Criar Conta", "oi oi-person", "createacc")
@@ -18,16 +18,18 @@
         private void InicializeClientNav()
 		{
 			int cl = (int)menusNomes.Cliente;
-			this.menus[cl] = new List<Opcao>
-            {
-                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras")
-            };
+            this.menus[cl] = new();
         }
         public void LoginCL(string email)
-		{
-			int cl = (int)menusNomes.Cliente;
-			this.menus[cl].Add(new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email));
-			this.menus[cl].Add(new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/"+email));
+        {
+            int cl = (int)menusNomes.Cliente;
+            this.menus[cl] = new()
+            {
+                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras/" + email),
+                new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email),
+                new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
+                new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
+            };
 		}
         public void LogoutCL()
         {
@@ -52,7 +54,6 @@
             int ge = (int)menusNomes.Geral;
             this.menus[ge] = new List<Opcao> 
             {
-                new Opcao("Notificações","oi oi-bell","notifications")
             };
             int cl = (int)menusNomes.Cliente;
             int ad = (int)menusNomes.Admin;

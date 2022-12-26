@@ -1,5 +1,6 @@
 ﻿@page "/showstand"
 @using SourceCode.WebClasses;
+@using SourceCode.Vendas;
 @using SourceCode.Stands;
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
@@ -9,12 +10,12 @@
 
 @if(fastPurchase)
 {
-	<FastPurchaseComponent />
+	<FastPurchaseComponent venda="@venda"/>
 }
 else if (negociation)
 {
 
-	<StartNegociationComponent />
+	<StartNegociationComponent venda="@venda" returnPage="0"/>
 }
 else
 {
@@ -70,18 +71,21 @@ else
 {
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
+	[Parameter, EditorRequired]
+	public int idFeira { get; set; }
+	[Parameter, EditorRequired]
+	public string emailCL { get; set; }
 	public string sucessStr { get; set; }
 	public string sucessMessage { get; set; }
 	public string erroStr { get; set; }
 	private Stand stand;
 	private int erro;
-	private int count = 0;
-	private int count2 = 0;
 	private Table<Produto> tabelContent;
 	private bool sucess;
 	private bool fastPurchase = false;
 	private bool negociation = false;
 	private float precoTotal = 0;
+	private Venda venda;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
 	private static ShowStandComponent standComponent;
@@ -95,14 +99,8 @@ else
 	protected override async void OnInitialized()
 	{
 		standComponent = this;
-		List<Produto> conteudo = new List<Produto>();
-		conteudo.Add(new Produto(1, "bra",1,2,3,4f,true));
-		conteudo.Add(new Produto(2, "por",1,2,3,4f,true));
-		conteudo.Add(new Produto(3, "li4",1,2,3,4f,true));
-		conteudo.Add(new Produto(4, "abc",1,2,3,4f,true));
-		conteudo.Add(new Produto(5, "def",1,2,3,4f,true));
-		conteudo.Add(new Produto(6, "ghi",1,2,3,4f,true));
-		conteudo.Add(new Produto(7, "jkl",1,2,3,4f,true));
+		stand = SistemaFeiras.GetInstance().GetStand(idStand);
+		List<Produto> conteudo = stand.Produtos;
 		this.tabelContent = new Table<Produto>(conteudo);
 		for(int i = 0; i < conteudo.Count; i++)
 			quantidades[i] = 0;
@@ -124,24 +122,24 @@ else
 	{
 		float number;
 		if(float.TryParse(args.Value.ToString(),out number))
-		{
-			count++;
 			quantidades[key] = number;
-		}
 		else
-		{
-			count2++;
 			quantidades[key] = 0;
-		}
 		precoTotal = quantidades.Keys.ToList().Select(id => tabelContent.Content[id].Item2.Preco * quantidades[id]).Sum();
+	}
+	private void CreateVenda()
+	{
+		venda = new Venda(0,DateTime.Now,precoTotal,emailCL,idFeira,-1,idStand);
 	}
 	public void CompraRapida()
 	{
+		CreateVenda();
 		fastPurchase = true;
 		negociation = false;
 	}
 	public void Negociar()
 	{
+		CreateVenda();
 		negociation = true;
 		fastPurchase = false;
 

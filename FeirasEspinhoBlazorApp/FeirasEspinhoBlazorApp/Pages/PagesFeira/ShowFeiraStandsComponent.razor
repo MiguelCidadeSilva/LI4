@@ -1,6 +1,8 @@
 ﻿@page "/showfeirastands"
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
+@using SourceCode.Utilizadores;
+@using SourceCode;
 @using SourceCode.Feiras;
 @using System.Text.Json;
 @using FeirasEspinhoBlazorApp.Pages.PagesStand;
@@ -17,7 +19,7 @@
 	}
 	else if (showStand)
 	{
-		<ShowStandComponent idStand="@idStand"/>
+		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" emailCL="@emailCL"/>
 	}
 	else if (showLeilao)
 	{
@@ -66,6 +68,8 @@
 </div>
 @code {
 	[Parameter, EditorRequired]
+	public string emailCL { get; set; }
+	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
 	private Feira feira;
 	private int avaliacao = -1;
@@ -81,15 +85,14 @@
 	protected override void OnInitialized()
 	{
 		showBancas = this;
+		List<Stand> stands = SistemaFeiras.GetInstance().GetStandsFeira(idFeira);
 		List<(Stand, int)> conteudo = new List<(Stand, int)>();
-		conteudo.Add((new Stand(1,false,DateTime.Now,"abc",2), 2));
-		conteudo.Add((new Stand(2,false,DateTime.Now,"abc",2), 3));
-		conteudo.Add((new Stand(3,false,DateTime.Now,"abc",2), 4));
-		conteudo.Add((new Stand(4,false,DateTime.Now,"abc",2), 5));
-		conteudo.Add((new Stand(5,false,DateTime.Now,"abc",2), 3));
-		conteudo.Add((new Stand(6,false,DateTime.Now,"abc",2), 3));
-		conteudo.Add((new Stand(7,false,DateTime.Now,"abc",2), 3));
-		nomes["abc"] = "BRAGA";
+		stands.ForEach(s => conteudo.Add((s, 0)));
+		foreach(Stand s in stands)
+		{
+			Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(s.EmailDono);
+			nomes[utilizador.Email] = utilizador.Username;
+		}
 		this.tabelContent = new Table<Stand>(conteudo);
 		codigosErro[1] = "Nenhum stand selecionado";
 	}

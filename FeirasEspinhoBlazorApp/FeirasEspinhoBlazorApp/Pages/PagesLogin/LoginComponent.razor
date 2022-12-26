@@ -76,6 +76,12 @@ else
 		}
 		else 
 		{
+			NavBar.GetInstance().LoginCL(email);
+			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
+			loginSucess = true;
+			NavMenu.GetInstance().show = true;
+			NavMenu.GetInstance().Refresh();
+			/*
 			SistemaFeiras sistemaFeiras = SistemaFeiras.GetInstance();
 			try
 			{
@@ -101,8 +107,7 @@ else
 			{
 				this.erro = 3;
 				codigosErro[3] = e.Message;
-			}
-			// método a perguntar à base de dados se existe*/
+			}*/
 		}
 	}
 	public void Logout()

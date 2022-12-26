@@ -1,4 +1,7 @@
 ﻿@page "/startnegociation"
+@using SourceCode;
+@using SourceCode.Vendas;
+@using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
 
 <h3>Negociação</h3>
 <br />
@@ -17,16 +20,31 @@
 
 @code
 {
+	[Parameter, EditorRequired]
+	public Venda venda { get; set; }
+	[Parameter, EditorRequired]
+	public int returnPage { get; set; }
 	private string valorapagar = "";
 	public void Confirmar()
 	{
-		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
-		showStandComponent.ShowStand("Negociação registada");
+		if(returnPage == 0)
+		{
+			SistemaFeiras.GetInstance().AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, float.Parse(valorapagar), false, false));
+			ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
+			showStandComponent.ShowStand("Negociação registada");
+		}
+		else
+		{
+			SistemaFeiras.GetInstance().RegistaNovoPreco((int) venda.Negociacao, float.Parse(valorapagar));
+			ShowNegociacoesComponent.GetInstance().GetBack("Preço Registado");
+		}
 
 	}
 	public void Cancelar()
 	{
-		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
-		showStandComponent.ShowStand(3);
+		if (returnPage == 0)
+			ShowStandComponent.GetInstance().ShowStand(3);
+		else
+			ShowNegociacoesComponent.GetInstance().GetBack(0);
 	}
 }

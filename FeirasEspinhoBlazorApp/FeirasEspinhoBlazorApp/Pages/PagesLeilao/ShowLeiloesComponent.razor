@@ -3,6 +3,7 @@
 @using SourceCode.Utilizadores;
 @using SourceCode.Stands;
 @using SourceCode.WebClasses;
+@using SourceCode;
 @using Pages.PagesFeira;
 
 <PageTitle>Leilões</PageTitle>
@@ -10,7 +11,7 @@
 <div>
 	@if(showLeilao)
 	{
-		<ShowLeilaoComponent idLeilao="@idLeilaoSelected"/>
+		<ShowLeilaoComponent leilao="@table.GetElement()"/>
 	}
 	else
 	{
@@ -71,7 +72,6 @@
 	private Dictionary<int, string> nomesProdutos = new Dictionary<int, string>();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowLeiloesComponent instance;
-	private int idLeilaoSelected;
 	private bool showLeilao;
 	private int retroceder = 0;
 	private int erro = 0;
@@ -79,13 +79,12 @@
 	{
 		return instance;
 	}
-	private void OnInitializedCL()
+	private List<Leilao> OnInitializedCL()
 	{
-		List<Leilao> conteudo = new List<Leilao>();
-		conteudo.Add(new Leilao(2, DateTime.Now, 20.0f, 100.0f, 2, 3, 4, 5, 6));
+		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesCL(emailCL);
+		/*
 		nomesDonos[4] = "braga";
 		nomesProdutos[2] = "pera";
-		/*
 		conteudo.Add(new Leilao(8, DateTime.Now, 20.0f, 100.0f, 2, 3, 4 , 5, 6));
 		conteudo.Add(new Leilao(2, DateTime.Now, 30.0f, 120.0f, 3, 4, 4 , 2, 5));
 		conteudo.Add(new Leilao(4, DateTime.Now, 40.0f, 130.0f, 4, 6, 3 , 2, 5));
@@ -94,16 +93,16 @@
 		conteudo.Add(new Leilao(7, DateTime.Now, 95.0f, 164.0f, 7, 1, 4 , 5, 3));
 		conteudo.Add(new Leilao(6, DateTime.Now, 90.0f, 500.0f, 8, 2, 4 , 1, 3));
 		*/
-		this.table = new Table<Leilao>(conteudo);
+		return conteudo;
 	}
-	private void OnInitializedFeira()
+	private List<Leilao> OnInitializedFeira()
 	{
+		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesFeira(idFeira);
 		retroceder = 1;
-		List<Leilao> conteudo = new List<Leilao>();
+		/*
 		conteudo.Add(new Leilao(8, DateTime.Now, 20.0f, 100.0f, 2, 3, 4, 5, 6));
 		nomesDonos[4] = "abc";
 		nomesProdutos[2] = "laranja";
-		/*
 		conteudo.Add(new Leilao(8, DateTime.Now, 20.0f, 100.0f, 2, 3, 4 , 5, 6));
 		conteudo.Add(new Leilao(2, DateTime.Now, 30.0f, 120.0f, 3, 4, 4 , 2, 5));
 		conteudo.Add(new Leilao(4, DateTime.Now, 40.0f, 130.0f, 4, 6, 3 , 2, 5));
@@ -112,16 +111,16 @@
 		conteudo.Add(new Leilao(7, DateTime.Now, 95.0f, 164.0f, 7, 1, 4 , 5, 3));
 		conteudo.Add(new Leilao(6, DateTime.Now, 90.0f, 500.0f, 8, 2, 4 , 1, 3));
 		*/
-		this.table = new Table<Leilao>(conteudo);
+		return conteudo;
 	}
-	private void OnInitializedFeiraStand()
+	private List<Leilao> OnInitializedFeiraStand()
 	{
 		retroceder = 2;
-		List<Leilao> conteudo = new List<Leilao>();
+		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesFeiraStand(idFeira,idStand);
+		/*
 		conteudo.Add(new Leilao(20, DateTime.Now, 20.0f, 100.0f, 2, 3, 4, 5, 6));
 		nomesDonos[4] = "portugal";
 		nomesProdutos[2] = "cr7";
-		/*
 		conteudo.Add(new Leilao(8, DateTime.Now, 20.0f, 100.0f, 2, 3, 4 , 5, 6));
 		conteudo.Add(new Leilao(2, DateTime.Now, 30.0f, 120.0f, 3, 4, 4 , 2, 5));
 		conteudo.Add(new Leilao(4, DateTime.Now, 40.0f, 130.0f, 4, 6, 3 , 2, 5));
@@ -130,17 +129,28 @@
 		conteudo.Add(new Leilao(7, DateTime.Now, 95.0f, 164.0f, 7, 1, 4 , 5, 3));
 		conteudo.Add(new Leilao(6, DateTime.Now, 90.0f, 500.0f, 8, 2, 4 , 1, 3));
 		*/
-		this.table = new Table<Leilao>(conteudo);
+		return conteudo;
 	}
 	protected override void OnInitialized()
 	{
+		List<Leilao> conteudo;
 		instance = this;
 		if (emailCL.Length != 0)
-			OnInitializedCL();
+			conteudo = OnInitializedCL();
 		else if (idStand != -1)
-			OnInitializedFeiraStand();
+			conteudo = OnInitializedFeiraStand();
 		else
-			OnInitializedFeira();
+			conteudo = OnInitializedFeira();
+		SistemaFeiras sistema = SistemaFeiras.GetInstance();
+		this.table = new Table<Leilao>(conteudo);
+		foreach(Leilao leilao in conteudo)
+		{
+			Stand stand = sistema.GetStand(leilao.Stand);
+			Feirante feirante = (Feirante) sistema.GetUtilizador(stand.EmailDono);
+			Produto produto = stand.Produtos.Find(p => p.IdProduto == leilao.Produto);
+			nomesProdutos[leilao.Produto] = produto.Nome;
+			nomesDonos[leilao.Stand] = feirante.Username;
+		}
 		codigosErro[1] = "Nenhum leilão selecionado";
 	}
 	private void ConsultarLeilao()
@@ -150,7 +160,6 @@
 		{
 			this.erro = 0;
 			Leilao l = table.GetElement();
-			idLeilaoSelected = l.Id;
 			showLeilao = true;
 		}
 		else
