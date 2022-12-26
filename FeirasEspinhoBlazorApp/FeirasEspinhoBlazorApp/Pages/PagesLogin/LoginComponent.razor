@@ -76,8 +76,8 @@ else
 		}
 		else 
 		{
-			NavBar.GetInstance().LoginCL(email);
-			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
+			NavBar.GetInstance().LoginFeirante(email);
+			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
 			loginSucess = true;
 			NavMenu.GetInstance().show = true;
 			NavMenu.GetInstance().Refresh();

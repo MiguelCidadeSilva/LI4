@@ -342,6 +342,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		}
 
+		public List<Feira> FeirasNotStarted()
+		{
+			return MapFeiras.Values.Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
+		}
+
 		public class Teste
 		{
 			static void Main(String[] args)

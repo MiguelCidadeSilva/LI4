@@ -1,7 +1,8 @@
-﻿@page "/showfeiras/{emailCL}"
+﻿@page "/showfeiras/{email}"
 @using SourceCode.WebClasses;
 @using SourceCode.Feiras;
 @using SourceCode;
+@using SourceCode.Utilizadores;
 @using System.Text.Json;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
@@ -10,11 +11,16 @@
 
 @if(showFeira)
 {
-	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" emailCL="@emailCL"/>
+	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" emailCL="@email"/>
 }
 else if (showLeilao)
 {
 	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada"/>
+}
+
+else if (showForm)
+{
+	<FormCandidaturaComponent idFeira="@feiraSelecionada"/>
 }
 else
 {
@@ -54,8 +60,15 @@ else
 		</div>
 		<br />
 		<div>
-			<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
-			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			@if(type)
+			{
+				<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
+				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			}
+			else
+			{
+				<button class="buttonA" @onclick="InscreverFeira">Inscrever</button>
+			}
 		</div>
 	</div>
 }
@@ -63,18 +76,26 @@ else
 @code
 {
 	[Parameter, EditorRequired]
-	public string emailCL { get; set; }
+	public string email { get; set; }
+	private bool type;
 	private Table<Feira> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
 	private bool showFeira = false;
 	private bool showLeilao = false;
+	private bool showForm = false;
 	private int feiraSelecionada = 0;
 	protected override void OnInitialized()
 	{
+		Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(email);
 		showFeiras = this;
-		List<Feira> feiras = SistemaFeiras.GetInstance().MapFeiras.Values.ToList();
+		List<Feira> feiras;
+		type = utilizador is Cliente;
+		if(type)
+			feiras = SistemaFeiras.GetInstance().MapFeiras.Values.ToList();
+		else
+			feiras = SistemaFeiras.GetInstance().FeirasNotStarted();
 		List<(Feira, int)> conteudo = new List<(Feira, int)>();
 		feiras.ForEach(f => conteudo.Add((f, 0)));
 		this.tabelContent = new Table<Feira>(conteudo);
@@ -120,11 +141,22 @@ else
 			erro = 1;
 		}
 	}
+	public void InscreverFeira()
+	{
+		if (tabelContent.IdValid())
+		{
+			erro = 0;
+			Feira feira = tabelContent.GetElement();
+			feiraSelecionada = feira.IDFeira;
+			showForm = true;
+		}
+	}
 
 	public void GetBack()
 	{
 		showLeilao = false;
 		showFeira = false;
+		showForm = false;
 		tabelContent.Unselect();
 		StateHasChanged();
 	}
