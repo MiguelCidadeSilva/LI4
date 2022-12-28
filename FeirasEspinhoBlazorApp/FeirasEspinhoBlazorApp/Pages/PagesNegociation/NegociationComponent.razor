@@ -2,56 +2,80 @@
 @using SourceCode.Vendas;
 @using SourceCode.Stands;
 @using SourceCode.WebClasses;
+@using SourceCode;
+@using FeirasEspinhoBlazorApp.Pages.PagesStand;
 
-<PageTitle>Negociação</PageTitle>
-<h3>Negociação</h3>
-<br />
-<div>
-	<div>	
-		<label><b>Email Cliente</b></label>
-		<input type="text" class="tb tb_smaller" id="emailCL" name="emailCL" @bind-value="@venda.EmailCliente" readonly="readonly" />
-		<br />
-		<label><b>Email Feirante</b></label>
-		<input type="text" class="tb tb_smaller" id="emailFeirante" name="emailFeirante" @bind-value="@stand.EmailDono" readonly="readonly" />
-		<br />
-		<label><b>Stand</b></label>
-		<input type="text" class="tb tb_smaller" id="idStand" name="idStand" @bind-value="@venda.IdStand" readonly="readonly" />
-	</div>
-	<br />
+@if(negociar)
+{
+	<StartNegociationComponent venda="@venda" returnPage="1"/>
+}
+else
+{	
+	<PageTitle>Negociação</PageTitle>
+	<h3>Negociação</h3>
 	<br />
 	<div>
-		<label><b>Preço Base</b></label>
-		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoBase" readonly="readonly" />
+		<div>	
+			<label><b>Email Cliente</b></label>
+			<input type="text" class="tb tb_smaller" id="emailCL" name="emailCL" @bind-value="@venda.EmailCliente" readonly="readonly" />
+			<br />
+			<label><b>Email Feirante</b></label>
+			<input type="text" class="tb tb_smaller" id="emailFeirante" name="emailFeirante" @bind-value="@stand.EmailDono" readonly="readonly" />
+			<br />
+			<label><b>Stand</b></label>
+			<input type="text" class="tb tb_smaller" id="idStand" name="idStand" @bind-value="@venda.IdStand" readonly="readonly" />
+		</div>
 		<br />
-		<label><b>Preço Proposto</b></label>
-		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoNegociacao" readonly="readonly" />
+		<br />
+		<div>
+			<label><b>Preço Base</b></label>
+			<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoBase" readonly="readonly" />
+			<br />
+			<label><b>Preço Proposto</b></label>
+			<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@negociacao.PrecoNegociacao" readonly="readonly" />
+		</div>
+		<br />
+		<div>
+			<button class="buttonA buttonTable1" @onclick="Aceitar">Aceitar</button>
+			<button class="buttonA buttonTable1" @onclick="Recusar">Recusar</button>
+			<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+			<button class="buttonA buttonTable2" @onclick="Voltar">Voltar</button>
+		</div>
 	</div>
-	<br />
-	<div>
-		<button class="buttonA buttonTable1" @onclick="Aceitar">Aceitar</button>
-		<button class="buttonA buttonTable1" @onclick="Recusar">Recusar</button>
-		<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
-		<button class="buttonA buttonTable2" @onclick="Voltar">Voltar</button>
-	</div>
-</div>
+}
 @code 
 {
 	[Parameter, EditorRequired]
 	public int idVenda { get; set; }
+	private bool negociar = false;
 	private Venda venda;
 	private Negociacao negociacao;
 	private Stand stand;
+	private static NegociationComponent negociation;
+
+	protected override void OnInitialized()
+	{
+		negociation = this;
+		SistemaFeiras sistema = SistemaFeiras.GetInstance();
+		Venda venda = sistema.GetVenda(idVenda);
+		Negociacao negociacao = sistema.GetNegociacao((int) venda.Negociacao);
+		Stand stand = sistema.GetStand(venda.IdStand);
+	}
+	public NegociationComponent GetInstance()
+	{
+		return negociation;
+	}
 	private void Aceitar()
 	{
-
+		SistemaFeiras.GetInstance().RegistaSucesso(negociacao.IdNegociacao);
 	}
 	private void Recusar()
 	{
-
+		SistemaFeiras.GetInstance().RegistaInsucesso(negociacao.IdNegociacao);
 	}
 	private void Negociar()
 	{
-
+		negociar = true;
 	}
 	private void Voltar()
 	{

@@ -1,5 +1,7 @@
 ﻿@page "/showleilao"
 @using SourceCode.Feiras;
+@using SourceCode.Stands;
+@using SourceCode;
 
 <PageTitle>Leilão</PageTitle>
 <h3>Bem vindo ao Leilão</h3>
@@ -19,9 +21,12 @@
 @code 
 {
 	[Parameter, EditorRequired]
-	public int idLeilao { get; set; }
+	public Leilao leilao { get; set; }
 	private float valorLicitação;
-	private Leilao leilao;
+	protected override void OnInitialized()
+	{
+		
+	}
 	private void Licitar()
 	{
 

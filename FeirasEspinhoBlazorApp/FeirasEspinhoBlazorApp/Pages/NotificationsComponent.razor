@@ -1,10 +1,48 @@
-﻿@page "/notifications"
+﻿@page "/notifications/{email}"
+@using SourceCode;
+@using SourceCode.WebClasses;
 
 <PageTitle>Notificações</PageTitle>
 
-<h3>Notificações</h3>
-
-@code 
+<div>
+	<h3>Notificações</h3>
+	<br />
+	<div class="tableFixHead">
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Origem</th>
+					<th>Assunto</th>
+					<th>Mensagem</th>
+					<th>Data</th>
+					<th>Vista</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (var notificacao in tabelContent.Content)
+			{
+				<tr class=@tabelContent.Cssclasses[notificacao.Item1]>
+					<td> @notificacao.Item2.Id</td>
+					<td> @notificacao.Item2.Email</td>
+					<td> @notificacao.Item2.Assunto</td>
+					<td> @notificacao.Item2.Mensagem</td>
+					<td> @notificacao.Item2.Data</td>
+					<td> @notificacao.Item2.Vista</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+</div>
+@code
 {
-
+	[Parameter, EditorRequired]
+	public string email { get; set; }
+	private Table<Notificacao> tabelContent;
+	protected override void OnInitialized()
+	{
+		List<Notificacao> notificacaos = SistemaFeiras.GetInstance().GetNotificacaos(email);
+		this.tabelContent = new Table<Notificacao>(notificacaos);
+	}
 }

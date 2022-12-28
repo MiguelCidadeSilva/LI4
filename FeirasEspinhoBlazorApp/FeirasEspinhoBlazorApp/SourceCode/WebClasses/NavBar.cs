@@ -8,26 +8,28 @@
         private void InicializeLoginNav()
         {
             int lo = (int)menusNomes.Login;
-            this.menus[lo] = new List<Opcao>
-            {
+            this.menus[lo] = new()
+			{
                 new Opcao("Início", "oi oi-home", ""),
                 new Opcao("Login", "oi oi-account-login", "login"),
-                new Opcao("Criar Conta", "oi oi-person", "createacc")
+                new Opcao("Criar Conta", "oi oi-plus", "createacc")
             };
         }
         private void InicializeClientNav()
 		{
 			int cl = (int)menusNomes.Cliente;
-			this.menus[cl] = new List<Opcao>
-            {
-                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras")
-            };
+            this.menus[cl] = new();
         }
         public void LoginCL(string email)
-		{
-			int cl = (int)menusNomes.Cliente;
-			this.menus[cl].Add(new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email));
-			this.menus[cl].Add(new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/"+email));
+        {
+            int cl = (int)menusNomes.Cliente;
+            this.menus[cl] = new()
+            {
+                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras/" + email),
+                new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email),
+                new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
+                new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
+            };
 		}
         public void LogoutCL()
         {
@@ -40,9 +42,24 @@
         private void InicializeFeiranteNav()
         {
             int fe = (int)menusNomes.Feirante;
-            this.menus[fe] = new List<Opcao>();
-        }
-        private void InicializeAdminNav()
+            this.menus[fe] = new()
+            {
+                new Opcao("Inscrição numa feira","oi oi-arrow-right","formcandidatura/"),
+				new Opcao("Os meus stands","oi oi-home","")
+
+			};
+		}
+		public void LoginFeirante(string email)
+		{
+			int cl = (int)menusNomes.Cliente;
+			this.menus[cl] = new()
+			{
+				new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
+				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
+				new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
+			};
+		}
+		private void InicializeAdminNav()
         {
             int ad = (int)menusNomes.Admin;
             menus[ad] = new List<Opcao>();
@@ -52,7 +69,6 @@
             int ge = (int)menusNomes.Geral;
             this.menus[ge] = new List<Opcao> 
             {
-                new Opcao("Notificações","oi oi-bell","notifications")
             };
             int cl = (int)menusNomes.Cliente;
             int ad = (int)menusNomes.Admin;

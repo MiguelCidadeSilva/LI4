@@ -1,6 +1,8 @@
-﻿@page "/showfeiras"
+﻿@page "/showfeiras/{email}"
 @using SourceCode.WebClasses;
 @using SourceCode.Feiras;
+@using SourceCode;
+@using SourceCode.Utilizadores;
 @using System.Text.Json;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
@@ -9,11 +11,16 @@
 
 @if(showFeira)
 {
-	<ShowFeiraStandsComponent idFeira="@feiraSelecionada"/>
+	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" emailCL="@email"/>
 }
 else if (showLeilao)
 {
 	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada"/>
+}
+
+else if (showForm)
+{
+	<FormCandidaturaComponent idFeira="@feiraSelecionada"/>
 }
 else
 {
@@ -53,32 +60,44 @@ else
 		</div>
 		<br />
 		<div>
-			<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
-			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			@if(type)
+			{
+				<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
+				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+			}
+			else
+			{
+				<button class="buttonA" @onclick="InscreverFeira">Inscrever</button>
+			}
 		</div>
 	</div>
 }
 
 @code
 {
+	[Parameter, EditorRequired]
+	public string email { get; set; }
+	private bool type;
 	private Table<Feira> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
 	private bool showFeira = false;
 	private bool showLeilao = false;
+	private bool showForm = false;
 	private int feiraSelecionada = 0;
 	protected override void OnInitialized()
 	{
+		Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(email);
 		showFeiras = this;
+		List<Feira> feiras;
+		type = utilizador is Cliente;
+		if(type)
+			feiras = SistemaFeiras.GetInstance().MapFeiras.Values.ToList();
+		else
+			feiras = SistemaFeiras.GetInstance().FeirasNotStarted();
 		List<(Feira, int)> conteudo = new List<(Feira, int)>();
-		conteudo.Add((new Feira(1, "abc", DateTime.Now, null, 20.0f, "abc", 1), 2));
-		conteudo.Add((new Feira(2, "def", DateTime.Now, null, 30.0f, "def", 1), 3));
-		conteudo.Add((new Feira(3, "ghi", DateTime.Now, null, 40.0f, "ghi", 1), 4));
-		conteudo.Add((new Feira(4, "jkl", DateTime.Now, null, 50.0f, "jkl", 1), 5));
-		conteudo.Add((new Feira(5, "mno", DateTime.Now, null, 60.0f, "mno", 1), 3));
-		conteudo.Add((new Feira(6, "pqr", DateTime.Now, null, 70.0f, "stu", 1), 3));
-		conteudo.Add((new Feira(7, "stu", DateTime.Now, null, 80.0f, "stu", 1), 3));
+		feiras.ForEach(f => conteudo.Add((f, 0)));
 		this.tabelContent = new Table<Feira>(conteudo);
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}
@@ -122,11 +141,22 @@ else
 			erro = 1;
 		}
 	}
+	public void InscreverFeira()
+	{
+		if (tabelContent.IdValid())
+		{
+			erro = 0;
+			Feira feira = tabelContent.GetElement();
+			feiraSelecionada = feira.IDFeira;
+			showForm = true;
+		}
+	}
 
 	public void GetBack()
 	{
 		showLeilao = false;
 		showFeira = false;
+		showForm = false;
 		tabelContent.Unselect();
 		StateHasChanged();
 	}

@@ -130,7 +130,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 
         }
 
-        public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, Stands, Leiloes).GetHashCode();
+        public override int GetHashCode() => (IDFeira, Nome, DataInicio, DataFim, PrecoCandidatura, CriadorEmail, ListaStands, ListaLeiloes).GetHashCode();
 
 
         public void AddStand(string feirante, Stand stand)

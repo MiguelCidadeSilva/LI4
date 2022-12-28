@@ -82,11 +82,11 @@ namespace FeirasEspinhoBlazorApp.Data
         }
 
         public List<Produto>? GetProdutosStand(int idStand)
-        {
-            try
+		{
+			List<Produto>? res = null;
+			try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                List<Produto>? res = null;
                 using SqlCommand command = new("SELECT * FROM [Produto] WHERE banca = (@banca)", connection);
                 connection.Open();
                 command.Parameters.AddWithValue("@banca", idStand);

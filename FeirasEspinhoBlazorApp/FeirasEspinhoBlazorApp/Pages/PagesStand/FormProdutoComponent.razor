@@ -1,0 +1,47 @@
+﻿<h3>FormProdutoComponent</h3>
+
+@if (erro != 0)
+{
+	<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="2" />
+}
+else if (sucess)
+{
+	<WarningComponent mensagem="@sucmensagem" sucess="true" page="2" />
+}
+<div>
+	<label><b>Produto</b></label>
+	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="produto" />
+</div>
+<div>
+	<label><b>Quantidade</b></label>
+	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="quantidade" />
+</div>
+<div>
+	<label><b>Categoria</b></label>
+	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="categoria" />
+</div>
+<div>
+	<label><b>Preco</b></label>
+	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="preco" />
+</div>
+<div>
+	<button class="buttonA" @onclick="AdicionarProduto">Adicionar Produto</button>
+</div>
+
+
+
+@code 
+{
+	private int erro = 0;
+	private bool sucess = false;
+	private string sucmensagem;
+	private string produto = "";
+	private int quantidade = 0;
+	private string categoria = "";
+	private float preco = 0f;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	public void AdicionarProduto()
+	{
+		FormStandComponent.GetInstance().GetBack();
+	}
+}
