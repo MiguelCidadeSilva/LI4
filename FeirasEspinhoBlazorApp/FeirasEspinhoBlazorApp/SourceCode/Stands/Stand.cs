@@ -1,5 +1,4 @@
-﻿using FeirasEspinhoBlazorApp.SourceCode.Feiras;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +15,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
         private string? emailDono;
         public int categoria;
         private List<Produto> produtos;
-        private List<Leilao> listaLeiloes;
         public int IdStand
         {
             get { return idStand; }
@@ -57,11 +55,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             get { return produtos; }
             set { produtos = value; }
         }
-        public List<Leilao> ListaLeiloes
-        {
-            get { return listaLeiloes; }
-            set { listaLeiloes = value;}
-        }
 
         public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
         {
@@ -86,21 +79,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             Categoria = categoria;
             Produtos = new List<Produto>();
         }
-        public void AddLeilao(Leilao leilao)
-        {
-            if (!this.listaLeiloes.Contains(leilao))
-            {
-                this.listaLeiloes.Add(leilao);
-            }
-           
-        }
-        public void endLeilao(Leilao leilao)
-        {
-            if (this.ListaLeiloes.Contains(leilao))
-            {
-                this.ListaLeiloes.Remove(leilao);
-            }
-        }
+
 
     }
 }
