@@ -1,11 +1,48 @@
 ﻿@page "/formcandidatura"
 @using SourceCode;
+@inject NavigationManager navigation;
 
-<h3>Candidatura para a feira</h3>
+@if(confirmou)
+{
+	<UserComponent email="@email"/>
+}
+else
+{
+	<h3>Candidatura para a feira</h3>
+	<div>
+		<div>
+			<label><b>Email</b></label>
+			<input type="text" class="tb" id="email" name="email" @bind-value="email" readonly="readonly" />
+		</div>
+		<br />
+		<div>
+			<label><b>Id Feira</b></label>
+			<input type="text" class="tb" id="feira" name="feira" placeholder="Insira o seu nome de utilizador" @bind-value="idFeira" readonly="readonly" />
+		</div>
+		<div>
+			<label><b>Id Stand</b></label>
+			<input type="text" class="tb" id="stand" name="stand" placeholder="Insira o seu nome de utilizador" @bind-value="idStand" readonly="readonly " />
+		</div>
+		<div>
+			<button class="buttonA" @onclick="Confirmar">Confirmar</button>
+		</div>
+	</div>
+}
+		
 
-@code 
+@code
 {
 	[Parameter, EditorRequired]
+	public string email { get; set; }
+	[Parameter, EditorRequired]
 	public int idFeira {get; set;}
+	[Parameter, EditorRequired]
+	public int idStand { get; set; }
+	private bool confirmou = false;
 
+	public void Confirmar()
+	{
+		SistemaFeiras.GetInstance().AddStandFeira(idStand, idFeira);
+		confirmou = false;
+	}
 }

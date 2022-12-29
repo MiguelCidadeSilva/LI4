@@ -28,6 +28,10 @@ else
 			<input type="text" class="tb" id="categoria" name="categoria" @bind-value="categoria" />
 		</div>
 		<br />
+		<div>
+			<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected()" checked=@negociavel) /><b> Negociavel</b>
+		</div>
+		<br />
 		<div class="tableFixHead">
 			<table>
 				<thead>
@@ -59,6 +63,8 @@ else
 
 @code 
 {
+	[Parameter, EditorRequired]
+	public string emailFeirante { get; set; }
 	private int erro = 0;
 	private string sucmensagem;
 	private bool sucess = false;
@@ -66,6 +72,7 @@ else
 	private string categoria;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Table<Produto> table = new Table<Produto>(new List<(Produto, int)>());
+	private bool negociavel = false;
 	private static FormStandComponent formStand;
 	protected override void OnInitialized()
 	{
@@ -77,7 +84,11 @@ else
 	}
 	public void AdicionarStand()
 	{
-
+		// METER CATEGORIA DIREITA
+		List<Produto> l = new();
+		table.Content.ForEach(p => l.Add(p.Item2));
+		// public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
+		Stand stand = new Stand(0,negociavel,0, DateTime.Now, emailFeirante, 0,l);
 	}
 	public void AdicionarProduto()
 	{
@@ -87,5 +98,9 @@ else
 	{
 		formProduto = false;
 		StateHasChanged();
+	}
+	public void Selected()
+	{
+		negociavel = !negociavel;
 	}
 }

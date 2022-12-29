@@ -1,0 +1,73 @@
+﻿@page "/formleilao"
+@using SourceCode.Feiras;
+@using SourceCode.Stands;
+@using SourceCode;
+@using SourceCode.WebClasses;
+
+<h3>FormLeilaoComponent</h3>
+<div>
+	<div>
+		<label><b>Nome do leilão</b></label>
+		<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="nome" />
+	</div>
+	<br />
+	<div>
+		<label><b>Quantidade a leiloar</b></label>
+		<input type="text" class="tb" id="quantidade" name="quantidade" placeholder="Insira a quantidade a vender" @bind-value="quantidade" />
+	</div>
+	<div>
+		<label><b>Valor máximo</b></label>
+		<input type="text" class="tb" id="valormax" name="valormax" @bind-value="valorMax" />
+	</div>
+	<br />
+	<div>
+		<label><b>Valor mínimo</b></label>
+		<input type="text" class="tb" id="valormin" name="valormin" @bind-value="valorMin" />
+	</div>
+	<div class="tableFixHead">
+		<table>
+			<thead>
+				<tr>
+					<th>Produto</th>
+					<th>Preço</th>
+					<th>Stock</th>
+					<th>Quantidade</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (var produto in tabelContent.Content)
+			{
+					<tr class=@tabelContent.Cssclasses[produto.Item1] @onclick="() => tabelContent.SelectedRow(produto.Item1)">
+					<td> @produto.Item2.IdProduto</td>
+					<td> @produto.Item2.Preco</td>
+					<td> @produto.Item2.Stock</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<button class="buttonA buttonTable1" @onclick="CriarLeilao">Criar Leilão</button>
+	</div>
+</div>
+@code 
+{
+	[Parameter, EditorRequired]
+	public int idStand { get; set; }
+	private string nome = "";
+	private int quantidade = 0;
+	private int valorMax = 0;
+	private int valorMin = 0;
+	private Table<Produto> tabelContent;
+	protected override void OnInitialized()
+	{
+		Stand stand = SistemaFeiras.GetInstance().GetStand(idStand);
+		List<Produto> conteudo = stand.Produtos;
+		this.tabelContent = new Table<Produto>(conteudo);
+	}
+	private void CriarLeilao()
+	{
+		
+	}
+
+}

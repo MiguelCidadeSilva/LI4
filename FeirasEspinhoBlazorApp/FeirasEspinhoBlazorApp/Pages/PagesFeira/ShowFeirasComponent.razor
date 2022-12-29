@@ -11,16 +11,11 @@
 
 @if(showFeira)
 {
-	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" emailCL="@email"/>
+	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" email="@email"/> 
 }
 else if (showLeilao)
 {
 	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada"/>
-}
-
-else if (showForm)
-{
-	<FormCandidaturaComponent idFeira="@feiraSelecionada"/>
 }
 else
 {
@@ -40,7 +35,14 @@ else
 						<th>Data Início</th>
 						<th>Data Fim</th>
 						<th>Categoria</th>
-						<th>Avaliação</th>
+						@if (type)
+						{
+							<th>Preço Candidatura</th>
+						}
+						else
+						{
+							<th>Avaliação</th>
+						}
 					</tr>
 				</thead>
 				<tbody>
@@ -52,7 +54,14 @@ else
 							<td> @feira.Item2.DataInicio</td>
 							<td> @feira.Item2.DataFim</td>
 							<td> @feira.Item2.Categoria</td>
-							<td> @feira.Item3</td>
+							@if (type)
+							{
+								<th>@feira.Item2.PrecoCandidatura</th>
+							}
+							else
+							{
+								<td> @feira.Item3</td>
+							}
 						</tr>
 					}
 				</tbody>
@@ -148,7 +157,7 @@ else
 			erro = 0;
 			Feira feira = tabelContent.GetElement();
 			feiraSelecionada = feira.IDFeira;
-			showForm = true;
+			showFeira = true;
 		}
 	}
 

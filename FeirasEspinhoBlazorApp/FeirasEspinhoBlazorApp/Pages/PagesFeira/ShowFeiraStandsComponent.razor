@@ -19,11 +19,15 @@
 	}
 	else if (showStand)
 	{
-		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" emailCL="@emailCL"/>
+		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" emailCL="@email"/>
 	}
 	else if (showLeilao)
 	{
 		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand"/>
+	}
+	else if(showCandidatura)
+	{
+		<FormCandidaturaComponent email="@email" idFeira="@idFeira" idStand="@idStand" />
 	}
 	else
 	{	
@@ -60,15 +64,23 @@
 		</div>
 		<br />
 		<div>
-			<button class="buttonA buttonTable1" @onclick="ConsultarStand">Consultar Stand</button>
-			<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
-			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+			@if(type)
+			{
+				<button class="buttonA buttonTable1" @onclick="ConsultarStand">Consultar Stand</button>
+				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
+				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+			}
+			else
+			{
+				<button class="buttonA" @onclick="SelecionarStand">Selecionar Stand</button>
+				
+			}
 		</div>
 	}
 </div>
 @code {
 	[Parameter, EditorRequired]
-	public string emailCL { get; set; }
+	public string email { get; set; }
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
 	private Feira feira;
@@ -76,6 +88,8 @@
 	private bool showAvaliacao = false;
 	private bool showStand = false;
 	private bool showLeilao = false;
+	private bool showCandidatura = true;
+	private bool type;
 	private int idStand = 0;
 	private Dictionary<string, string> nomes = new Dictionary<string, string>();
 	private Table<Stand> tabelContent;
@@ -84,16 +98,28 @@
 	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
-		showBancas = this;
-		List<Stand> stands = SistemaFeiras.GetInstance().GetStandsFeira(idFeira);
-		List<(Stand, int)> conteudo = new List<(Stand, int)>();
-		stands.ForEach(s => conteudo.Add((s, 0)));
-		foreach(Stand s in stands)
+		Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(email);
+		type = utilizador is Cliente;
+		if (type)
 		{
-			Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(s.EmailDono);
-			nomes[utilizador.Email] = utilizador.Username;
+			showBancas = this;
+			List<Stand> stands = SistemaFeiras.GetInstance().GetStandsFeira(idFeira);
+			List<(Stand, int)> conteudo = new List<(Stand, int)>();
+			stands.ForEach(s => conteudo.Add((s, 0)));
+			foreach(Stand s in stands)
+			{
+				Utilizador dono = SistemaFeiras.GetInstance().GetUtilizador(s.EmailDono);
+				nomes[dono.Email] = dono.Username;
+			}
+			this.tabelContent = new Table<Stand>(conteudo);
 		}
-		this.tabelContent = new Table<Stand>(conteudo);
+		else
+		{
+			List<Stand> stands = SistemaFeiras.GetInstance().GetStandFeirante(email);
+			List<(Stand, int)> conteudo = new List<(Stand, int)>();
+			nomes[utilizador.Email] = utilizador.Username;
+			stands.ForEach(s => conteudo.Add((s, 0)));
+		}
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
 	public static ShowFeiraStandsComponent GetInstace()
@@ -147,6 +173,7 @@
 		showStand = false;
 		showAvaliacao = false;
 		showLeilao = false;
+		showCandidatura = false;
 		tabelContent.Unselect();
 		StateHasChanged();
 	}
@@ -154,5 +181,9 @@
 	{
 		ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
 		showFeirasComponent.GetBack();
+	}
+	public void SelecionarStand()
+	{
+		showCandidatura = true;
 	}
 }

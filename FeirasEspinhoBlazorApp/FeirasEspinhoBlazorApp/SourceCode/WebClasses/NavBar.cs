@@ -31,29 +31,28 @@
                 new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
             };
 		}
-        public void LogoutCL()
+        public void Logout()
         {
 			int cl = (int)menusNomes.Cliente;
-            int len = this.menus[cl].Count;
-            this.menus[cl].RemoveAt(len - 1);
-			this.menus[cl].RemoveAt(len - 2);
+			int fe = (int)menusNomes.Feirante;
+			int ad = (int)menusNomes.Admin;
+            this.menus[cl].Clear();
+			this.menus[fe].Clear();
+			this.menus[ad].Clear();
 		}
 
         private void InicializeFeiranteNav()
         {
             int fe = (int)menusNomes.Feirante;
-            this.menus[fe] = new()
-            {
-                new Opcao("Inscrição numa feira","oi oi-arrow-right","formcandidatura/"),
-				new Opcao("Os meus stands","oi oi-home","")
-
-			};
+            this.menus[fe] = new();
 		}
 		public void LoginFeirante(string email)
 		{
-			int cl = (int)menusNomes.Cliente;
-			this.menus[cl] = new()
+			int fe = (int)menusNomes.Feirante;
+			this.menus[fe] = new()
 			{
+				new Opcao("Os meus stands","oi oi-home",""),
+				new Opcao("Inscrição numa feira", "oi oi-list", "showfeiras/" + email),
 				new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
 				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
 				new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
