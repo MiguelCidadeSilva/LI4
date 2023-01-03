@@ -1,6 +1,7 @@
 ﻿@page "/createacc"
 @using SourceCode.Utilizadores;
 @using SourceCode;
+@using Data;
 @inject NavigationManager navigationManager;
 
 <PageTitle>Página de criação de conta</PageTitle>
@@ -144,8 +145,9 @@
 			{
 				try
 				{
-					SistemaFeiras sistema = SistemaFeiras.GetInstance();
-					sistema.Registo(utilizador);
+					UtilizadoresDAO.GetInstance().Insert(utilizador);
+					//SistemaFeiras sistema = SistemaFeiras.GetInstance();
+					//sistema.Registo(utilizador);
 					this.sucess = true;
 					this.LimpaCampos();
 				}

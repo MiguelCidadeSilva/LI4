@@ -2,6 +2,7 @@
 @inject NavigationManager navigationManager
 @using SourceCode.WebClasses;
 @using SourceCode.Utilizadores;
+@using Data;
 @using SourceCode;
 @using System.Text.Json;
 
@@ -76,38 +77,36 @@ else
 		}
 		else 
 		{
-			NavBar.GetInstance().LoginFeirante(email);
-			NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
-			loginSucess = true;
-			NavMenu.GetInstance().show = true;
-			NavMenu.GetInstance().Refresh();
-			/*
 			SistemaFeiras sistemaFeiras = SistemaFeiras.GetInstance();
 			try
 			{
-				int existe = sistemaFeiras.Login(email, password);
-				switch (existe)
+				Utilizador? user = UtilizadoresDAO.GetInstance().GetUtilizador(email);//sistemaFeiras.Login(email, password);
+				if(user != null)
 				{
-					case 0:
-						NavBar.GetInstance().LoginCL(email);
-						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
-						break;
-					case 1:
-						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
-						break;
-					case 2:
-						NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
-						break;
+					switch (user.GetType().Name)
+					{
+						case "Cliente":
+							NavBar.GetInstance().LoginCL(email);
+							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
+							break;
+						case "Feirante":
+							NavBar.GetInstance().LoginFeirante(email);
+							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
+							break;
+						case "Administrador":
+							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
+							break;
+					}
+					loginSucess = true;
+					NavMenu.GetInstance().show = true;
+					NavMenu.GetInstance().Refresh();
 				}
-				loginSucess = true;
-				NavMenu.GetInstance().show = true;
-				NavMenu.GetInstance().Refresh();
 			}
 			catch (Exception e)
 			{
 				this.erro = 3;
 				codigosErro[3] = e.Message;
-			}*/
+			}
 		}
 	}
 	public void Logout()
