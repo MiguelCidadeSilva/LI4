@@ -20,8 +20,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private FeiraDAO feiras;
 		private StandDAO stands;
 		private VendaDAO vendas;
-
-		private static SistemaFeiras instance = new SistemaFeiras();
+		private int feirasCounter;
+        private int vendasCounter;
+        private int standsCounter;
+		private int negociacoesCounter;
+        private static SistemaFeiras instance = new SistemaFeiras();
 
 		public static SistemaFeiras GetInstance()
 		{
@@ -136,6 +139,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		// TO DO
 		public List<Leilao> GetLeiloesCL(string email)
 		{
+			Utilizador? cliente = users[email];
+			//verificar 
 			return new();
 		}
 		public List<Stand> GetStandsFeira( int idFeira)
@@ -148,42 +153,64 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		// TO DO
 		public List<Venda> GetNegociacoes(string email)
 		{
+			Utilizador? cliente = users[email];
+			//receber todas as vendas
+			//for vendas verifica se é uma negociaçao, se sim adicionar a lista
 			return new();
 		}
 		// TO DO
 		public Negociacao GetNegociacao(int idNegociacao)
 		{
-			return new Negociacao();
+            //receber todas as vendas
+            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
+            return new Negociacao();
 		}
 		// TO DO
 		public void RegistaSucesso(int idNegociacao)
 		{
-
-		}
-		// TO DO
-		public void RegistaInsucesso(int idNegociacao)
+            //receber todas as vendas
+            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
+        }
+        // TO DO
+        public void RegistaInsucesso(int idNegociacao)
 		{
-
-		}
-		// TO DO
-		public void RegistaNovoPreco(int idNegociacao, float novoPreco)
+            //receber todas as vendas
+            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
+        }
+        // TO DO
+        public void RegistaNovoPreco(int idNegociacao, float novoPreco)
 		{
-
-		}
-		public Venda GetVenda(int idVenda)
+            //receber todas as vendas
+            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
+        }
+        public Venda GetVenda(int idVenda)
 		{
-			return new();
+			if (vendas[idVenda] == null)
+			{
+				return new Venda();
+			}
+			else
+			{
+                return vendas[idVenda];
+            }
+			
 		}
 		// TO DO
 		public void AddVenda(Venda venda)
 		{
-
+			venda.IdVenda = vendasCounter;
+			vendas.Insert(venda);
+			vendasCounter++;
 		}
 
 		// TO DO
 		public void AddNegociacaoVenda(Venda venda, Negociacao negociacao)
 		{
-
+			int idNeg = negociacao.IdNegociacao;
+			venda.Negociacao = idNeg;
+			AddVenda(venda);
+			negociacao.IdNegociacao = negociacoesCounter;
+			negociacoesCounter++;
 		}
 
 		public List<Feira> FeirasNotStarted()
