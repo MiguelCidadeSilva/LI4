@@ -59,14 +59,14 @@ namespace FeirasEspinhoBlazorApp.Data
                 command.Parameters.AddWithValue("@idFeira", id);
                 command.ExecuteNonQuery();
                 SqlDataReader response = command.ExecuteReader();
-                if (response.HasRows)
+                while (response.Read())
                 {
                     DateTime data = response.GetFieldValue<DateTime>("data");
                     float preco = response.GetFieldValue<float>("preco");
                     string emailCl = response.GetFieldValue<string>("emailCl");
-                    int idFeira = response.GetFieldValue<int>("criadorEmail");
-                    int negociacao = response.GetFieldValue<int>("categoria");
-                    int idStand = response.GetFieldValue<int>("categoria");
+                    int idFeira = response.GetFieldValue<int>("idFeira");
+                    int negociacao = response.GetFieldValue<int>("negociacao");
+                    int idStand = response.GetFieldValue<int>("idStand");
                     connection.Close();
                     return new Venda(id,data,preco,emailCl,idFeira,negociacao,idStand);
                 }

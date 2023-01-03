@@ -59,7 +59,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 command.Parameters.AddWithValue("@idFeira", id);
                 command.ExecuteNonQuery();
                 SqlDataReader response = command.ExecuteReader();
-                if (response.HasRows)
+                while (response.Read())
                 {
                     int iDFeira = response.GetFieldValue<int>("idFeira");
                     string nome = response.GetFieldValue<string>("nome");

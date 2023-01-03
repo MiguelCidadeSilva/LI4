@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -92,7 +93,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while(response.Read())
                     {
                         Cliente c = new()
                         {
@@ -113,7 +114,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
                         Administrador a = new()
                         {
@@ -134,7 +135,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
                         Feirante f = new()
                         {
