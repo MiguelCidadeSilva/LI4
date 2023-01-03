@@ -5,6 +5,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using System.Globalization;
+using FeirasEspinhoBlazorApp.Data;
 using FeirasEspinhoBlazorApp.SourceCode.Stands;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using FeirasEspinhoBlazorApp.SourceCode.Vendas;
@@ -15,15 +16,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 {
 	public class SistemaFeiras : Exception
 	{
-
-		private Dictionary<String, Cliente> mapClientes; //todos os clientes		||
-		private Dictionary<String, Administrador> mapAdmins; // todos os feirantes  || UTILIZADORES(key --> email)
-		private Dictionary<String, Feirante> mapFeirantes; // todos os admins		||
-
-		private Dictionary<String, List<Notificacao>> mapNotificacao;
-		private Dictionary<int, Feira> mapFeiras;
-		private Dictionary<int, Stand> mapStands;
-		private Dictionary<int, Produto> mapProdutos;
+		private UtilizadoresDAO users;
+		private FeiraDAO feiras;
+		private StandDAO stands;
+		private VendaDAO vendas;
 
 		private static SistemaFeiras instance = new SistemaFeiras();
 
@@ -33,158 +29,26 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 
 
-		public Dictionary<String, Cliente> MapClientes
-		{
-			get { return mapClientes; }
-
-			set { mapClientes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
-		}
-
-		public Dictionary<String, Administrador> MapAdmins
-		{
-			get { return mapAdmins; }
-
-			set { mapAdmins = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
-		}
-
-		public Dictionary<String, Feirante> MapFeirantes
-		{
-			get { return mapFeirantes; }
-
-			set { mapFeirantes = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
-		}
-		public Dictionary<String, List<Notificacao>> MapNotificacao
-		{
-			get { return mapNotificacao; }
-
-			set { mapNotificacao = value.ToDictionary(entry => entry.Key, entry => new List<Notificacao>(entry.Value)); }
-		}
-		public Dictionary<int, Feira> MapFeiras
-		{
-			get { return mapFeiras; }
-
-			set { mapFeiras = value.ToDictionary(entry => entry.Key, entry => entry.Value.Clone()); }
-		}
-
-		public Dictionary<int, Stand> MapStands
-		{
-			get { return mapStands; }
-
-			set { mapStands = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
-		}
-		public Dictionary<int, Produto> MapProdutos
-		{
-			get { return mapProdutos; }
-
-			set { mapProdutos = value.ToDictionary(entry => entry.Key, entry => entry.Value); }
-		}
-
-
 		private SistemaFeiras()
 		{
-			MapClientes = new Dictionary<String, Cliente>();
-			MapAdmins = new Dictionary<String, Administrador>();
-			MapFeirantes = new Dictionary<String, Feirante>();
-			MapFeiras = new Dictionary<int, Feira>();
-			MapStands = new Dictionary<int, Stand>();
-			MapProdutos = new Dictionary<int, Produto>();
-			MapNotificacao = new();
+			users = UtilizadoresDAO.GetInstance();
+			feiras = FeiraDAO.GetInstance();
+			stands = StandDAO.GetInstance();
+			vendas = VendaDAO.GetInstance();
 		}
-
-		private SistemaFeiras(Dictionary<String, Cliente> MapClientes, Dictionary<String, Administrador> MapAdmins,
-							 Dictionary<String, Feirante> MapFeirantes, Dictionary<int, Feira> MapFeiras,
-							 Dictionary<int, Stand> MapStands, Dictionary<int, Produto> MapProdutos)
-		{
-			this.MapClientes = MapClientes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapAdmins = MapAdmins.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapFeirantes = MapFeirantes.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapFeiras = MapFeiras.ToDictionary(entry => entry.Key, entry => entry.Value.Clone());
-			this.MapStands = MapStands.ToDictionary(entry => entry.Key, entry => entry.Value);
-			this.MapProdutos = MapProdutos.ToDictionary(entry => entry.Key, entry => entry.Value);
-		}
-
-		private SistemaFeiras(SistemaFeiras sf)
-		{
-			this.MapClientes = sf.MapClientes;
-			this.MapAdmins = sf.MapAdmins;
-			this.MapFeirantes = sf.MapFeirantes;
-			this.MapFeiras = sf.MapFeiras;
-			this.MapStands = sf.MapStands;
-			this.MapProdutos = sf.MapProdutos;
-		}
-
-		public override String ToString()
-		{
-			String s = "=====CLIENTES=====\n";
-			int i = 1;
-			foreach (KeyValuePair<String, Cliente> par in this.MapClientes)
-			{
-				s += ("\n" + i + "] ->");
-				s += par.Key;
-				s += ("\n" + par.Value.ToString());
-			}
-			i = 1;
-			s += "=====FEIRANTES=====\n";
-			foreach (KeyValuePair<String, Feirante> par in this.MapFeirantes)
-			{
-				s += ("\n" + i + "] ->");
-				s += par.Key;
-				s += ("\n" + par.Value.ToString());
-			}
-			i = 1;
-			s += "=====ADMINISTRADORES=====\n";
-			foreach (KeyValuePair<String, Administrador> par in this.MapAdmins)
-			{
-				s += ("\n" + i + "] ->");
-				s += par.Key;
-				s += ("\n" + par.Value.ToString());
-			}
-
-
-			return s;
-
-		}
-
 
 
 		//
 		//	LOGIN: Verifica se a password é válida,e verifica as credenciais com a função verificaCredenciais da classe Utilizador
 		//
-		public int Login(String email, String password)
+		public Utilizador Login(String email, String password)
 		{
 			if (password.Length < 8)
 				throw new PasswordInvalidaException("Password tem de ter 8 ou mais caracteres\n");
-
-			//			VERIFICACAO CLIENTES
-			foreach (KeyValuePair<String, Cliente> par in this.MapClientes)
-			{
-				Cliente s = new Cliente(par.Value);
-				if (s.CheckCredenciais(email, password))
-				{
-					return 0;
-				}
-			}
-			//			VERIFICACAO ADMINISTRADORES
-			foreach (KeyValuePair<String, Administrador> par in this.MapAdmins)
-			{
-				Administrador a = new Administrador(par.Value);
-				if (a.CheckCredenciais(email, password))
-				{
-					return 1;
-				}
-			}
-			//			VERIFICACAO FEIRANTES
-			foreach (KeyValuePair<String, Feirante> par in this.MapFeirantes)
-			{
-				Feirante f = new Feirante(par.Value);
-				if (f.CheckCredenciais(email, password))
-				{
-					return 2;
-				}
-			}
-
-			throw new EmailInvalidoException("email não está registado, regista-te");
-
+			Utilizador? user = users[email];
+			if(user == null || user.CheckCredenciais(email, password))
+				throw new EmailInvalidoException("Email não está registado.");
+			return user;
 		}
 
 		//		Registo: Da maneira que fiz, não existem emails repetidos no sistema, mesmo que sejam tipos de utilizador diferentes.
@@ -193,31 +57,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		public void Registo(Utilizador u)
 		{
 			String key = u.Email;
-			if (MapClientes.ContainsKey(key) || MapAdmins.ContainsKey(key) || MapFeirantes.ContainsKey(key))
-				throw new EmailInvalidoException("Email já está associado a uma conta...");
 			if (u.Password.Length < 8)
-				throw new PasswordInvalidaException("Password tem menos de 8 caracteres...");
-
-			if (u is Cliente)
-			{
-				Cliente c = (Cliente)u;
-				MapClientes[key] = c;
-				return;
-			}
-			else if (u is Administrador)
-			{
-				Administrador a = (Administrador)u;
-				MapAdmins[key] = a;
-				return;
-			}
-			else if (u is Feirante)
-			{
-				Feirante f = (Feirante)u;
-				MapFeirantes[key] = f;
-				return;
-			}
-
-			throw new RegistoInvalidoException("Registo abortado, algo correu mal...");
+				throw new PasswordInvalidaException("Password tem de conter pelo menos 8 caracteres.");
+			//if (users.)
+			//	throw new EmailInvalidoException("Email já está associado a uma conta...");
+			users.Insert(u);
 
 		}
 
@@ -236,12 +80,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public Stand GetStand(int idStand)
 		{
-			return mapStands[idStand];
+			return stands[idStand];
 		}
 
 		public Feira GetFeira(int idFeira)
 		{
-			return mapFeiras[idFeira];
+			return feiras[idFeira];
 		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{

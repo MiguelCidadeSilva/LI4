@@ -80,7 +80,7 @@ else
 			SistemaFeiras sistemaFeiras = SistemaFeiras.GetInstance();
 			try
 			{
-				Utilizador? user = UtilizadoresDAO.GetInstance().GetUtilizador(email);//sistemaFeiras.Login(email, password);
+				Utilizador? user = sistemaFeiras.Login(email, password);
 				if(user != null)
 				{
 					switch (user.GetType().Name)

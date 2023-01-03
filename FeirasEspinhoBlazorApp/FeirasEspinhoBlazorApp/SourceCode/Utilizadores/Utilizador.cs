@@ -9,25 +9,25 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
     // SUPERCLASSE USER
     public abstract class Utilizador : Exception
     {
-        private string? username;
-        private string? password;
-        private string? email;
+        private string username;
+        private string password;
+        private string email;
         private DateTime dataNascimento;
         private DateTime dataCriacao;
 
-        public string? Username
+        public string Username
         {
             get { return username; }
             set { username = value; }
         }
 
-        public string? Password
+        public string Password
         {
             get { return password; }
             set { password = value; }
         }
 
-        public string? Email
+        public string Email
         {
             get { return email; }
             set { email = value; }
@@ -110,7 +110,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Utilizadores
 
             if (Email.Equals(email) && Password.Equals(password)) return true;
 
-            throw new PasswordInvalidaException("passwords nao condizem...");
+            throw new PasswordInvalidaException("Passwords não condizem.");
 
         }
 
