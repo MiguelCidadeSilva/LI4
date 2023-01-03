@@ -311,7 +311,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     ('ana@gmail.com', 'Ana Costa', 'ana123', '2000-11-30', '2022-12-15'),
                     ('rui@gmail.com', 'Rui Pereira', 'rui123', '2005-02-12', '2022-12-15'),
                     ('joana@gmail.com', 'Joana Ferreira', 'joana123', '2002-04-25', '2022-12-15'),
-                    ('paulo@gmail.com', 'Paulo Moreira', 'paulo123', '20001-07-10', '2022-12-15'),
+                    ('paulo@gmail.com', 'Paulo Moreira', 'paulo123', '2001-07-10', '2022-12-15'),
                     ('sara@gmail.com', 'Sara Oliveira', 'sara123', '2000-09-20', '2022-12-15'),
                     ('miguel@gmail.com', 'Miguel Gomes', 'miguel123', '1975-12-31', '2022-12-15'),
                     ('david@gmail.com', 'David Sousa', 'david123', '1980-03-01', '2022-12-15'),
