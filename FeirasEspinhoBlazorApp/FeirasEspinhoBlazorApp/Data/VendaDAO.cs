@@ -49,6 +49,7 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
+        public Venda? this[int id] => GetVenda(id);
         public Venda? GetVenda(int id)
         {
             try

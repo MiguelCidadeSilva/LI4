@@ -160,6 +160,7 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
+        public Stand? this[int id] => GetStand(id);
         public Stand? GetStand(int id)
         {
             try

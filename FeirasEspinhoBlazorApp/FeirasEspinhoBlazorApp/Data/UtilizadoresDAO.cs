@@ -83,6 +83,7 @@ namespace FeirasEspinhoBlazorApp.Data
         }
 
         //Obtem utilizador com base no seu email
+        public Utilizador? this[string email] => GetUtilizador(email);
         public Utilizador? GetUtilizador(String email) {
             try
             {
