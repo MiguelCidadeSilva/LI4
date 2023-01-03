@@ -49,7 +49,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			if (password.Length < 8)
 				throw new PasswordInvalidaException("Password tem de ter 8 ou mais caracteres\n");
 			Utilizador? user = users[email];
-			if(user == null || user.CheckCredenciais(email, password))
+			if(user == null || !user.CheckCredenciais(email, password))
 				throw new EmailInvalidoException("Email não está registado.");
 			return user;
 		}
@@ -77,8 +77,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 			//Caso o admin em questão já adicionou feiras no passado
 			int key = id_feira;
-			MapFeiras[key] = new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
-										  preco_candidatura, u.Email, categoria_feira);
+			feiras.Insert(new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
+										  preco_candidatura, u.Email, categoria_feira));
 		}
 
 		public Stand GetStand(int idStand)
@@ -90,41 +90,44 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return feiras[idFeira];
 		}
+		public List<Feira> GetFeiras() 
+		{
+			return new();
+		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{
-			if(mapNotificacao.ContainsKey(email))
-				return MapNotificacao[email];
+			//if(mapNotificacao.ContainsKey(email))
+				//return MapNotificacao[email];
 			return new();
 		}
 
 		public void AddNotificacao(string emailUser,Notificacao not)
 		{
-            List<Notificacao> lista;
-            if (!mapNotificacao.TryGetValue(emailUser, out lista))
-            {
-                lista = new List<Notificacao>();
-                mapNotificacao[emailUser] = lista;
-            }
-            lista.Add(not);
+            //List<Notificacao> lista;
+            //if (!mapNotificacao.TryGetValue(emailUser, out lista))
+            //{
+            //    lista = new List<Notificacao>();
+            //    mapNotificacao[emailUser] = lista;
+            //}
+            //lista.Add(not);
         }
 		public Utilizador GetUtilizador(string emailUtilizador)
 		{
-			Utilizador user = mapAdmins.GetValueOrDefault(emailUtilizador);
-			if(user == null)
-			{
-				user = mapClientes.GetValueOrDefault(emailUtilizador);
-			}
-			if(user == null)
-			{
-				user = mapClientes.GetValueOrDefault(emailUtilizador);
-			}
-			return user;
+			return users[emailUtilizador];
+		}
+		public List<Stand> GetStandFeirante(string feirante)
+		{
+			return new();
+		}
+		public void AddStandFeira(int stand, int feira)
+		{
+
 		}
 
 		public List<Leilao> GetLeiloesFeiraStand(int idFeira, int idStand)
 		{
-			Stand s = SistemaFeiras.GetInstance().GetStand(idStand);
-			Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
+			Stand s = stands[idStand];
+			Feira f = feiras[idFeira];
 			List<Leilao> res = f.ListaLeiloes[s.EmailDono];
 			res.Where(lei => lei.Feira == idFeira && lei.Stand == idStand);
 			return res;
@@ -215,7 +218,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Feira> FeirasNotStarted()
 		{
-			return MapFeiras.Values.Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
+			//return feiras..Values.Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
+			return new();
 		}
 
 		public class Teste

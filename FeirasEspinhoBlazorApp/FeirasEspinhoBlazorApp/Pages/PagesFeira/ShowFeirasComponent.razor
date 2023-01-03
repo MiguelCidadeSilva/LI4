@@ -102,7 +102,7 @@ else
 		List<Feira> feiras;
 		type = utilizador is Cliente;
 		if(type)
-			feiras = SistemaFeiras.GetInstance().MapFeiras.Values.ToList();
+			feiras = SistemaFeiras.GetInstance().GetFeiras();
 		else
 			feiras = SistemaFeiras.GetInstance().FeirasNotStarted();
 		List<(Feira, int)> conteudo = new List<(Feira, int)>();

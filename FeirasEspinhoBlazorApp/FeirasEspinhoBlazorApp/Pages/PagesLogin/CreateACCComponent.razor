@@ -145,9 +145,7 @@
 			{
 				try
 				{
-					UtilizadoresDAO.GetInstance().Insert(utilizador);
-					//SistemaFeiras sistema = SistemaFeiras.GetInstance();
-					//sistema.Registo(utilizador);
+					SistemaFeiras.GetInstance().Registo(utilizador);
 					this.sucess = true;
 					this.LimpaCampos();
 				}
