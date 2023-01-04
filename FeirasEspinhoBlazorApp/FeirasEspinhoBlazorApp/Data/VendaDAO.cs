@@ -23,16 +23,18 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("INSERT INTO [dbo].[Venda] VALUES (@idVenda, @data, @preco, @emailCl, @idFeira, @negociacao, @idStand)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idVenda", venda.IdVenda);
-                command.Parameters.AddWithValue("@data", venda.Data);
-                command.Parameters.AddWithValue("@preco", venda.Preco);
-                command.Parameters.AddWithValue("@emailCl", venda.EmailCliente);
-                command.Parameters.AddWithValue("@idFeira", venda.IdFeira);
-                command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
-                command.Parameters.AddWithValue("@idStand", venda.IdStand);
-                command.ExecuteNonQuery();
-                connection.Close();
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idVenda", venda.IdVenda);
+                    command.Parameters.AddWithValue("@data", venda.Data);
+                    command.Parameters.AddWithValue("@preco", venda.Preco);
+                    command.Parameters.AddWithValue("@emailCl", venda.EmailCliente);
+                    command.Parameters.AddWithValue("@idFeira", venda.IdFeira);
+                    command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
+                    command.Parameters.AddWithValue("@idStand", venda.IdStand);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
             catch (SqlException ex)
             {
@@ -56,20 +58,22 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Venda] WHERE idFeira = (@idFeira)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idFeira", id);
-                command.ExecuteNonQuery();
-                SqlDataReader response = command.ExecuteReader();
-                while (response.Read())
                 {
-                    DateTime data = response.GetFieldValue<DateTime>("data");
-                    float preco = response.GetFieldValue<float>("preco");
-                    string emailCl = response.GetFieldValue<string>("emailCl");
-                    int idFeira = response.GetFieldValue<int>("idFeira");
-                    int negociacao = response.GetFieldValue<int>("negociacao");
-                    int idStand = response.GetFieldValue<int>("idStand");
-                    connection.Close();
-                    return new Venda(id,data,preco,emailCl,idFeira,negociacao,idStand);
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", id);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        DateTime data = response.GetFieldValue<DateTime>("data");
+                        float preco = response.GetFieldValue<float>("preco");
+                        string emailCl = response.GetFieldValue<string>("emailCl");
+                        int idFeira = response.GetFieldValue<int>("idFeira");
+                        int negociacao = response.GetFieldValue<int>("negociacao");
+                        int idStand = response.GetFieldValue<int>("idStand");
+                        connection.Close();
+                        return new Venda(id, data, preco, emailCl, idFeira, negociacao, idStand);
+                    }
                 }
             }
             catch (SqlException ex)

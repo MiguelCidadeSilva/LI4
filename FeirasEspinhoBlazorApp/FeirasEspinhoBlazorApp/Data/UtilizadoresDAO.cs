@@ -18,6 +18,49 @@ namespace FeirasEspinhoBlazorApp.Data
 			return instance;
 		}
 
+        public bool ContainsKey(String tabela, String email)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM ["+tabela+"] WHERE email = (@email)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@email", email);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
+
+        public bool ContainsKey(String email)
+        {
+            bool r = ContainsKey("Cliente", email);
+            if (!r)
+                r = ContainsKey("Feirante", email);
+            if (!r)
+                r = ContainsKey("Admin", email);
+            return r;
+        }
+
         //Insere utilizador na tabela
         public void Insert(Utilizador utilizador)
         {
@@ -28,43 +71,49 @@ namespace FeirasEspinhoBlazorApp.Data
                     Cliente? cliente = utilizador as Cliente;
                     using SqlConnection connection = new(ConnectionDAO.connectionString);
                     using SqlCommand command = new("INSERT INTO [dbo].[Cliente] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", cliente.Email);
-                    command.Parameters.AddWithValue("@nome", cliente.Username);
-                    command.Parameters.AddWithValue("@password", cliente.Password);
-                    command.Parameters.AddWithValue("@dataNascimento", cliente.DataNascimento);
-                    command.Parameters.AddWithValue("@dataCriacao", cliente.DataCriacao);
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    {
+                        connection.Open();
+                        command.Parameters.AddWithValue("@email", cliente.Email);
+                        command.Parameters.AddWithValue("@nome", cliente.Username);
+                        command.Parameters.AddWithValue("@password", cliente.Password);
+                        command.Parameters.AddWithValue("@dataNascimento", cliente.DataNascimento);
+                        command.Parameters.AddWithValue("@dataCriacao", cliente.DataCriacao);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
                 else if (utilizador is Feirante)
                 {
                     Feirante? feirante = utilizador as Feirante;
                     using SqlConnection connection = new(ConnectionDAO.connectionString);
                     using SqlCommand command = new("INSERT INTO [dbo].[Feirante] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao, @nrconta)", connection);
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", feirante.Email);
-                    command.Parameters.AddWithValue("@nome", feirante.Username);
-                    command.Parameters.AddWithValue("@password", feirante.Password);
-                    command.Parameters.AddWithValue("@dataNascimento", feirante.DataNascimento);
-                    command.Parameters.AddWithValue("@dataCriacao", feirante.DataCriacao);
-                    command.Parameters.AddWithValue("@nrconta", feirante.IDconta);
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    {
+                        connection.Open();
+                        command.Parameters.AddWithValue("@email", feirante.Email);
+                        command.Parameters.AddWithValue("@nome", feirante.Username);
+                        command.Parameters.AddWithValue("@password", feirante.Password);
+                        command.Parameters.AddWithValue("@dataNascimento", feirante.DataNascimento);
+                        command.Parameters.AddWithValue("@dataCriacao", feirante.DataCriacao);
+                        command.Parameters.AddWithValue("@nrconta", feirante.IDconta);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
                 else if (utilizador is Administrador)
                 {
                     Administrador? admin = utilizador as Administrador;
                     using SqlConnection connection = new(ConnectionDAO.connectionString);
                     using SqlCommand command = new("INSERT INTO [dbo].[Administrador] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", admin.Email);
-                    command.Parameters.AddWithValue("@nome", admin.Username);
-                    command.Parameters.AddWithValue("@password", admin.Password);
-                    command.Parameters.AddWithValue("@dataNascimento", admin.DataNascimento);
-                    command.Parameters.AddWithValue("@dataCriacao", admin.DataCriacao);
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    {
+                        connection.Open();
+                        command.Parameters.AddWithValue("@email", admin.Email);
+                        command.Parameters.AddWithValue("@nome", admin.Username);
+                        command.Parameters.AddWithValue("@password", admin.Password);
+                        command.Parameters.AddWithValue("@dataNascimento", admin.DataNascimento);
+                        command.Parameters.AddWithValue("@dataCriacao", admin.DataCriacao);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
             }
             catch (SqlException ex)
@@ -335,22 +384,22 @@ namespace FeirasEspinhoBlazorApp.Data
                 string sql = @"
                 INSERT INTO [dbo].[Administrador] (email, nome, password, dataNascimento, dataCriacao)
                 VALUES
-                    ('rui@hotmail.com', 'Rui Jorge', 'rui123', '2002-12-12', '2022-12-15'),
-                    ('diogo@hotmail.com', 'Diogo Santos', 'diogo123', '1988-03-20', '2022-12-15'),
-                    ('marco@hotmail.com', 'Marco Rodrigues', 'marco123', '1978-06-05', '2022-12-15'),
-                    ('joaquim@hotmail.com', 'Joaquim Martins', 'joaquim123', '1995-09-15', '2022-12-15'),
-                    ('marta@hotmail.com', 'Marta Costa', 'marta123', '2000-11-30', '2022-12-15'),
-                    ('filipa@hotmail.com', 'Filipa Pereira', 'filipa123', '2003-02-12', '2022-12-15'),
-                    ('evandro@hotmail.com', 'Evandro Ferreira', 'evandro123', '2002-04-25', '2022-12-15'),
-                    ('cristiano@hotmail.com', 'Cristiano Moreira', 'cristiano123', '2001-07-10', '2022-12-15'),
-                    ('manuel@hotmail.com', 'Manuel Oliveira', 'manuel123', '1981-09-20', '2022-12-15'),
-                    ('vitor@hotmail.com', 'Vitor Gomes', 'vitor123', '1977-12-31', '2022-12-15'),
-                    ('margarida@hotmail.com', 'Margarida Sousa', 'margarida123', '1980-01-03', '2022-12-15'),
-                    ('angelico@hotmail.com', 'Angélico Almeida', 'angelico123', '1985-07-15', '2022-12-15'),
-                    ('eduarda@hotmail.com', 'Eduarda Fonseca', 'eduarda123', '1990-08-21', '2022-12-15'),
-                    ('isaura@hotmail.com', 'Isaura Costa', 'isaura123', '1990-10-20', '2022-12-15'),
-                    ('francisca@hotmail.com', 'Francisca Pinto', 'francisca123', '2001-12-31', '2022-12-15'),
-                    ('carlos@hotmail.com', 'Carlos Teixeira', 'carlos123', '1994-05-14', '2022-12-15');
+                    ('rui@hotmail.com', 'Rui Jorge', 'rui12345678', '2002-12-12', '2022-12-15'),
+                    ('diogo@hotmail.com', 'Diogo Santos', 'diogo12345678', '1988-03-20', '2022-12-15'),
+                    ('marco@hotmail.com', 'Marco Rodrigues', 'marco12345678', '1978-06-05', '2022-12-15'),
+                    ('joaquim@hotmail.com', 'Joaquim Martins', 'joaquim12345678', '1995-09-15', '2022-12-15'),
+                    ('marta@hotmail.com', 'Marta Costa', 'marta12345678', '2000-11-30', '2022-12-15'),
+                    ('filipa@hotmail.com', 'Filipa Pereira', 'filipa12345678', '2003-02-12', '2022-12-15'),
+                    ('evandro@hotmail.com', 'Evandro Ferreira', 'evandro12345678', '2002-04-25', '2022-12-15'),
+                    ('cristiano@hotmail.com', 'Cristiano Moreira', 'cristiano12345678', '2001-07-10', '2022-12-15'),
+                    ('manuel@hotmail.com', 'Manuel Oliveira', 'manuel12345678', '1981-09-20', '2022-12-15'),
+                    ('vitor@hotmail.com', 'Vitor Gomes', 'vitor12345678', '1977-12-31', '2022-12-15'),
+                    ('margarida@hotmail.com', 'Margarida Sousa', 'margarida12345678', '1980-01-03', '2022-12-15'),
+                    ('angelico@hotmail.com', 'Angélico Almeida', 'angelico12345678', '1985-07-15', '2022-12-15'),
+                    ('eduarda@hotmail.com', 'Eduarda Fonseca', 'eduarda12345678', '1990-08-21', '2022-12-15'),
+                    ('isaura@hotmail.com', 'Isaura Costa', 'isaura12345678', '1990-10-20', '2022-12-15'),
+                    ('francisca@hotmail.com', 'Francisca Pinto', 'francisca12345678', '2001-12-31', '2022-12-15'),
+                    ('carlos@hotmail.com', 'Carlos Teixeira', 'carlos12345678', '1994-05-14', '2022-12-15');
                 ";
                 SqlCommand command = new(sql, connection);
                 connection.Open();
@@ -365,22 +414,22 @@ namespace FeirasEspinhoBlazorApp.Data
                 string sql = @"
                 INSERT INTO [dbo].[Feirante] (email, nome, password, dataNascimento, dataCriacao, nrconta)
                 VALUES
-                    ('adriana@espinho.com', 'Adriana Paiva', 'adriana123', '2002-12-12', '2022-12-15',1),
-                    ('amelia@espinho.com', 'Emilia Cardoso', 'amelia123', '1988-03-20', '2022-12-15',2),
-                    ('elvira@espinho.com', 'Elvira Santos', 'elvira123', '1978-06-05', '2022-12-15',3),
-                    ('esmeralda@espinho.com', 'Esmeralda Braga', 'esmeralda123', '1995-09-15', '2022-12-15',4),
-                    ('fernanda@espinho.com', 'Fernanda Eusébio', 'fernanda123', '2000-11-30', '2022-12-15',5),
-                    ('gertrudes@espinho.com', 'Gertrudes Almeida', 'gertrudes123', '2003-02-12', '2022-12-15',6),
-                    ('elisio@espinho.com', 'Elísio Mendes', 'elisio123', '2002-04-25', '2022-12-15',7),
-                    ('alexandre@espinho.com', 'Alexandre Santos', 'alexandre123', '2001-07-10', '2022-12-15',8),
-                    ('rogerio@espinho.com', 'Rogério Alves', 'rogerio123', '1981-09-20', '2022-12-15',9),
-                    ('alcibiades@espinho.com', 'Alcibiades Silva', 'alcibiades123', '1977-12-31', '2022-12-15',10),
-                    ('francelina@espinho.com', 'Francelina Rosa', 'francelina123', '1980-01-03', '2022-12-15',11),
-                    ('camilo@espinho.com', 'Camilo Ferreira', 'camilo123', '1985-07-15', '2022-12-15',12),
-                    ('isidro@espinho.com', 'Isídro Lopes', 'isidro123', '1990-08-21', '2022-12-15',13),
-                    ('olga@espinho.com', 'Olga Filipe', 'olga123', '1990-10-20', '2022-12-15',14),
-                    ('orlando@espinho.com', 'Orlando Pinto', 'orlando123', '2001-12-31', '2022-12-15',15),
-                    ('arsenio@espinho.com', 'Arsénio Quaresma', 'arsenio123', '2000-05-14', '2022-12-15',16);
+                    ('adriana@espinho.com', 'Adriana Paiva', 'adriana12345678', '2002-12-12', '2022-12-15',1),
+                    ('amelia@espinho.com', 'Emilia Cardoso', 'amelia12345678', '1988-03-20', '2022-12-15',2),
+                    ('elvira@espinho.com', 'Elvira Santos', 'elvira12345678', '1978-06-05', '2022-12-15',3),
+                    ('esmeralda@espinho.com', 'Esmeralda Braga', 'esmeralda12345678', '1995-09-15', '2022-12-15',4),
+                    ('fernanda@espinho.com', 'Fernanda Eusébio', 'fernanda12345678', '2000-11-30', '2022-12-15',5),
+                    ('gertrudes@espinho.com', 'Gertrudes Almeida', 'gertrudes12345678', '2003-02-12', '2022-12-15',6),
+                    ('elisio@espinho.com', 'Elísio Mendes', 'elisio12345678', '2002-04-25', '2022-12-15',7),
+                    ('alexandre@espinho.com', 'Alexandre Santos', 'alexandre12345678', '2001-07-10', '2022-12-15',8),
+                    ('rogerio@espinho.com', 'Rogério Alves', 'rogerio12345678', '1981-09-20', '2022-12-15',9),
+                    ('alcibiades@espinho.com', 'Alcibiades Silva', 'alcibiades12345678', '1977-12-31', '2022-12-15',10),
+                    ('francelina@espinho.com', 'Francelina Rosa', 'francelina12345678', '1980-01-03', '2022-12-15',11),
+                    ('camilo@espinho.com', 'Camilo Ferreira', 'camilo12345678', '1985-07-15', '2022-12-15',12),
+                    ('isidro@espinho.com', 'Isídro Lopes', 'isidro12345678', '1990-08-21', '2022-12-15',13),
+                    ('olga@espinho.com', 'Olga Filipe', 'olga12345678', '1990-10-20', '2022-12-15',14),
+                    ('orlando@espinho.com', 'Orlando Pinto', 'orlando12345678', '2001-12-31', '2022-12-15',15),
+                    ('arsenio@espinho.com', 'Arsénio Quaresma', 'arsenio12345678', '2000-05-14', '2022-12-15',16);
                 ";
                 SqlCommand command = new(sql, connection);
                 connection.Open();

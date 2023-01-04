@@ -23,16 +23,18 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
-                command.Parameters.AddWithValue("@nome", feira.Nome);
-                command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
-                command.Parameters.AddWithValue("@dataFim", feira.DataFim);
-                command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
-                command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
-                command.Parameters.AddWithValue("@categoria", feira.Categoria);
-                command.ExecuteNonQuery();
-                connection.Close();
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
+                    command.Parameters.AddWithValue("@nome", feira.Nome);
+                    command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
+                    command.Parameters.AddWithValue("@dataFim", feira.DataFim);
+                    command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
+                    command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
+                    command.Parameters.AddWithValue("@categoria", feira.Categoria);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
             catch (SqlException ex)
             {
@@ -48,7 +50,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
         }
-
+        //Por algum motivo sem este get isto não compila
         public Feira? this[int id] => GetFeira(id);
         public Feira? GetFeira(int id)
         {
@@ -56,21 +58,23 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idFeira", id);
-                command.ExecuteNonQuery();
-                SqlDataReader response = command.ExecuteReader();
-                while (response.Read())
                 {
-                    int iDFeira = response.GetFieldValue<int>("idFeira");
-                    string nome = response.GetFieldValue<string>("nome");
-                    DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
-                    DateTime dataFim = response.GetFieldValue<DateTime>("dataNascimento");
-                    float precoCandidatura = response.GetFieldValue<float>("precoCandidatura");
-                    string criadorEmail = response.GetFieldValue<string>("criadorEmail");
-                    int categoria = response.GetFieldValue<int>("categoria");
-                    connection.Close();
-                    return new Feira(iDFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria);
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", id);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int iDFeira = response.GetFieldValue<int>("idFeira");
+                        string nome = response.GetFieldValue<string>("nome");
+                        DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
+                        DateTime dataFim = response.GetFieldValue<DateTime>("dataNascimento");
+                        float precoCandidatura = response.GetFieldValue<float>("precoCandidatura");
+                        string criadorEmail = response.GetFieldValue<string>("criadorEmail");
+                        int categoria = response.GetFieldValue<int>("categoria");
+                        connection.Close();
+                        return new Feira(iDFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria);
+                    }
                 }
             }
             catch (SqlException ex)

@@ -24,15 +24,17 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("INSERT INTO [dbo].[Stand] VALUES (@idStand, @negociavel, @consultantes, @dataCriacao, @donoEmail, @categoria)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idStand", stand.IdStand);
-                command.Parameters.AddWithValue("@negociavel", stand.Negociavel);
-                command.Parameters.AddWithValue("@consultantes", stand.Consultantes);
-                command.Parameters.AddWithValue("@dataCriacao", stand.DataCriacao);
-                command.Parameters.AddWithValue("@donoEmail", stand.EmailDono);
-                command.Parameters.AddWithValue("@categoria", stand.categoria);
-                command.ExecuteNonQuery();
-                connection.Close();
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idStand", stand.IdStand);
+                    command.Parameters.AddWithValue("@negociavel", stand.Negociavel);
+                    command.Parameters.AddWithValue("@consultantes", stand.Consultantes);
+                    command.Parameters.AddWithValue("@dataCriacao", stand.DataCriacao);
+                    command.Parameters.AddWithValue("@donoEmail", stand.EmailDono);
+                    command.Parameters.AddWithValue("@categoria", stand.Categoria);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
             catch (SqlException ex)
             {
@@ -55,16 +57,18 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("INSERT INTO [dbo].[Produto] VALUES (@idProd, @nome, @idSubCategoria, @banca, @stock, @preco, @disponivel)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@Prod", produto.IdProduto);
-                command.Parameters.AddWithValue("@nome", produto.Nome);
-                command.Parameters.AddWithValue("@idSubCategoria", produto.IdSubCategoria);
-                command.Parameters.AddWithValue("@banca", produto.Stand);
-                command.Parameters.AddWithValue("@stock", produto.Stock);
-                command.Parameters.AddWithValue("@preco", produto.Preco);
-                command.Parameters.AddWithValue("@disponivel", produto.Disponivel);
-                command.ExecuteNonQuery();
-                connection.Close();
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@Prod", produto.IdProduto);
+                    command.Parameters.AddWithValue("@nome", produto.Nome);
+                    command.Parameters.AddWithValue("@idSubCategoria", produto.IdSubCategoria);
+                    command.Parameters.AddWithValue("@banca", produto.Stand);
+                    command.Parameters.AddWithValue("@stock", produto.Stock);
+                    command.Parameters.AddWithValue("@preco", produto.Preco);
+                    command.Parameters.AddWithValue("@disponivel", produto.Disponivel);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
             catch (SqlException ex)
             {
@@ -83,25 +87,27 @@ namespace FeirasEspinhoBlazorApp.Data
 
         public List<Produto>? GetProdutosStand(int idStand)
 		{
-			List<Produto>? res = null;
+			List<Produto> res = new();
 			try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Produto] WHERE banca = (@banca)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@banca", idStand);
-                command.ExecuteNonQuery();
-                SqlDataReader response = command.ExecuteReader();
-                while (response.Read())
                 {
-                    int idProd = response.GetFieldValue<int>("idProd");
-                    string nome = response.GetFieldValue<string>("nome");
-                    int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
-                    int stock = response.GetFieldValue<int>("stock");
-                    float preco = response.GetFieldValue<float>("preco");
-                    bool disponivel = response.GetFieldValue<bool>("disponivel");
+                    connection.Open();
+                    command.Parameters.AddWithValue("@banca", idStand);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int idProd = response.GetFieldValue<int>("idProd");
+                        string nome = response.GetFieldValue<string>("nome");
+                        int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
+                        int stock = response.GetFieldValue<int>("stock");
+                        float preco = response.GetFieldValue<float>("preco");
+                        bool disponivel = response.GetFieldValue<bool>("disponivel");
+                        res.Add(new Produto(idProd, nome, idSubCategoria, idStand, stock, preco, disponivel));
+                    }
                     connection.Close();
-                    res.Add(new Produto(idProd, nome, idSubCategoria, idStand, stock, preco, disponivel));
                 }
                 return res;
             }
@@ -128,20 +134,22 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Produto] WHERE idProd = (@idProd)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idProd", id);
-                command.ExecuteNonQuery();
-                SqlDataReader response = command.ExecuteReader();
-                while (response.Read())
                 {
-                    string nome = response.GetFieldValue<string>("nome");
-                    int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
-                    int stand = response.GetFieldValue<int>("banca");
-                    int stock = response.GetFieldValue<int>("stock");
-                    float preco = response.GetFieldValue<float>("preco");
-                    bool disponivel = response.GetFieldValue<bool>("disponivel");
-                    connection.Close();
-                    return new Produto(id, nome, idSubCategoria, stand, stock, preco, disponivel);
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idProd", id);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        string nome = response.GetFieldValue<string>("nome");
+                        int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
+                        int stand = response.GetFieldValue<int>("banca");
+                        int stock = response.GetFieldValue<int>("stock");
+                        float preco = response.GetFieldValue<float>("preco");
+                        bool disponivel = response.GetFieldValue<bool>("disponivel");
+                        connection.Close();
+                        return new Produto(id, nome, idSubCategoria, stand, stock, preco, disponivel);
+                    }
                 }
             }
             catch (SqlException ex)
@@ -167,20 +175,22 @@ namespace FeirasEspinhoBlazorApp.Data
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Stand] WHERE idStand = (@idStand)", connection);
-                connection.Open();
-                command.Parameters.AddWithValue("@idStand", id);
-                command.ExecuteNonQuery();
-                SqlDataReader response = command.ExecuteReader();
-                while (response.Read())
                 {
-                    bool negociavel = response.GetFieldValue<bool>("negociavel");
-                    int consultantes = response.GetFieldValue<int>("consultantes");
-                    DateTime dataCriacao = response.GetFieldValue<DateTime>("dataCriacao");
-                    string donoEmail = response.GetFieldValue<string>("donoEmail");
-                    int categoria = response.GetFieldValue<int>("categoria");
-                    List<Produto> produtos = GetProdutosStand(id);
-                    connection.Close();
-                    return new Stand(id, negociavel, consultantes, dataCriacao, donoEmail, categoria, produtos);
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idStand", id);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        bool negociavel = response.GetFieldValue<bool>("negociavel");
+                        int consultantes = response.GetFieldValue<int>("consultantes");
+                        DateTime dataCriacao = response.GetFieldValue<DateTime>("dataCriacao");
+                        string donoEmail = response.GetFieldValue<string>("donoEmail");
+                        int categoria = response.GetFieldValue<int>("categoria");
+                        List<Produto> produtos = GetProdutosStand(id);
+                        connection.Close();
+                        return new Stand(id, negociavel, consultantes, dataCriacao, donoEmail, categoria, produtos);
+                    }
                 }
             }
             catch (SqlException ex)
