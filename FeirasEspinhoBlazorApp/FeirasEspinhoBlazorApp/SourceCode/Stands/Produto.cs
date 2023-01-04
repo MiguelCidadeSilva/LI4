@@ -81,13 +81,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             IdSubCategoria = p.IdSubCategoria;
             Stand = p.Stand;
             Stock = p.Stock;
-            p.Preco = p.Preco;
+            Preco = p.Preco;
             Disponivel = p.Disponivel;
         }
 
         public override string ToString()
         {
-            return base.ToString();
+            return "IdProduto: " + IdProduto + "\n" + "Nome: " + Nome + "\n" + "IdSubCategoria: " + IdSubCategoria + "\n" + "IdStand: " + Stand +
+                "Stock: " +Stock+"\n" + "Preco: " +Preco +"\n"+"Disponivel: "+Disponivel;
         }
 
         public Produto Clone()

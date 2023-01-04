@@ -66,7 +66,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     while (response.Read())
                     {
                         DateTime data = response.GetFieldValue<DateTime>("data");
-                        float preco = response.GetFieldValue<float>("preco");
+                        float preco = (float)response.GetFieldValue<double>("preco");
                         string emailCl = response.GetFieldValue<string>("emailCl");
                         int idFeira = response.GetFieldValue<int>("idFeira");
                         int negociacao = response.GetFieldValue<int>("negociacao");

@@ -59,7 +59,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 using SqlCommand command = new("INSERT INTO [dbo].[Produto] VALUES (@idProd, @nome, @idSubCategoria, @banca, @stock, @preco, @disponivel)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@Prod", produto.IdProduto);
+                    command.Parameters.AddWithValue("@idProd", produto.IdProduto);
                     command.Parameters.AddWithValue("@nome", produto.Nome);
                     command.Parameters.AddWithValue("@idSubCategoria", produto.IdSubCategoria);
                     command.Parameters.AddWithValue("@banca", produto.Stand);
@@ -103,7 +103,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         string nome = response.GetFieldValue<string>("nome");
                         int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
                         int stock = response.GetFieldValue<int>("stock");
-                        float preco = response.GetFieldValue<float>("preco");
+                        float preco = (float)response.GetFieldValue<double>("preco");
                         bool disponivel = response.GetFieldValue<bool>("disponivel");
                         res.Add(new Produto(idProd, nome, idSubCategoria, idStand, stock, preco, disponivel));
                     }
@@ -145,7 +145,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
                         int stand = response.GetFieldValue<int>("banca");
                         int stock = response.GetFieldValue<int>("stock");
-                        float preco = response.GetFieldValue<float>("preco");
+                        float preco = (float)response.GetFieldValue<double>("preco");
                         bool disponivel = response.GetFieldValue<bool>("disponivel");
                         connection.Close();
                         return new Produto(id, nome, idSubCategoria, stand, stock, preco, disponivel);

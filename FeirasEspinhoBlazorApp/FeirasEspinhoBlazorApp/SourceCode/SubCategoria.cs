@@ -12,5 +12,11 @@
 
 		public int IdS { get => idS; }
 		public float Imposto { get => imposto; set => imposto = value; }
-	}
+
+        public override string ToString()
+        {
+            return "IdCategoria: " + Id + "\n" + "Nome: " + Name + "\n" +"IdSubCategoria: "+IdS+"\n"+"Imposto: "+Imposto;
+        }
+
+    }
 }

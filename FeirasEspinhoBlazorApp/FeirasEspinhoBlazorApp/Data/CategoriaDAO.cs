@@ -50,9 +50,6 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-
-
-        //errado, tenho que meter nas duas tabelas
         public void InsertCategoria(Categoria categoria)
         {
             try
@@ -147,7 +144,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     while (response.Read())
                     {
                         string nome = response.GetFieldValue<string>("nome");
-                        float imposto = response.GetFieldValue<float>("imposto");
+                        float imposto = (float)response.GetFieldValue<double>("imposto");
                         int categoria = response.GetFieldValue<int>("categoria");
                         connection.Close();
                         return new SubCategoria(categoria,nome,id,imposto);

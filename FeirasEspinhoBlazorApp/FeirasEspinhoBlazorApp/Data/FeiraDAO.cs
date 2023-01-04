@@ -50,7 +50,6 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
         }
-        //Por algum motivo sem este get isto não compila
         public Feira? this[int id] => GetFeira(id);
         public Feira? GetFeira(int id)
         {
@@ -68,8 +67,8 @@ namespace FeirasEspinhoBlazorApp.Data
                         int iDFeira = response.GetFieldValue<int>("idFeira");
                         string nome = response.GetFieldValue<string>("nome");
                         DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
-                        DateTime dataFim = response.GetFieldValue<DateTime>("dataNascimento");
-                        float precoCandidatura = response.GetFieldValue<float>("precoCandidatura");
+                        DateTime dataFim = response.GetFieldValue<DateTime>("dataFim");
+                        float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
                         string criadorEmail = response.GetFieldValue<string>("criadorEmail");
                         int categoria = response.GetFieldValue<int>("categoria");
                         connection.Close();

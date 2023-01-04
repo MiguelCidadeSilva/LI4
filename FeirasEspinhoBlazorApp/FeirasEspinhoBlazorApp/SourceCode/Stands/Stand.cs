@@ -80,6 +80,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             Produtos = new List<Produto>();
         }
 
+        public override string ToString()
+        {
+            return "IdStand: " + IdStand + "\n" + "Negociavel: " + Negociavel + "\n" + "Consultantes: " + Consultantes + "\n" +
+                "DataCriacao: " + DataCriacao + "\n" + "EmailDono: " + EmailDono + "\n" + "Categoria: " + Categoria + "\n" +
+                "Produtos: " + Produtos + "\n";
+        }
 
     }
 }
