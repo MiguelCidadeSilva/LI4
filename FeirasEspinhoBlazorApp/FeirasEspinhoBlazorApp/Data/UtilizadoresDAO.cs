@@ -354,22 +354,22 @@ namespace FeirasEspinhoBlazorApp.Data
                 string sql = @"
                 INSERT INTO [dbo].[Cliente] (email, nome, password, dataNascimento, dataCriacao)
                 VALUES
-                    ('joao@gmail.com', 'João Silva', 'joao123', '1980-01-01', '2022-12-15'),
-                    ('maria@gmail.com', 'Maria Santos', 'maria123', '1985-03-20', '2022-12-15'),
-                    ('pedro@gmail.com', 'Pedro Rodrigues', 'pedro123', '1990-06-05', '2022-12-15'),
-                    ('carlos@gmail.com', 'Carlos Martins', 'carlos123', '1995-09-15', '2022-12-15'),
-                    ('ana@gmail.com', 'Ana Costa', 'ana123', '2000-11-30', '2022-12-15'),
-                    ('rui@gmail.com', 'Rui Pereira', 'rui123', '2005-02-12', '2022-12-15'),
-                    ('joana@gmail.com', 'Joana Ferreira', 'joana123', '2002-04-25', '2022-12-15'),
-                    ('paulo@gmail.com', 'Paulo Moreira', 'paulo123', '2001-07-10', '2022-12-15'),
-                    ('sara@gmail.com', 'Sara Oliveira', 'sara123', '2000-09-20', '2022-12-15'),
-                    ('miguel@gmail.com', 'Miguel Gomes', 'miguel123', '1975-12-31', '2022-12-15'),
-                    ('david@gmail.com', 'David Sousa', 'david123', '1980-03-01', '2022-12-15'),
-                    ('carla@gmail.com', 'Carla Almeida', 'carla123', '1985-05-15', '2022-12-15'),
-                    ('ricardo@gmail.com', 'Ricardo Fonseca', 'ricardo123', '1990-08-01', '2022-12-15'),
-                    ('isabel@gmail.com', 'Isabel Costa', 'isabel123', '1995-10-20', '2022-12-15'),
-                    ('francisco@gmail.com', 'Francisco Pinto', 'francisco123', '2000-12-31', '2022-12-15'),
-                    ('catarina@gmail.com', 'Catarina Teixeira', 'catarina123', '2000-02-14', '2022-12-15');
+                    ('joao@gmail.com', 'João Silva', 'joao12345678', '1980-01-01', '2022-12-15'),
+                    ('maria@gmail.com', 'Maria Santos', 'maria12345678', '1985-03-20', '2022-12-15'),
+                    ('pedro@gmail.com', 'Pedro Rodrigues', 'pedro12345678', '1990-06-05', '2022-12-15'),
+                    ('carlos@gmail.com', 'Carlos Martins', 'carlos12345678', '1995-09-15', '2022-12-15'),
+                    ('ana@gmail.com', 'Ana Costa', 'ana12345678', '2000-11-30', '2022-12-15'),
+                    ('rui@gmail.com', 'Rui Pereira', 'rui12345678', '2005-02-12', '2022-12-15'),
+                    ('joana@gmail.com', 'Joana Ferreira', 'joana12345678', '2002-04-25', '2022-12-15'),
+                    ('paulo@gmail.com', 'Paulo Moreira', 'paulo12345678', '2001-07-10', '2022-12-15'),
+                    ('sara@gmail.com', 'Sara Oliveira', 'sara12345678', '2000-09-20', '2022-12-15'),
+                    ('miguel@gmail.com', 'Miguel Gomes', 'miguel12345678', '1975-12-31', '2022-12-15'),
+                    ('david@gmail.com', 'David Sousa', 'david12345678', '1980-03-01', '2022-12-15'),
+                    ('carla@gmail.com', 'Carla Almeida', 'carla12345678', '1985-05-15', '2022-12-15'),
+                    ('ricardo@gmail.com', 'Ricardo Fonseca', 'ricardo12345678', '1990-08-01', '2022-12-15'),
+                    ('isabel@gmail.com', 'Isabel Costa', 'isabel12345678', '1995-10-20', '2022-12-15'),
+                    ('francisco@gmail.com', 'Francisco Pinto', 'francisco12345678', '2000-12-31', '2022-12-15'),
+                    ('catarina@gmail.com', 'Catarina Teixeira', 'catarina12345678', '2000-02-14', '2022-12-15');
                 ";
                 SqlCommand command = new(sql, connection);
                 connection.Open();
