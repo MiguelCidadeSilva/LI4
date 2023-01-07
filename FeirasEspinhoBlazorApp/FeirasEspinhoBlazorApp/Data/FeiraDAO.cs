@@ -49,30 +49,6 @@ namespace FeirasEspinhoBlazorApp.Data
                 return r;
             }
         }
-        public void GenerateData()
-        {
-			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
-			{
-				string sql = @"INSERT INTO Feira (idFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria)
-                        VALUES
-                            (1, 'Feira de frutas', '2022-12-16', '2022-12-18', 10.00, 'isaura@hotmail.com', 1),
-                            (2, 'Feira de roupas', '2022-12-19', '2022-12-21', 15.00, 'cristiano@hotmail.com', 2),
-                            (3, 'Feira de brinquedos', '2022-12-22', '2022-12-24', 20.00, 'eduarda@hotmail.com', 3),
-                            (4, 'Feira de eletrônicos', '2022-12-25', '2022-12-27', 25.00, 'isaura@hotmail.com', 4),
-                            (5, 'Feira de livros', '2022-12-28', '2022-12-30', 30.00, 'marco@hotmail.com', 5),
-                            (6, 'Feira de móveis', '2022-12-31', '2023-01-02', 35.00, 'eduarda@hotmail.com', 6),
-                            (7, 'Feira de cosméticos', '2023-01-03', '2023-01-05', 40.00, 'rui@hotmail.com', 7),
-                            (8, 'Feira de ferramentas', '2023-01-06', '2023-01-08', 45.00, 'evandro@hotmail.com', 8),
-                            (9, 'Feira de desporto', '2023-01-09', '2023-01-11', 50.00, 'diogo@hotmail.com', 9),
-                            (10, 'Feira de jardinagem', '2023-01-12', '2023-01-14', 55.00, 'filipa@hotmail.com', 10),
-                            (11, 'Feira de jardinagem', '2023-01-12',  null, 60.00, 'manuel@hotmail.com', null),
-                            (12, 'Feira de jardinagem', '2023-01-12', '2023-02-20', 65.00, 'angelico@hotmail.com', null)";
-				SqlCommand command = new(sql, connection);
-				connection.Open();
-				command.ExecuteNonQuery();
-				connection.Close();
-			}
-		}
         public void Insert(Feira feira)
         {
             try
@@ -191,5 +167,30 @@ namespace FeirasEspinhoBlazorApp.Data
 			}
 			return r;
 		}
-    }
+
+		public void GenerateData()
+		{
+			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+			{
+				string sql = @"INSERT INTO Feira (idFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria)
+                        VALUES
+                            (1, 'Feira de frutas', '2022-12-16', '2022-12-18', 10.00, 'isaura@hotmail.com', 1),
+                            (2, 'Feira de roupas', '2022-12-19', '2022-12-21', 15.00, 'cristiano@hotmail.com', 2),
+                            (3, 'Feira de brinquedos', '2022-12-22', '2022-12-24', 20.00, 'eduarda@hotmail.com', 3),
+                            (4, 'Feira de eletrônicos', '2022-12-25', '2022-12-27', 25.00, 'isaura@hotmail.com', 4),
+                            (5, 'Feira de livros', '2022-12-28', '2022-12-30', 30.00, 'marco@hotmail.com', 5),
+                            (6, 'Feira de móveis', '2022-12-31', '2023-01-02', 35.00, 'eduarda@hotmail.com', 6),
+                            (7, 'Feira de cosméticos', '2023-01-03', '2023-01-05', 40.00, 'rui@hotmail.com', 7),
+                            (8, 'Feira de ferramentas', '2023-01-06', '2023-01-08', 45.00, 'evandro@hotmail.com', 8),
+                            (9, 'Feira de desporto', '2023-01-09', '2023-01-11', 50.00, 'diogo@hotmail.com', 9),
+                            (10, 'Feira de jardinagem', '2023-01-12', '2023-01-14', 55.00, 'filipa@hotmail.com', 10),
+                            (11, 'Feira de jardinagem', '2023-01-12',  null, 60.00, 'manuel@hotmail.com', null),
+                            (12, 'Feira de jardinagem', '2023-01-12', '2023-02-20', 65.00, 'angelico@hotmail.com', null)";
+				SqlCommand command = new(sql, connection);
+				connection.Open();
+				command.ExecuteNonQuery();
+				connection.Close();
+			}
+		}
+	}
 }

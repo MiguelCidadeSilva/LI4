@@ -193,7 +193,6 @@ namespace FeirasEspinhoBlazorApp.Data
             return res;
         }
 
-
         public Produto? GetProduto(int id)
         {
             try
@@ -361,6 +360,100 @@ namespace FeirasEspinhoBlazorApp.Data
             }
             return null;
         }
+		private void GenerateDataStand()
+		{
+			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+			{
+				string sql = @"INSERT INTO Stand (idStand, negociavel, consultantes, dataCriacao, donoEmail, categoria)
+                            VALUES
+                                (1, 1, 5, '2022-12-15', 'adriana@espinho.com', 1),
+                                (2, 0, 10, '2022-12-15', 'amelia@espinho.com', 2),
+                                (3, 1, 15, '2022-12-15', 'elvira@espinho.com', 3),
+                                (4, 0, 20, '2022-12-15', 'esmeralda@espinho.com', 4),
+                                (5, 1, 25, '2022-12-15', 'rogerio@espinho.com', 5),
+                                (6, 0, 30, '2022-12-15', 'olga@espinho.com', 6),
+                                (7, 1, 35, '2022-12-15', 'elisio@espinho.com', 7),
+                                (8, 0, 40, '2022-12-15', 'orlando@espinho.com', 8),
+                                (9, 1, 45, '2022-12-15', 'arsenio@espinho.com', 9),
+                                (10, 0, 50, '2022-12-15', 'adriana@espinho.com', 10),
+                                (11, 0, 55, '2022-12-15', 'amelia@espinho.com', 1),
+                                (12, 1, 60, '2022-12-15', 'elvira@espinho.com', 2),
+                                (13, 0, 65, '2022-12-15', 'esmeralda@espinho.com', 3),
+                                (14, 1, 70, '2022-12-15', 'rogerio@espinho.com', 4),
+                                (15, 0, 75, '2022-12-15', 'olga@espinho.com', 5),
+                                (16, 1, 80, '2022-12-15', 'elisio@espinho.com', 6),
+                                (17, 0, 85, '2022-12-15', 'orlando@espinho.com', 7),
+                                (18, 1, 90, '2022-12-15', 'arsenio@espinho.com', 8),
+                                (19, 0, 95, '2022-12-15', 'adriana@espinho.com', 9),
+                                (20, 1, 100, '2022-12-15', 'amelia@espinho.com', 10)";
 
-    }
+				SqlCommand command = new(sql, connection);
+				connection.Open();
+				command.ExecuteNonQuery();
+				connection.Close();
+			}
+
+		}
+        private void GenerateDataProdutos()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+            {
+                string sql = @"INSERT INTO Produto (idProd, nome, idSubCategoria, banca, stock, preco, disponivel)
+                                VALUES
+                                    (1, 'Laranja', 1, 1, 100, 10, 1),
+                                    (2, 'Banana', 2, 1, 101, 11, 1),
+                                    (3, 'Maçã', 3, 1, 102, 12, 1),
+                                    (4, 'Pera', 4, 1, 103, 13, 1),
+                                    (5, 'Uva', 5, 1, 104, 14, 1),
+                                    (6, 'Morango', 6, 1, 105, 15, 1),
+                                    (7, 'Abacaxi', 7, 1, 106, 16, 1),
+                                    (8, 'Manga', 8, 1, 107, 17, 1),
+                                    (9, 'Pêssego', 9, 1, 108, 18, 1),
+                                    (10, 'Amora', 10, 1, 109, 19, 1),
+                                    (11, 'Kiwi', 1, 1, 110, 20, 1),
+                                    (12, 'Mamão', 2, 1, 111, 21, 1),
+                                    (13, 'Tangerina', 3, 1, 112, 22, 1),
+                                    (14, 'Acerola', 4, 1, 113, 23, 1),
+                                    (15, 'Graviola', 5, 1, 114, 24, 1),
+                                    (16, 'Pitanga', 6, 1, 115, 25, 1),
+                                    (17, 'Jabuticaba', 7, 1, 116, 26, 1),
+                                    (18, 'Lichia', 8, 1, 117, 27, 1),
+                                    (19, 'Goiaba', 9, 1, 118, 28, 1),
+                                    (20, 'Caju', 10, 1, 119, 29, 1),
+                                    (21, 'Vestido', 11, 12, 120, 30, 1),
+                                    (22, 'Camisa', 12, 12, 121, 31, 1),
+                                    (23, 'Calça', 13, 12, 122, 32, 1),
+                                    (24, 'Sapato', 14, 12, 123, 33, 1),
+                                    (25, 'Bolsa', 15, 12, 124, 34, 1),
+                                    (26, 'Cinto', 16, 12, 125, 35, 1),
+                                    (27, 'Carteira', 17, 12, 126, 36, 1),
+                                    (28, 'Pulseira', 18, 12, 127, 37, 1),
+                                    (29, 'Anel', 19, 12, 128, 38, 1),
+                                    (30, 'Colar', 20, 12, 129, 39, 1),
+                                    (31, 'Oculos', 11, 12, 130, 40, 1),
+                                    (32, 'Relógio', 12, 12, 131, 41, 1),
+                                    (33, 'Boné', 13, 12, 132, 42, 1),
+                                    (34, 'Meia', 14, 12, 133, 43, 1),
+                                    (35, 'Cueca', 15, 12, 134, 44, 1),
+                                    (36, 'Sutiã', 16, 12, 135, 45, 1),
+                                    (37, 'Lingerie', 12, 17, 136, 46, 1),
+                                    (38, 'Lenço', 18, 12, 137, 47, 1),
+                                    (39, 'Chapéu', 19, 12, 138, 48, 1),
+                                    (40, 'Biquíni', 20, 12, 139, 49, 1),
+                                    (41, 'Mochila', 21, 12, 140, 50, 1)";
+                SqlCommand command = new(sql, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+		public void GenerateData()
+        {
+            GenerateDataStand();
+            GenerateDataProdutos();
+
+		}
+
+	}
 }

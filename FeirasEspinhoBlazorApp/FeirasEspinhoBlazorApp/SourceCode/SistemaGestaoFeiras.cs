@@ -132,7 +132,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Stand> GetStandFeirante(string feirante)
 		{
-			return new();
+			return stands.ListAllStands().Where(s => s.EmailDono.Equals(feirante)).ToList();
 		}
 		public void AddStandFeira(int stand, int feira)
 		{

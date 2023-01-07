@@ -12,7 +12,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
         private bool negociavel;
         private int consultantes;  // nº de visitantes de um stand
         private DateTime dataCriacao;
-        private string? emailDono;
+        private string emailDono;
         public int categoria;
         private List<Produto> produtos;
         public int IdStand
@@ -38,7 +38,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             set { dataCriacao = value; }
         }
         
-        public string? EmailDono
+        public string EmailDono
         {
             get { return emailDono; }
             set { emailDono = value; }

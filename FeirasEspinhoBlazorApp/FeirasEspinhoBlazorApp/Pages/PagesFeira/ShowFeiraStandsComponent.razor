@@ -185,6 +185,19 @@
 	}
 	public void SelecionarStand()
 	{
-		showCandidatura = true;
+		if(tabelContent.IdValid())
+		{
+			erro = 0;
+			Stand s = tabelContent.GetElement();
+			idStand = s.IdStand;
+			showCandidatura = true;
+			showStand = false;
+			showAvaliacao = false;
+			showLeilao = false;
+		}
+		else
+		{
+			erro = 1;
+		}
 	}
 }
