@@ -5,6 +5,7 @@ using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -15,6 +16,39 @@ namespace FeirasEspinhoBlazorApp.Data
         public static FeiraDAO GetInstance()
         {
             return instance;
+        }
+
+        public bool ContainsKey(int idFeira)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", idFeira);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
         }
 
         public void Insert(Feira feira)
@@ -91,5 +125,48 @@ namespace FeirasEspinhoBlazorApp.Data
             }
             return null;
         }
+
+        public List<Feira>? ListAllFeiras()
+        {
+            try
+            {
+                List<Feira> r = new();
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
+                {
+                    connection.Open();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int idFeira = response.GetFieldValue<int>("idFeira");
+                        String nome = response.GetFieldValue<String>("nome");
+                        DateTime dataI = response.GetFieldValue<DateTime>("dataInicio");
+                        DateTime dataF = response.GetFieldValue<DateTime>("dataFim");
+                        float precoCand = (float)response.GetFieldValue<double>("precoCandidatura");
+                        String criadorEmail = response.GetFieldValue<String>("criadorEmail");
+                        int categoria = response.GetFieldValue<int>("categoria");
+                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria);
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return null;
+        }
+
+
     }
 }
