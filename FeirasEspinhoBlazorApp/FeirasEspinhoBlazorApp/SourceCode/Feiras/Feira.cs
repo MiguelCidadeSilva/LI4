@@ -13,17 +13,17 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
         private DateTime dataInicio;
         private DateTime? dataFim;
         private float precoCandidatura;
-        private string? criadorEmail;
-        private int categoria;
+        private string criadorEmail;
+        private int? categoria;
         private Dictionary <string, List<Stand>> listaStands;
         private Dictionary<string, List<Leilao>> listaLeiloes;
-        private string? nome;
+        private string nome;
         public int IDFeira
         {
             get { return iDFeira; }
             set { iDFeira = value; }
         }
-        public string? Nome
+        public string Nome
         {
             get { return nome; }
             set { nome = value; }
@@ -43,12 +43,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return precoCandidatura; }
             set { precoCandidatura = value; }
         }
-        public string? CriadorEmail
+        public string CriadorEmail
         {
             get { return criadorEmail; }
             set { criadorEmail = value; }
         }
-        public int Categoria
+        public int? Categoria
         {
             get { return categoria; }
             set { categoria = value; }
@@ -63,7 +63,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return listaLeiloes; }
             set { listaLeiloes = value; }
         }
-		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria)
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria)
 		{
 			IDFeira = idFeira;
 			Nome = nome;
@@ -76,7 +76,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 			ListaLeiloes = new Dictionary<string, List<Leilao>>();
 		}
 
-		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria, List<Stand> stands, List<Leilao> leiloes)
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria, List<Stand> stands, List<Leilao> leiloes)
         {
             IDFeira = idFeira;
             Nome = nome;
@@ -94,7 +94,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
                     listaStands.Add(s.EmailDono, new());
                     listaLeiloes.Add(s.EmailDono, new());
 				}
-                Leilao l = leiloes.Where(l => l.Stand == s.IdStand).FirstOrDefault();
+                Leilao l = leiloes.FirstOrDefault(l => l.Stand == s.IdStand);
                 if(l != null)
                 {
 					listaStands[s.EmailDono].Add(s);

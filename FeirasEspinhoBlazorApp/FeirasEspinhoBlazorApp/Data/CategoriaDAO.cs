@@ -50,6 +50,28 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
+        public void GenerateData()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+            {
+                string sql = @"INSERT INTO Categoria (idCategoria, nome)
+                VALUES
+                    (1, 'Fruta'),
+                    (2, 'Vestuário'),
+                    (3, 'Brinquedos'),
+                    (4, 'Eletrônicos'),
+                    (5, 'Livros'),
+                    (6, 'Móveis'),
+                    (7, 'Cosméticos'),
+                    (8, 'Ferramentas'),
+                    (9, 'Desporto'),
+                    (10, 'Jardinagem')";
+				SqlCommand command = new(sql, connection);
+				connection.Open();
+				command.ExecuteNonQuery();
+				connection.Close();
+			}
+		}
         public void InsertCategoria(Categoria categoria)
         {
             try

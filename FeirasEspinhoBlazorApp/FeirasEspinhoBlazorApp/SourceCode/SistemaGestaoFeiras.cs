@@ -38,6 +38,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			feiras = FeiraDAO.GetInstance();
 			stands = StandDAO.GetInstance();
 			vendas = VendaDAO.GetInstance();
+			feirasCounter = 0;
+			vendasCounter = 0;
+			standsCounter = 0;
+			negociacoesCounter = 0;
 		}
 
 
@@ -59,25 +63,25 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		//
 		public void Registo(Utilizador u)
 		{
-			String key = u.Email;
 			if (u.Password.Length < 8)
 				throw new PasswordInvalidaException("Password tem de conter pelo menos 8 caracteres.");
-			//if (users.)
-			//	throw new EmailInvalidoException("Email já está associado a uma conta...");
+			if (users.ContainsKey(u.Email))
+				throw new EmailInvalidoException("Email já está associado a uma conta...");
 			users.Insert(u);
 
 		}
 
 		//Quando a data final é null, é uma feira permanente
 		//Não precisamos de verificar se já acabou quando implementarmos essa funcionalidade no sistema
-		public void CriarFeira(Utilizador u, int id_feira, String nome_Feira, DateTime? data_Final, float preco_candidatura, int categoria_feira)
+		public void CriarFeira(Utilizador u, String nome_Feira, DateTime? data_Final, float preco_candidatura, int categoria_feira)
 		{
 			if (u is not Administrador)
 				throw new PermissaoInvalidaException("Funcionalidade restrita a Administradores.");
 
 			//Caso o admin em questão já adicionou feiras no passado
-			int key = id_feira;
-			feiras.Insert(new Feira(id_feira, nome_Feira, DateTime.Now, data_Final,
+			int key = feirasCounter;
+			feirasCounter++;
+			feiras.Insert(new Feira(key, nome_Feira, DateTime.Now, data_Final,
 										  preco_candidatura, u.Email, categoria_feira));
 		}
 
@@ -237,7 +241,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 				sf.Login("sweeper@gmail.com","123456789");
 				sf.Login("ze@gmail.com", "bananas123");
 				sf.Login("maria@gmail.com", "whatinthefuck");
-				sf.CriarFeira(a, 1, "Feira do Congo", null, 19.90f, 3);
+				sf.CriarFeira(a, "Feira do Congo", null, 19.90f, 3);
 
 				Venda v = new Venda();
 				Venda v2 = v.Clone();
