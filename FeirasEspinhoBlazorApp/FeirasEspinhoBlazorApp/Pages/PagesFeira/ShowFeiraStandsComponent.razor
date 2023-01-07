@@ -55,7 +55,7 @@
 								<td> @stand.Item2.IdStand</td>
 								<td> @nomes[stand.Item2.EmailDono]</td>
 								<td> @stand.Item2.DataCriacao</td>
-								<td> @stand.Item2.Categoria</td>
+								<td> @categoria[stand.Item2.IdStand].Name</td>
 								<td> @stand.Item3</td>
 						</tr>
 					}
@@ -89,9 +89,10 @@
 	private bool showAvaliacao = false;
 	private bool showStand = false;
 	private bool showLeilao = false;
-	private bool showCandidatura = true;
+	private bool showCandidatura = false;
 	private bool type;
 	private int idStand = 0;
+	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<string, string> nomes = new Dictionary<string, string>();
 	private Table<Stand> tabelContent;
 	private int erro = 0;
@@ -101,26 +102,27 @@
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
 		type = utilizador is Cliente;
+		List<(Stand, int)> conteudo = new();
+		List<Stand> stands;
 		if (type)
 		{
 			showBancas = this;
-			List<Stand> stands = facade.GetStandsFeira(idFeira);
-			List<(Stand, int)> conteudo = new List<(Stand, int)>();
+			stands = facade.GetStandsFeira(idFeira);
 			stands.ForEach(s => conteudo.Add((s, 0)));
 			foreach(Stand s in stands)
 			{
 				Utilizador dono = facade.GetUtilizador(s.EmailDono);
 				nomes[dono.Email] = dono.Username;
 			}
-			this.tabelContent = new Table<Stand>(conteudo);
 		}
 		else
 		{
-			List<Stand> stands = facade.GetStandFeirante(email);
-			List<(Stand, int)> conteudo = new List<(Stand, int)>();
+			stands = facade.GetStandFeirante(email);
 			nomes[utilizador.Email] = utilizador.Username;
 			stands.ForEach(s => conteudo.Add((s, 0)));
 		}
+		stands.ForEach(s => categoria.Add(s.IdStand, facade.GetCategoria(s.Categoria)));
+		this.tabelContent = new Table<Stand>(conteudo);
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
 	public static ShowFeiraStandsComponent GetInstace()
@@ -142,6 +144,7 @@
 			showStand = true;
 			showAvaliacao = false;
 			showLeilao = false;
+			showCandidatura = false;
 		}
 		else
 		{
@@ -159,6 +162,7 @@
 			showStand = false;
 			showAvaliacao = false;
 			showLeilao = true;
+			showCandidatura = false;
 		}
 		else
 		{

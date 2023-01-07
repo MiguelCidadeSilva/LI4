@@ -13,7 +13,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
         private int consultantes;  // nº de visitantes de um stand
         private DateTime dataCriacao;
         private string emailDono;
-        public int categoria;
+		private int categoria;
         private List<Produto> produtos;
         public int IdStand
         {
