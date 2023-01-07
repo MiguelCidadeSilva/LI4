@@ -92,7 +92,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Feira> GetFeiras() 
 		{
-			return new();
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) >= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Now) <= 0)).ToList();
 		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{
@@ -134,7 +134,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Leilao> GetLeiloesFeira(int idFeira)
 		{
-			Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
+			Feira f = feiras[idFeira];
 			List<Leilao> res = new();
 			f.ListaLeiloes.Values.ToList().ForEach(res.AddRange);
 			return res;
@@ -148,7 +148,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Stand> GetStandsFeira( int idFeira)
 		{
-			Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
+			Feira f = feiras[idFeira];
 			List<Stand> stands = new();
 			f.ListaStands.Values.ToList().ForEach(stands.AddRange);
 			return stands;
@@ -188,13 +188,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         }
         public Venda GetVenda(int idVenda)
 		{
-			if (vendas[idVenda] == null)
+			Venda venda = vendas[idVenda];
+			if (venda == null)
 			{
 				return new Venda();
 			}
 			else
 			{
-                return vendas[idVenda];
+                return venda;
             }
 			
 		}
@@ -218,8 +219,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Feira> FeirasNotStarted()
 		{
-			//return feiras..Values.Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
-			return new();
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
 		}
 
 		public class Teste

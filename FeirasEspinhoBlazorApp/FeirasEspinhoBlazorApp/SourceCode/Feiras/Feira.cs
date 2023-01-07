@@ -63,8 +63,20 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return listaLeiloes; }
             set { listaLeiloes = value; }
         }
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria)
+		{
+			IDFeira = idFeira;
+			Nome = nome;
+			DataInicio = dataI;
+			DataFim = dataF;
+			PrecoCandidatura = precoCand;
+			CriadorEmail = criadorEmail;
+			Categoria = categoria;
+			listaStands = new Dictionary<string, List<Stand>>();
+			ListaLeiloes = new Dictionary<string, List<Leilao>>();
+		}
 
-        public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria)
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int categoria, List<Stand> stands, List<Leilao> leiloes)
         {
             IDFeira = idFeira;
             Nome = nome;
@@ -73,9 +85,23 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             PrecoCandidatura = precoCand;
             CriadorEmail = criadorEmail;
             Categoria = categoria;
-            ListaStands = new Dictionary<string, List<Stand>>();
+            listaStands = new Dictionary<string, List<Stand>>();
             ListaLeiloes = new Dictionary<string, List<Leilao>>();
-        }
+            foreach(Stand s in stands)
+            {
+                if(!listaStands.ContainsKey(s.EmailDono))
+                {
+                    listaStands.Add(s.EmailDono, new());
+                    listaLeiloes.Add(s.EmailDono, new());
+				}
+                Leilao l = leiloes.Where(l => l.Stand == s.IdStand).FirstOrDefault();
+                if(l != null)
+                {
+					listaStands[s.EmailDono].Add(s);
+                    listaLeiloes[s.EmailDono].Add(l);
+				}
+            }
+		}
 
         public Feira(Feira f)
         {

@@ -26,7 +26,7 @@
             this.menus[cl] = new()
             {
                 new Opcao("Consultar Feiras", "oi oi-list", "showfeiras/" + email),
-                new Opcao("Leilões", "oi oi-euro", "showleiloescliente/" + email),
+                new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
                 new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
                 new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
             };
