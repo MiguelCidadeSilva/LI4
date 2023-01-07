@@ -2,6 +2,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
+using FeirasEspinhoBlazorApp.SourceCode.Stands;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -96,15 +97,16 @@ namespace FeirasEspinhoBlazorApp.Data
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
-                        int iDFeira = response.GetFieldValue<int>("idFeira");
                         string nome = response.GetFieldValue<string>("nome");
                         DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
                         DateTime dataFim = response.GetFieldValue<DateTime>("dataFim");
                         float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
                         string criadorEmail = response.GetFieldValue<string>("criadorEmail");
                         int categoria = response.GetFieldValue<int>("categoria");
+                        List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
+                        List<Stand> standsdafeira = StandsDaFeira(id);
                         connection.Close();
-                        return new Feira(iDFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria);
+                        return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
                     }
                 }
             }
@@ -133,6 +135,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -147,7 +150,9 @@ namespace FeirasEspinhoBlazorApp.Data
                         int? categoria = null;
 						if (!response.IsDBNull("categoria")) 
                             categoria = response.GetInt32("categoria");
-                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria));
+                        List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
+                        List<Stand> standsdafeira = StandsDaFeira(idFeira);
+                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria,standsdafeira,leiloesdafeira));
                     }
                     connection.Close();
                 }
@@ -192,5 +197,140 @@ namespace FeirasEspinhoBlazorApp.Data
 				connection.Close();
 			}
 		}
-	}
+
+        public void InsertStandParticipante(int idStand, int idFeira)
+        {
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[StandParticipa] VALUES (@idStand, @idFeira)", connection);
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@idStand", idStand);
+                    command.Parameters.AddWithValue("@idFeira", idFeira);
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+        public Boolean feiraTemStands(int idFeira)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", idFeira);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
+
+        public List<Stand> StandsDaFeira(int idFeira)
+        {
+            List<Stand> r = new();
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", idFeira);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int idStand = response.GetFieldValue<int>("idStand");
+                       r.Add(StandDAO.GetInstance().GetStand(idStand));
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+        public Dictionary<int,int> FeirasStands()
+        {
+            Dictionary<int, int> r = new();
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [StandParticipa]", connection))
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int idStand = response.GetFieldValue<int>("idStand");
+                        int idFeira = response.GetFieldValue<int>("idFeira");
+                        r.Add(idFeira,idStand);
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+    }
 }

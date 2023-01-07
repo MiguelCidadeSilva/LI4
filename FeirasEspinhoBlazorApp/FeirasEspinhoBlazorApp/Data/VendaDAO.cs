@@ -125,15 +125,16 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Venda>? ListAllVendas()
+        public List<Venda> ListAllVendas()
         {
+            List<Venda> r = new();
             try
             {
-                List<Venda> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Venda]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -166,7 +167,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
     }

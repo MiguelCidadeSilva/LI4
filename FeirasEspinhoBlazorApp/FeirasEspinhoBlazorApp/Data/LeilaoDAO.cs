@@ -297,15 +297,16 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Leilao>? ListAllLeiloes()
+        public List<Leilao> ListAllLeiloes()
         {
+            List<Leilao> r = new();
             try
             {
-                List<Leilao> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Leilao]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -337,18 +338,19 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
         public Dictionary<(int,String),float> GetAllBids()
         {
+            Dictionary<(int, String), float> r = new();
             try
             {
-                Dictionary<(int, String), float> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [PrecosLeilao]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -374,19 +376,20 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
         public Dictionary<String, float> GetAllBidsLeilao(int leilao)
         {
+            Dictionary<String, float> r = new();
             try
             {
-                Dictionary<String, float> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [PrecosLeilao] WHERE leilao = (@leilao)", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@leilao", leilao);
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -412,7 +415,54 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
+
+        public List<Leilao> ListLeiloesFeira(int feira)
+        {
+            List<Leilao> r = new();
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Leilao] WHERE feira = (@feira)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@feira", feira);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int id = response.GetFieldValue<int>("id");
+                        DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
+                        float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
+                        float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+                        int produto = response.GetFieldValue<int>("produto");
+                        int quantidade = response.GetFieldValue<int>("quantidade");
+                        int stand = response.GetFieldValue<int>("stand");
+                        float bid = GetMaiorBid(id);
+                        r.Add(new Leilao(id, dataLimite, valorMinimo, valorMaximo, produto, quantidade, stand, feira, bid));
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+
+
     }
 }

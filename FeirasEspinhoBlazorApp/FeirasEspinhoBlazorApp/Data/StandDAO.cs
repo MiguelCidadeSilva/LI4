@@ -151,7 +151,7 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public List<Produto>? GetProdutosStand(int idStand)
+        public List<Produto> GetProdutosStand(int idStand)
 		{
 			List<Produto> res = new();
 			try
@@ -274,15 +274,16 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Stand>? ListAllStands()
+        public List<Stand> ListAllStands()
         {
+            List<Stand> r = new();
             try
             {
-                List<Stand> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Stand]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -291,7 +292,7 @@ namespace FeirasEspinhoBlazorApp.Data
                             IdStand = response.GetFieldValue<int>("idStand"),
                             Negociavel = response.GetFieldValue<bool>("negociavel"),
                             Consultantes = response.GetFieldValue<int>("consultantes"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataNascimento"),
+                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
                             EmailDono = response.GetFieldValue<string>("donoEmail"),
                             Categoria = response.GetFieldValue<int>("categoria")
                         };
@@ -314,18 +315,19 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
-        public List<Produto>? ListAllProdutos()
+        public List<Produto> ListAllProdutos()
         {
+            List<Produto> r = new();
             try
             {
-                List<Produto> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Produto]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -358,7 +360,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 		private void GenerateDataStand()
 		{

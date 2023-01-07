@@ -218,15 +218,16 @@ namespace FeirasEspinhoBlazorApp.Data
         }
 
         //METODOS DE TESTE
-		public List<Cliente>? ListAllClientes()
+		public List<Cliente> ListAllClientes()
 		{
+            List<Cliente> r = new();
             try
             {
-                List<Cliente> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Cliente]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -257,18 +258,19 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
 		}
 
         public List<Administrador>? ListAllAdmins()
         {
+            List<Administrador> r = new();
             try
             {
-                List<Administrador> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Administrador]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -299,18 +301,19 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
         public List<Feirante>? ListAllFeirantes()
         {
+            List<Feirante> r = new();
             try
             {
-                List<Feirante> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Feirante]", connection))
                 {
                     connection.Open();
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
@@ -342,7 +345,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-            return null;
+            return r;
         }
 
 
