@@ -5,7 +5,6 @@ using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -24,7 +23,7 @@ namespace FeirasEspinhoBlazorApp.Data
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [Venda] WHERE email = (@idVenda)", connection))
+                using (SqlCommand command = new("SELECT * FROM [Venda] WHERE idVenda = (@idVenda)", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@idVenda", idVenda);
@@ -91,10 +90,10 @@ namespace FeirasEspinhoBlazorApp.Data
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Venda] WHERE idFeira = (@idFeira)", connection);
+                using SqlCommand command = new("SELECT * FROM [Venda] WHERE idVenda = (@idVenda)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", id);
+                    command.Parameters.AddWithValue("@idVenda", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())

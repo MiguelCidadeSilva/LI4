@@ -6,7 +6,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Collections.Generic;
-using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinhoBlazorApp.Data
 {

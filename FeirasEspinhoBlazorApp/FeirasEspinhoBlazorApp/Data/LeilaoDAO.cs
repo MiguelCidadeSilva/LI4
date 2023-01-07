@@ -1,32 +1,33 @@
-using static System.Net.Mime.MediaTypeNames;
+﻿using static System.Net.Mime.MediaTypeNames;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using FeirasEspinhoBlazorApp.SourceCode.Stands;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
-    public class FeiraDAO
+    public class LeilaoDAO
     {
-        private static FeiraDAO instance = new FeiraDAO();
+        private static LeilaoDAO instance = new LeilaoDAO();
 
-        public static FeiraDAO GetInstance()
+        public static LeilaoDAO GetInstance()
         {
             return instance;
         }
 
-        public bool ContainsKey(int idFeira)
+        public bool ContainsKeyLeilao(int id)
         {
             bool r = false;
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection))
+                using (SqlCommand command = new("SELECT * FROM [Leilao] WHERE id = (@id)", connection))
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", idFeira);
+                    command.Parameters.AddWithValue("@id", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     r = response.HasRows;
@@ -50,21 +51,22 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public void Insert(Feira feira)
+        public void InsertLeilao(Leilao leilao)
         {
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria)", connection);
+                using SqlCommand command = new("INSERT INTO [dbo].[Leilao] VALUES (@id, @dataLimite, @valorMinimo, @valorMaximo, @produto, @quantidade, @stand, @feira)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
-                    command.Parameters.AddWithValue("@nome", feira.Nome);
-                    command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
-                    command.Parameters.AddWithValue("@dataFim", feira.DataFim);
-                    command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
-                    command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
-                    command.Parameters.AddWithValue("@categoria", feira.Categoria);
+                    command.Parameters.AddWithValue("@id", leilao.Id);
+                    command.Parameters.AddWithValue("@dataLimite", leilao.Date);
+                    command.Parameters.AddWithValue("@valorMinimo", leilao.ValormMinimo);
+                    command.Parameters.AddWithValue("@valorMaximo", leilao.ValormMaximo);
+                    command.Parameters.AddWithValue("@produto", leilao.ValormMaximo);
+                    command.Parameters.AddWithValue("@quantidade", leilao.Quantidade);
+                    command.Parameters.AddWithValue("@stand", leilao.Stand);
+                    command.Parameters.AddWithValue("@feira", leilao.Feira);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -83,29 +85,53 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
         }
-        public Feira? this[int id] => GetFeira(id);
-        public Feira? GetFeira(int id)
+
+        public void InsertBid(int leilao, String clienteEmail, float quantia)
         {
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection);
+                using SqlCommand command = new("INSERT INTO [dbo].[PrecosLeilao] VALUES (@leilao, @clienteEmail, @precoProposto)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", id);
+                    command.Parameters.AddWithValue("@leilao", leilao);
+                    command.Parameters.AddWithValue("@clienteEmail", clienteEmail);
+                    command.Parameters.AddWithValue("@precoProposto", quantia);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+        public float? GetBid(int leilao, String clienteEmail)
+        {
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT * FROM [PrecosLeilao] WHERE leilao = (@leilao) AND clienteEmail = (@clienteEmail)", connection);
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@leilao", leilao);
+                    command.Parameters.AddWithValue("clienteEmail", clienteEmail);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
-                    {
-                        int iDFeira = response.GetFieldValue<int>("idFeira");
-                        string nome = response.GetFieldValue<string>("nome");
-                        DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
-                        DateTime dataFim = response.GetFieldValue<DateTime>("dataFim");
-                        float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
-                        string criadorEmail = response.GetFieldValue<string>("criadorEmail");
-                        int categoria = response.GetFieldValue<int>("categoria");
-                        connection.Close();
-                        return new Feira(iDFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria);
+                    {   
+                        float r = (float)response.GetFieldValue<double>("precoProposto");
+                        return r;
                     }
                 }
             }
@@ -125,29 +151,32 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Feira>? ListAllFeiras()
+
+
+
+        public Leilao? GetLeilao(int id)
         {
             try
             {
-                List<Feira> r = new();
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection);
                 {
                     connection.Open();
+                    command.Parameters.AddWithValue("@idFeira", id);
+                    command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     while (response.Read())
                     {
-                        int idFeira = response.GetFieldValue<int>("idFeira");
-                        String nome = response.GetFieldValue<String>("nome");
-                        DateTime dataI = response.GetFieldValue<DateTime>("dataInicio");
-                        DateTime dataF = response.GetFieldValue<DateTime>("dataFim");
-                        float precoCand = (float)response.GetFieldValue<double>("precoCandidatura");
-                        String criadorEmail = response.GetFieldValue<String>("criadorEmail");
-                        int categoria = response.GetFieldValue<int>("categoria");
-                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria));
+                        DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
+                        float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
+                        float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+                        int produto = response.GetFieldValue<int>("produto");
+                        int quantidade = response.GetFieldValue<int>("quantidade");
+                        int stand = response.GetFieldValue<int>("stand");
+                        int feira = response.GetFieldValue<int>("feira");
+                        connection.Close();
+                        return new Leilao(id,dataLimite,valorMinimo,valorMaximo,produto,quantidade,stand,feira,0);
                     }
-                    connection.Close();
-                    return r;
                 }
             }
             catch (SqlException ex)
