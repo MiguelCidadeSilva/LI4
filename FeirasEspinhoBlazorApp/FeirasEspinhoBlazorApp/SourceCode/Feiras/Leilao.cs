@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
+﻿namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 {
     public class Leilao
     {
@@ -56,14 +50,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return feira; }
             set { feira = value; }
         }
-        private int bidAtual;
-        public int BidAtual
+        private float bidAtual;
+        public float BidAtual
         {
             get { return bidAtual; }
             set { bidAtual = value; }
         }
         public Leilao() { }
-        public Leilao(int id, DateTime date, float valormMinimo, float valormMaximo, int produto, int quantidade, int stand, int feira, int bidAtual)
+        public Leilao(int id, DateTime date, float valormMinimo, float valormMaximo, int produto, int quantidade, int stand, int feira, float bidAtual)
         {
             this.id = id;
             this.date = date;
