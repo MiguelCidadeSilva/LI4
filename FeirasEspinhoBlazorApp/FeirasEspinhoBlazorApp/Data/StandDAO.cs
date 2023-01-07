@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Collections.Generic;
+using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -16,6 +17,72 @@ namespace FeirasEspinhoBlazorApp.Data
         public static StandDAO GetInstance()
         {
             return instance;
+        }
+
+        public bool ContainsKeyStand(int idStand)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM [Stand] WHERE idStand = (@idStand)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idStand", idStand);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
+
+        public bool ContainsKeyProduto(int idProd)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM [Produto] WHERE idProd = (@idprod)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
         }
 
         public void InsertStand(Stand stand)
@@ -208,5 +275,93 @@ namespace FeirasEspinhoBlazorApp.Data
             }
             return null;
         }
+
+        public List<Stand>? ListAllStands()
+        {
+            try
+            {
+                List<Stand> r = new();
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Stand]", connection))
+                {
+                    connection.Open();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        Stand s = new()
+                        {
+                            IdStand = response.GetFieldValue<int>("idStand"),
+                            Negociavel = response.GetFieldValue<bool>("negociavel"),
+                            Consultantes = response.GetFieldValue<int>("consultantes"),
+                            DataCriacao = response.GetFieldValue<DateTime>("dataNascimento"),
+                            EmailDono = response.GetFieldValue<string>("donoEmail"),
+                            Categoria = response.GetFieldValue<int>("categoria")
+                        };
+                        r.Add(s);
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return null;
+        }
+
+        public List<Produto>? ListAllProdutos()
+        {
+            try
+            {
+                List<Produto> r = new();
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Produto]", connection))
+                {
+                    connection.Open();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        Produto p = new()
+                        {
+                            IdProduto = response.GetFieldValue<int>("idProd"),
+                            Nome = response.GetFieldValue<String>("nome"),
+                            IdSubCategoria = response.GetFieldValue<int>("idSubCategoria"),
+                            Stand = response.GetFieldValue<int>("banca"),
+                            Stock = response.GetFieldValue<int>("stock"),
+                            Preco = (float)response.GetFieldValue<double>("preco"),
+                            Disponivel = response.GetFieldValue<bool>("disponivel")
+                        };
+                        r.Add(p);
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return null;
+        }
+
     }
 }

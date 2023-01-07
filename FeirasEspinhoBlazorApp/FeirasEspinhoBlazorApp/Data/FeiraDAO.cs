@@ -145,7 +145,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         float precoCand = (float)response.GetFieldValue<double>("precoCandidatura");
                         String criadorEmail = response.GetFieldValue<String>("criadorEmail");
                         int categoria = response.GetFieldValue<int>("categoria");
-                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria);
+                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria));
                     }
                     connection.Close();
                     return r;
