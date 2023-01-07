@@ -95,8 +95,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idFeira", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         string nome = response.GetFieldValue<string>("nome");
                         DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
                         DateTime dataFim = response.GetFieldValue<DateTime>("dataFim");
@@ -105,9 +106,9 @@ namespace FeirasEspinhoBlazorApp.Data
                         int categoria = response.GetFieldValue<int>("categoria");
                         List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
                         List<Stand> standsdafeira = StandsDaFeira(id);
-                        connection.Close();
                         return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -137,22 +138,25 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idFeira = response.GetInt32("idFeira");
-                        String nome = response.GetString("nome");
-                        DateTime dataI = response.GetDateTime("dataInicio");
-                        DateTime? dataF = null;
-                        if(!response.IsDBNull("dataFim"))
-                            dataF = response.GetDateTime("dataFim");
-                        float precoCand = (float)response.GetDouble("precoCandidatura");
-                        String criadorEmail = response.GetString("criadorEmail");
-                        int? categoria = null;
-						if (!response.IsDBNull("categoria")) 
-                            categoria = response.GetInt32("categoria");
-                        List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
-                        List<Stand> standsdafeira = StandsDaFeira(idFeira);
-                        r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria,standsdafeira,leiloesdafeira));
+                        while (response.Read())
+                        {
+                            int idFeira = response.GetInt32("idFeira");
+                            String nome = response.GetString("nome");
+                            DateTime dataI = response.GetDateTime("dataInicio");
+                            DateTime? dataF = null;
+                            if (!response.IsDBNull("dataFim"))
+                                dataF = response.GetDateTime("dataFim");
+                            float precoCand = (float)response.GetDouble("precoCandidatura");
+                            String criadorEmail = response.GetString("criadorEmail");
+                            int? categoria = null;
+                            if (!response.IsDBNull("categoria"))
+                                categoria = response.GetInt32("categoria");
+                            List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
+                            List<Stand> standsdafeira = StandsDaFeira(idFeira);
+                            r.Add(new Feira(idFeira, nome, dataI, dataF, precoCand, criadorEmail, categoria, standsdafeira, leiloesdafeira));
+                        }
                     }
                     connection.Close();
                 }
@@ -272,10 +276,13 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idFeira", idFeira);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idStand = response.GetFieldValue<int>("idStand");
-                       r.Add(StandDAO.GetInstance().GetStand(idStand));
+                        while (response.Read())
+                        {
+                            int idStand = response.GetFieldValue<int>("idStand");
+                            r.Add(StandDAO.GetInstance().GetStand(idStand));
+                        }
                     }
                     connection.Close();
                 }
@@ -307,11 +314,14 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idStand = response.GetFieldValue<int>("idStand");
-                        int idFeira = response.GetFieldValue<int>("idFeira");
-                        r.Add(idFeira,idStand);
+                        while (response.Read())
+                        {
+                            int idStand = response.GetFieldValue<int>("idStand");
+                            int idFeira = response.GetFieldValue<int>("idFeira");
+                            r.Add(idFeira, idStand);
+                        }
                     }
                     connection.Close();
                 }

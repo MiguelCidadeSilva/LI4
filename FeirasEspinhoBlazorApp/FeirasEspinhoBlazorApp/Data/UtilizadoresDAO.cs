@@ -143,8 +143,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while(response.Read())
+                    if(response.HasRows)
                     {
+                        response.Read();
                         Cliente c = new()
                         {
                             Email = response.GetFieldValue<string>("email"),
@@ -164,8 +165,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         Administrador a = new()
                         {
                             Email = response.GetFieldValue<string>("email"),
@@ -185,8 +187,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@email", email);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         Feirante f = new()
                         {
                             Email = response.GetFieldValue<string>("email"),
@@ -229,8 +232,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         Cliente cliente = new()
                         {
                             Email = response.GetFieldValue<string>("email"),
@@ -272,8 +276,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         Administrador admin = new()
                         {
                             Email = response.GetFieldValue<string>("email"),
@@ -315,8 +320,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         Feirante feirante = new()
                         {
                             Email = response.GetFieldValue<string>("email"),

@@ -1,32 +1,34 @@
-using static System.Net.Mime.MediaTypeNames;
+﻿using static System.Net.Mime.MediaTypeNames;
 using System.Data;
 using Microsoft.AspNetCore.Http;
-using FeirasEspinhoBlazorApp.SourceCode.Vendas;
+using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using FeirasEspinhoBlazorApp.SourceCode.Stands;
+
 
 namespace FeirasEspinhoBlazorApp.Data
 {
-    public class VendaDAO
+    public class CandidadturaDAO
     {
-        private static VendaDAO instance = new VendaDAO();
+        private static CandidadturaDAO instance = new CandidadturaDAO();
 
-        public static VendaDAO GetInstance()
+        public static CandidadturaDAO GetInstance()
         {
             return instance;
         }
 
-        public bool ContainsKeyVenda(int idVenda)
+        public bool ContainsKey(int idCandidatura)
         {
             bool r = false;
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [Venda] WHERE idVenda = (@idVenda)", connection))
+                using (SqlCommand command = new("SELECT * FROM [Candidatura] WHERE idCandidatura = (@idCandidatura)", connection))
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idVenda", idVenda);
+                    command.Parameters.AddWithValue("@idCandidatura", idCandidatura);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     r = response.HasRows;
@@ -50,21 +52,19 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public void Insert(Venda venda)
+        public void InsertCandidatura(Candidatura candidatura)
         {
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("INSERT INTO [dbo].[Venda] VALUES (@idVenda, @data, @preco, @emailCl, @idFeira, @negociacao, @idStand)", connection);
+                using SqlCommand command = new("INSERT INTO [dbo].[Candidatura] VALUES (@idCandidatura, @dataSubmissao, @aprovacao, @idStand, @idFeira)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idVenda", venda.IdVenda);
-                    command.Parameters.AddWithValue("@data", venda.Data);
-                    command.Parameters.AddWithValue("@preco", venda.Preco);
-                    command.Parameters.AddWithValue("@emailCl", venda.EmailCliente);
-                    command.Parameters.AddWithValue("@idFeira", venda.IdFeira);
-                    command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
-                    command.Parameters.AddWithValue("@idStand", venda.IdStand);
+                    command.Parameters.AddWithValue("@idCandidatura", candidatura.IdCandidatura);
+                    command.Parameters.AddWithValue("@dataSubmissao", candidatura.DataSubmissao);
+                    command.Parameters.AddWithValue("@aprovacao", candidatura.Aprovacao);
+                    command.Parameters.AddWithValue("@idStand", candidatura.IdStand);
+                    command.Parameters.AddWithValue("@idFeira", candidatura.IdFeira);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -84,30 +84,27 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public Venda? this[int id] => GetVenda(id);
-        public Venda? GetVenda(int id)
+        public Candidatura? GetCandidatura(int idCandidatura)
         {
             try
             {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Venda] WHERE idVenda = (@idVenda)", connection);
+                using SqlCommand command = new("SELECT * FROM [Candidatura] WHERE idCandidatura = (@idCandidatura)", connection);
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@idVenda", id);
+                    command.Parameters.AddWithValue("idCandidatura", idCandidatura);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     if (response.HasRows)
                     {
                         response.Read();
-                        DateTime data = response.GetFieldValue<DateTime>("data");
-                        float preco = (float)response.GetFieldValue<double>("preco");
-                        string emailCl = response.GetFieldValue<string>("emailCl");
-                        int idFeira = response.GetFieldValue<int>("idFeira");
-                        int negociacao = response.GetFieldValue<int>("negociacao");
-                        int idStand = response.GetFieldValue<int>("idStand");
-                        connection.Close();
-                        return new Venda(id, data, preco, emailCl, idFeira, negociacao, idStand);
+                        DateTime DataSubmissao = response.GetFieldValue<DateTime>("dataSubmissao");
+                        bool Aprovacao = response.GetFieldValue<bool>("aprovacao");
+                        int IdStand = response.GetFieldValue<int>("idStand");
+                        int IdFeira = response.GetFieldValue<int>("idFeira");
+                        return new Candidatura(idCandidatura,DataSubmissao,Aprovacao,IdStand,IdFeira);
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -126,32 +123,27 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Venda> ListAllVendas()
+        public List<Candidatura> ListAllCandidatura()
         {
-            List<Venda> r = new();
+            List<Candidatura> r = new List<Candidatura>();
             try
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Venda]", connection))
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT * FROM [Candidatura]", connection);
                 {
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     if (response.HasRows)
                     {
-                        while (response.Read())
+                        while (response.HasRows)
                         {
-                            Venda v = new()
-                            {
-                                IdVenda = response.GetFieldValue<int>("idVenda"),
-                                Data = response.GetFieldValue<DateTime>("data"),
-                                Preco = (float)response.GetFieldValue<double>("preco"),
-                                EmailCliente = response.GetFieldValue<string>("emailCl"),
-                                IdFeira = response.GetFieldValue<int>("idFeira"),
-                                Negociacao = response.GetFieldValue<int>("negociacao"),
-                                IdStand = response.GetFieldValue<int>("idStand")
-                            };
-                            r.Add(v);
+                            int idCandidatura = response.GetFieldValue<int>("idCandidatura");
+                            DateTime DataSubmissao = response.GetFieldValue<DateTime>("dataSubmissao");
+                            bool Aprovacao = response.GetFieldValue<bool>("aprovacao");
+                            int IdStand = response.GetFieldValue<int>("idStand");
+                            int IdFeira = response.GetFieldValue<int>("idFeira");
+                            r.Add(new Candidatura(idCandidatura, DataSubmissao, Aprovacao, IdStand, IdFeira));
                         }
                     }
                     connection.Close();
@@ -173,6 +165,5 @@ namespace FeirasEspinhoBlazorApp.Data
             }
             return r;
         }
-
     }
 }

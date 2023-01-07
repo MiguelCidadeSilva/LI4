@@ -195,11 +195,13 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("clienteEmail", clienteEmail);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
-                    {   
+                    if (response.HasRows)
+                    {
+                        response.Read();
                         float r = (float)response.GetFieldValue<double>("precoProposto");
                         return r;
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -230,11 +232,15 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
                     float r = 0;
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        float bid = (float)response.GetFieldValue<double>("precoProposto");
-                        if (bid > r) r = bid;
+                        while (response.Read())
+                        {
+                            float bid = (float)response.GetFieldValue<double>("precoProposto");
+                            if (bid > r) r = bid;
+                        }
                     }
+                    connection.Close();
                     return r;
                 }
             }
@@ -266,8 +272,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@id", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
                         float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
                         float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
@@ -308,18 +315,21 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int id = response.GetFieldValue<int>("id");
-                        DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
-                        float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
-                        float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
-                        int produto = response.GetFieldValue<int>("produto");
-                        int quantidade = response.GetFieldValue<int>("quantidade");
-                        int stand = response.GetFieldValue<int>("stand");
-                        int feira = response.GetFieldValue<int>("feira");
-                        float bid = GetMaiorBid(id);
-                        r.Add(new Leilao(id, dataLimite, valorMinimo, valorMaximo, produto, quantidade, stand, feira, bid));
+                        while (response.Read())
+                        {
+                            int id = response.GetFieldValue<int>("id");
+                            DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
+                            float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
+                            float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+                            int produto = response.GetFieldValue<int>("produto");
+                            int quantidade = response.GetFieldValue<int>("quantidade");
+                            int stand = response.GetFieldValue<int>("stand");
+                            int feira = response.GetFieldValue<int>("feira");
+                            float bid = GetMaiorBid(id);
+                            r.Add(new Leilao(id, dataLimite, valorMinimo, valorMaximo, produto, quantidade, stand, feira, bid));
+                        }
                     }
                     connection.Close();
                     return r;
@@ -352,12 +362,15 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int leilao = response.GetFieldValue<int>("leilao");
-                        String clienteEmail = response.GetFieldValue<String>("clienteEmail");
-                        float bid = (float)response.GetFieldValue<double>("precoProposto");
-                        r.Add((leilao,clienteEmail),bid);
+                        while (response.Read())
+                        {
+                            int leilao = response.GetFieldValue<int>("leilao");
+                            String clienteEmail = response.GetFieldValue<String>("clienteEmail");
+                            float bid = (float)response.GetFieldValue<double>("precoProposto");
+                            r.Add((leilao, clienteEmail), bid);
+                        }
                     }
                     connection.Close();
                     return r;
@@ -391,12 +404,14 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@leilao", leilao);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                      
-                        String clienteEmail = response.GetFieldValue<String>("clienteEmail");
-                        float bid = (float)response.GetFieldValue<double>("precoProposto");
-                        r.Add(clienteEmail, bid);
+                        while (response.Read())
+                        {
+                            String clienteEmail = response.GetFieldValue<String>("clienteEmail");
+                            float bid = (float)response.GetFieldValue<double>("precoProposto");
+                            r.Add(clienteEmail, bid);
+                        }
                     }
                     connection.Close();
                     return r;
@@ -430,17 +445,20 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@feira", feira);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int id = response.GetFieldValue<int>("id");
-                        DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
-                        float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
-                        float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
-                        int produto = response.GetFieldValue<int>("produto");
-                        int quantidade = response.GetFieldValue<int>("quantidade");
-                        int stand = response.GetFieldValue<int>("stand");
-                        float bid = GetMaiorBid(id);
-                        r.Add(new Leilao(id, dataLimite, valorMinimo, valorMaximo, produto, quantidade, stand, feira, bid));
+                        while (response.Read())
+                        {
+                            int id = response.GetFieldValue<int>("id");
+                            DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
+                            float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
+                            float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+                            int produto = response.GetFieldValue<int>("produto");
+                            int quantidade = response.GetFieldValue<int>("quantidade");
+                            int stand = response.GetFieldValue<int>("stand");
+                            float bid = GetMaiorBid(id);
+                            r.Add(new Leilao(id, dataLimite, valorMinimo, valorMaximo, produto, quantidade, stand, feira, bid));
+                        }
                     }
                     connection.Close();
                     return r;

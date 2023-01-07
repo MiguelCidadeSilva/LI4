@@ -163,19 +163,22 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@banca", idStand);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idProd = response.GetFieldValue<int>("idProd");
-                        string nome = response.GetFieldValue<string>("nome");
-                        int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
-                        int stock = response.GetFieldValue<int>("stock");
-                        float preco = (float)response.GetFieldValue<double>("preco");
-                        bool disponivel = response.GetFieldValue<bool>("disponivel");
-                        res.Add(new Produto(idProd, nome, idSubCategoria, idStand, stock, preco, disponivel));
+                        while (response.Read())
+                        {
+                            int idProd = response.GetFieldValue<int>("idProd");
+                            string nome = response.GetFieldValue<string>("nome");
+                            int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
+                            int stock = response.GetFieldValue<int>("stock");
+                            float preco = (float)response.GetFieldValue<double>("preco");
+                            bool disponivel = response.GetFieldValue<bool>("disponivel");
+                            res.Add(new Produto(idProd, nome, idSubCategoria, idStand, stock, preco, disponivel));
+                        }
                     }
                     connection.Close();
+                    return res;
                 }
-                return res;
             }
             catch (SqlException ex)
             {
@@ -204,8 +207,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idProd", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         string nome = response.GetFieldValue<string>("nome");
                         int idSubCategoria = response.GetFieldValue<int>("idSubCategoria");
                         int stand = response.GetFieldValue<int>("banca");
@@ -245,8 +249,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idStand", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read(response);
                         bool negociavel = response.GetFieldValue<bool>("negociavel");
                         int consultantes = response.GetFieldValue<int>("consultantes");
                         DateTime dataCriacao = response.GetFieldValue<DateTime>("dataCriacao");
@@ -285,18 +290,21 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        Stand s = new()
+                        while (response.Read())
                         {
-                            IdStand = response.GetFieldValue<int>("idStand"),
-                            Negociavel = response.GetFieldValue<bool>("negociavel"),
-                            Consultantes = response.GetFieldValue<int>("consultantes"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
-                            EmailDono = response.GetFieldValue<string>("donoEmail"),
-                            Categoria = response.GetFieldValue<int>("categoria")
-                        };
-                        r.Add(s);
+                            Stand s = new()
+                            {
+                                IdStand = response.GetFieldValue<int>("idStand"),
+                                Negociavel = response.GetFieldValue<bool>("negociavel"),
+                                Consultantes = response.GetFieldValue<int>("consultantes"),
+                                DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
+                                EmailDono = response.GetFieldValue<string>("donoEmail"),
+                                Categoria = response.GetFieldValue<int>("categoria")
+                            };
+                            r.Add(s);
+                        }
                     }
                     connection.Close();
                     return r;
@@ -329,19 +337,22 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        Produto p = new()
+                        while (response.Read())
                         {
-                            IdProduto = response.GetFieldValue<int>("idProd"),
-                            Nome = response.GetFieldValue<String>("nome"),
-                            IdSubCategoria = response.GetFieldValue<int>("idSubCategoria"),
-                            Stand = response.GetFieldValue<int>("banca"),
-                            Stock = response.GetFieldValue<int>("stock"),
-                            Preco = (float)response.GetFieldValue<double>("preco"),
-                            Disponivel = response.GetFieldValue<bool>("disponivel")
-                        };
-                        r.Add(p);
+                            Produto p = new()
+                            {
+                                IdProduto = response.GetFieldValue<int>("idProd"),
+                                Nome = response.GetFieldValue<String>("nome"),
+                                IdSubCategoria = response.GetFieldValue<int>("idSubCategoria"),
+                                Stand = response.GetFieldValue<int>("banca"),
+                                Stock = response.GetFieldValue<int>("stock"),
+                                Preco = (float)response.GetFieldValue<double>("preco"),
+                                Disponivel = response.GetFieldValue<bool>("disponivel")
+                            };
+                            r.Add(p);
+                        }
                     }
                     connection.Close();
                     return r;
@@ -468,8 +479,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idProd", idProd);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         r = response.GetFieldValue<int>("stock");
                         return r;
                     }
@@ -506,8 +518,9 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idProd", idProd);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         r = response.GetFieldValue<bool>("disponivel");
                         return r;
                     }
@@ -629,6 +642,77 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
         }
+
+
+        public int GetConsultantes(int idStand)
+        {
+            int r = 0;
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Stand] WHERE idStand = (@idStand)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idStand", idStand);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {   
+                        response.Read();
+                        r = response.GetFieldValue<int>("consultantes");
+                        return r;
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+        public void AumentaConsultantesNoStand(int idStand)
+        {
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("UPDATE [Stand] SET consultantes = (@consultantes), WHERE idStand = (@idStand)", connection))
+                {
+                    connection.Open();
+                    int consultantes = GetConsultantes(idStand);
+                    command.Parameters.AddWithValue("@consultantes",consultantes+1);
+                    command.Parameters.AddWithValue("@idStand", idStand);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+
 
     }
 }

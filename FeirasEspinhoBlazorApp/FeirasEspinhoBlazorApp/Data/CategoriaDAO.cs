@@ -110,12 +110,13 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idCategoria", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if(response.HasRows)
                     {
+                        response.Read();
                         string nome = response.GetFieldValue<string>("nome");
-                        connection.Close();
                         return new Categoria(id,nome);
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -145,12 +146,13 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idCategoria", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if(response.HasRows)
                     {
+                        response.Read();
                         string nome = response.GetFieldValue<string>("nome");
-                        connection.Close();
                         return  nome;
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -180,12 +182,13 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@nome", nome);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         int id = response.GetFieldValue<int>("idCategoria");
-                        connection.Close();
                         return id;
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -204,12 +207,6 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-
-
-
-
-
-
         public List<Categoria> ListAllCategoria()
         {
             List<Categoria> r = new();
@@ -221,13 +218,16 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idCategoria = response.GetFieldValue<int>("idCategoria");
-                        String nome = response.GetFieldValue<String>("nome");
-                        connection.Close();
-                        r.Add(new Categoria(idCategoria,nome));
+                        while (response.Read())
+                        {
+                            int idCategoria = response.GetFieldValue<int>("idCategoria");
+                            String nome = response.GetFieldValue<String>("nome");
+                            r.Add(new Categoria(idCategoria, nome));
+                        }
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -257,14 +257,15 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idSC", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
+                        response.Read();
                         float imposto = (float)response.GetFieldValue<double>("imposto");
                         int categoria = response.GetFieldValue<int>("categoria");
                         string nome = GetNomeCategoria(categoria);
-                        connection.Close();
                         return new SubCategoria(categoria,nome,id,imposto);
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
@@ -294,15 +295,18 @@ namespace FeirasEspinhoBlazorApp.Data
                     connection.Open();
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    while (response.Read())
+                    if (response.HasRows)
                     {
-                        int idSC = response.GetFieldValue<int>("idSC");
-                        float imposto = (float)response.GetFieldValue<double>("imposto");
-                        int categoria = response.GetFieldValue<int>("categoria");
-                        string nome = GetNomeCategoria(categoria);
-                        connection.Close();
-                        r.Add(new SubCategoria(categoria,nome,idSC,imposto));
+                        while (response.Read())
+                        {
+                            int idSC = response.GetFieldValue<int>("idSC");
+                            float imposto = (float)response.GetFieldValue<double>("imposto");
+                            int categoria = response.GetFieldValue<int>("categoria");
+                            string nome = GetNomeCategoria(categoria);
+                            r.Add(new SubCategoria(categoria, nome, idSC, imposto));
+                        }
                     }
+                    connection.Close();
                 }
             }
             catch (SqlException ex)
