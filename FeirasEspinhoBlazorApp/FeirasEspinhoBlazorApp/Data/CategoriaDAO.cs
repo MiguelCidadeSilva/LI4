@@ -169,6 +169,47 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
+        public int? GetIdCategoria(String nome)
+        {
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT * FROM [Categoria] WHERE nome = (@nome)", connection);
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@nome", nome);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        int id = response.GetFieldValue<int>("idCategoria");
+                        connection.Close();
+                        return id;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return null;
+        }
+
+
+
+
+
+
+
         public List<Categoria> ListAllCategoria()
         {
             List<Categoria> r = new();

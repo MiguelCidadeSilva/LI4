@@ -457,5 +457,178 @@ namespace FeirasEspinhoBlazorApp.Data
 
 		}
 
-	}
+        public int GetStockProduto(int idProd) {
+            int r = 0;
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Produto] WHERE idProd = (@idProd)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        r = response.GetFieldValue<int>("stock");
+                        return r;
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+
+        public bool GetDisponibilidadeProduto(int idProd)
+        {
+            bool r = false;
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Produto] WHERE idProd = (@idProd)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        r = response.GetFieldValue<bool>("disponivel");
+                        return r;
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
+
+        public void TrocaDisponibilidadeProduto(int idProd)
+        {
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("UPDATE [Produto] SET disponivel = (@disponivel), WHERE idProd = (@idProd)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@disponivel",!GetDisponibilidadeProduto(idProd));
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+        public void AumentaStockProduto(int idProd, int incremento){
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("UPDATE [Produto] SET stock = (@stock), WHERE idProd = (@idProd)", connection))
+                {
+                    connection.Open();
+                    int stockOriginal = GetStockProduto(idProd);
+                    if (stockOriginal == 0)
+                    {
+                        TrocaDisponibilidadeProduto(idProd);
+                    }
+                    command.Parameters.AddWithValue("@stock",stockOriginal+incremento);
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+        public void DiminuiStockProduto(int idProd, int decremento)
+        {
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("UPDATE [Produto] SET stock = (@stock), WHERE idProd = (@idProd)", connection))
+                {
+                    connection.Open();
+                    int stockOriginal = GetStockProduto(idProd);
+                    int novoValor;
+                    if (stockOriginal-decremento <= 0)
+                    {
+                        TrocaDisponibilidadeProduto(idProd);
+                        novoValor = 0;
+                    }
+                    else novoValor = stockOriginal-decremento;
+                    command.Parameters.AddWithValue("@stock", novoValor);
+                    command.Parameters.AddWithValue("@idProd", idProd);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+        }
+
+    }
 }
