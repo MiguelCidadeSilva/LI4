@@ -52,11 +52,11 @@
 					@foreach (var stand in tabelContent.Content)
 					{
 						<tr class=@tabelContent.Cssclasses[stand.Item1] @onclick="() => tabelContent.SelectedRow(stand.Item1)">
-								<td> @stand.Item2.IdStand</td>
-								<td> @nomes[stand.Item2.EmailDono]</td>
-								<td> @stand.Item2.DataCriacao</td>
-								<td> @categoria[stand.Item2.IdStand].Name</td>
-								<td> @stand.Item3</td>
+							<td> @stand.Item2.IdStand</td>
+							<td> @nomes[stand.Item2.EmailDono]</td>
+							<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
+							<td> @categoria[stand.Item2.IdStand].Name</td>
+							<td> @stand.Item3</td>
 						</tr>
 					}
 				</tbody>

@@ -1,46 +1,51 @@
-﻿<h3>FormProdutoComponent</h3>
+﻿@using SourceCode.Stands;
+@using SourceCode;
+
+<h3>Formulário Produto</h3>
 
 @if (erro != 0)
 {
 	<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="2" />
 }
-else if (sucess)
-{
-	<WarningComponent mensagem="@sucmensagem" sucess="true" page="2" />
-}
 <div>
 	<label><b>Produto</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="produto" />
+	<input type="text" class="tb" id="email" name="email" placeholder="Nome do produto" @bind-value="produto" />
 </div>
 <div>
 	<label><b>Quantidade</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="quantidade" />
+	<input type="text" class="tb" id="email" name="email" placeholder="Stock inicial" @bind-value="quantidade" />
 </div>
 <div>
-	<label><b>Categoria</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="categoria" />
+	<label><b>Imposto</b></label>
+	<input type="text" class="tb" id="email" name="email" placeholder="Indique o imposto associado" @bind-value="imposto" />
 </div>
 <div>
 	<label><b>Preco</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="preco" />
+	<input type="text" class="tb" id="email" name="email" placeholder="Preço produto" @bind-value="preco" />
 </div>
 <div>
 	<button class="buttonA" @onclick="AdicionarProduto">Adicionar Produto</button>
+	<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 </div>
 
 
 
 @code 
 {
+	private float imposto = 0;
 	private int erro = 0;
 	private bool sucess = false;
 	private string sucmensagem;
 	private string produto = "";
 	private int quantidade = 0;
-	private string categoria = "";
 	private float preco = 0f;
-	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();	
 	public void AdicionarProduto()
+	{
+		FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true));
+		FormStandComponent.GetInstance().GetBack();
+	}
+	public void Retroceder()
 	{
 		FormStandComponent.GetInstance().GetBack();
 	}

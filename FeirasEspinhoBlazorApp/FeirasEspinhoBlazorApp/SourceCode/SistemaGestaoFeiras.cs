@@ -231,6 +231,15 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			negociacao.IdNegociacao = negociacoesCounter;
 			negociacoesCounter++;
 		}
+		public int AddSubCategoria(string nome, float imposto)
+		{
+			return 0;
+		}
+		public void AddStand(Stand s)
+		{
+			// adicionar produto + stand, cuidado com os ids
+			// associar aos produtos a sub-categoria + id stand
+		}
 
 
 		public class Teste

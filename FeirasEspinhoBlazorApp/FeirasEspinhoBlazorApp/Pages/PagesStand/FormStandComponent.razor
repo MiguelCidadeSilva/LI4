@@ -7,7 +7,7 @@
 
 @if(formProduto)
 {
-	<FormProdutoComponent />
+	<FormProdutoComponent/>
 }
 else
 {
@@ -29,7 +29,7 @@ else
 		</div>
 		<br />
 		<div>
-			<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected()" checked=@negociavel) /><b> Negociavel</b>
+			<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected()" checked=@negociavel /><b> Negociavel</b>
 		</div>
 		<br />
 		<div class="tableFixHead">
@@ -45,9 +45,9 @@ else
 					@foreach (var produto in table.Content)
 					{
 						<tr class=@table.Cssclasses[produto.Item1]>
-								<td> @produto.Item2.IdProduto</td>
-								<td> @produto.Item2.Preco</td>
-								<td> @produto.Item2.Stock</td>
+							<td> @produto.Item2.Nome</td>
+							<td> @produto.Item2.Preco</td>
+							<td> @produto.Item2.Stock</td>
 						</tr>
 					}
 				</tbody>
@@ -55,8 +55,9 @@ else
 		</div>
 		<br />
 		<div>
-			<button class="buttonA" @onclick="AdicionarProduto">Adicionar Produto</button>
-			<button class="buttonA" @onclick="AdicionarStand">Adicionar Stand</button>
+			<button class="buttonA buttonTable1" @onclick="AdicionarProduto">Adicionar Produto</button>
+			<button class="buttonA buttonTable2" @onclick="AdicionarStand">Adicionar Stand</button>
+			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 		</div>
 	</div>
 }
@@ -85,10 +86,14 @@ else
 	public void AdicionarStand()
 	{
 		// METER CATEGORIA DIREITA
-		List<Produto> l = new();
-		table.Content.ForEach(p => l.Add(p.Item2));
 		// public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
-		Stand stand = new Stand(0,negociavel,0, DateTime.Now, emailFeirante, 0,l);
+		Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
+		SistemaFeiras.GetInstance().AddStand(stand);
+		ShowStandsFeiranteComponent.GetInstance().GetBack();
+	}
+	public void AdicionaProduto(Produto p)
+	{
+		this.table.AddElement(p);
 	}
 	public void AdicionarProduto()
 	{
@@ -102,5 +107,9 @@ else
 	public void Selected()
 	{
 		negociavel = !negociavel;
+	}
+	public void Retroceder()
+	{
+		ShowStandsFeiranteComponent.GetInstance().GetBack();
 	}
 }

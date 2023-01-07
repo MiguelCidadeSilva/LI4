@@ -15,8 +15,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
             get { return idProduto; }
             set { idProduto = value; }
         }
-        public string? nome;
-        public string? Nome
+        public string nome;
+        public string Nome
         {
             get { return nome; }
             set { nome = value; }

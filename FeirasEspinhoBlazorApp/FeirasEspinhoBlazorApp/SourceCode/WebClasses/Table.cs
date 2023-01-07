@@ -81,5 +81,15 @@
 		{
 			return index != -1;
 		}
+		public void AddElement(Tipo item)
+		{
+			int pos = content.Count;
+			this.content.Add((item,0)); 
+			if (pos % 2 == 0)
+				cssclasses[pos] = "evenRow";
+			else
+				cssclasses[pos] = "";
+
+		}
 	}
 }

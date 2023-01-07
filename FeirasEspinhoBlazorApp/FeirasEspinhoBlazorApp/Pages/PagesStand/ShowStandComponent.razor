@@ -2,6 +2,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Vendas;
 @using SourceCode.Stands;
+@using SourceCode.Utilizadores;
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 @using System.Text.Json;
@@ -54,17 +55,20 @@ else
 			</table>
 		</div>
 		<br />
-		<div>
+		@if (type)
+		{
+			<div>
+				<br />
+				<label><b>Preço total</b></label>
+				<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly" />
+			</div>
 			<br />
-			<label><b>Preço total</b></label>
-			<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly" />
-		</div>
-		<br />
-		<div>
-			<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
-			<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
-			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
-		</div>
+			<div>
+				<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
+				<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+			</div>
+		}
 	</div>
 }
 @code
@@ -74,7 +78,7 @@ else
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
 	[Parameter, EditorRequired]
-	public string emailCL { get; set; }
+	public string email { get; set; }
 	public string sucessStr { get; set; }
 	public string sucessMessage { get; set; }
 	public string erroStr { get; set; }
@@ -85,10 +89,12 @@ else
 	private bool fastPurchase = false;
 	private bool negociation = false;
 	private float precoTotal = 0;
+	private bool type;
 	private Venda venda;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
 	private static ShowStandComponent standComponent;
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	protected override void OnParametersSet()
 	{
 		if(!int.TryParse(erroStr, out erro))
@@ -98,15 +104,24 @@ else
 	}
 	protected override async void OnInitialized()
 	{
+		Utilizador user = facade.GetUtilizador(email);
 		standComponent = this;
-		stand = SistemaFeiras.GetInstance().GetStand(idStand);
+		stand = facade.GetStand(idStand);
 		List<Produto> conteudo = stand.Produtos;
 		this.tabelContent = new Table<Produto>(conteudo);
-		for(int i = 0; i < conteudo.Count; i++)
-			quantidades[i] = 0;
+		type = user is Cliente;
+		if(type)
+		{
+			for (int i = 0; i < conteudo.Count; i++)
+				quantidades[i] = 0;
+			codigosErro[2] = "Compra cancelada";
+			codigosErro[3] = "Negociação cancelada";
+		}
+		else
+		{
+			
+		}
 		codigosErro[1] = "Nenhum stand selecionado";
-		codigosErro[2] = "Compra cancelada";
-		codigosErro[3] = "Negociação cancelada";
 	}
 	public static ShowStandComponent GetInstance()
 	{
@@ -129,7 +144,7 @@ else
 	}
 	private void CreateVenda()
 	{
-		venda = new Venda(0,DateTime.Now,precoTotal,emailCL,idFeira,-1,idStand);
+		venda = new Venda(0,DateTime.Now,precoTotal,email,idFeira,-1,idStand);
 	}
 	public void CompraRapida()
 	{

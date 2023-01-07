@@ -1,0 +1,99 @@
+﻿@page "/showstandsfeirante/{email}"
+@using SourceCode.WebClasses;
+@using SourceCode.Stands;
+@using SourceCode;
+
+<PageTitle>Seus Stands</PageTitle>
+@if(editStand)
+{
+	<ShowStandComponent idStand="@idStand" email="@email" idFeira="-1"/>
+}
+else if (formStand)
+{
+	<FormStandComponent emailFeirante="@email"/>
+}
+else
+{
+	<div>
+		<h3>Seus Stands</h3>
+		<div class="tableFixHead">
+			<table>
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Data Criação</th>
+						<th>Categoria</th>
+						<th>Avaliação</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var stand in tabelContent.Content)
+					{
+						<tr class=@tabelContent.Cssclasses[stand.Item1] @onclick="() => tabelContent.SelectedRow(stand.Item1)">
+								<td> @stand.Item2.IdStand</td>
+								<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
+								<td> @categoria[stand.Item2.IdStand].Name</td>
+								<td> @stand.Item3</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
+			<button class="buttonA buttonTable1" @onclick="CriarStand">Criar Stand</button>
+			<button class="buttonA buttonTable2" @onclick="EditarStand">Editar Stand</button>
+		</div>
+	</div>
+}
+
+@code 
+{
+	[Parameter, EditorRequired]
+	public string email { get; set; }
+	private static ShowStandsFeiranteComponent showStandsFeirante;
+	private bool formStand = false;
+	private bool editStand = false;
+	private int idStand;
+	private Table<Stand> tabelContent;
+	private Dictionary<int, Categoria?> categoria = new();
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
+	private void CarregaDados()
+	{
+		List<Stand> stands = facade.GetStandFeirante(email);
+		stands.Where(s => !categoria.ContainsKey(s.IdStand)).ToList().ForEach(s => categoria.Add(s.IdStand, facade.GetCategoria(s.Categoria)));
+		this.tabelContent = new Table<Stand>(stands);
+	}
+	protected override void OnInitialized()
+	{
+		showStandsFeirante = this;
+		CarregaDados();
+		codigosErro[1] = "Nenhum stand selecionado";
+	}
+	public static ShowStandsFeiranteComponent GetInstance()
+	{
+		return showStandsFeirante;
+	}
+	public void EditarStand()
+	{
+		if(tabelContent.IdValid())
+		{
+			idStand = tabelContent.GetElement().IdStand;
+			formStand = false;
+			editStand = true;
+		}
+	}
+	public void CriarStand()
+	{
+		formStand = true;
+		editStand = false;
+	}
+	public void GetBack()
+	{
+		formStand = false;
+		editStand = false;
+		CarregaDados();
+		StateHasChanged();
+	}
+}
