@@ -20,6 +20,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private FeiraDAO feiras;
 		private StandDAO stands;
 		private VendaDAO vendas;
+		private CategoriaDAO categorias;
 		private int feirasCounter;
         private int vendasCounter;
         private int standsCounter;
@@ -38,6 +39,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			feiras = FeiraDAO.GetInstance();
 			stands = StandDAO.GetInstance();
 			vendas = VendaDAO.GetInstance();
+			categorias = CategoriaDAO.GetInstance();
 			feirasCounter = 0;
 			vendasCounter = 0;
 			standsCounter = 0;
@@ -96,7 +98,16 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Feira> GetFeiras() 
 		{
-			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) >= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Now) <= 0)).ToList();
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) <= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Now) >= 0)).ToList();
+		}
+		public Categoria? GetCategoria(int id)
+		{
+			return categorias[id];
+		}
+
+		public List<Feira> FeirasNotStarted()
+		{
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) > 0).ToList();
 		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{
@@ -150,7 +161,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			//verificar 
 			return new();
 		}
-		public List<Stand> GetStandsFeira( int idFeira)
+		public List<Stand> GetStandsFeira(int idFeira)
 		{
 			Feira f = feiras[idFeira];
 			List<Stand> stands = new();
@@ -221,10 +232,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			negociacoesCounter++;
 		}
 
-		public List<Feira> FeirasNotStarted()
-		{
-			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) < 0).ToList();
-		}
 
 		public class Teste
 		{

@@ -148,11 +148,11 @@ namespace FeirasEspinhoBlazorApp.Data
             return null;
         }
 
-        public List<Feira>? ListAllFeiras()
-        {
-            try
+        public List<Feira> ListAllFeiras()
+		{
+			List<Feira> r = new();
+			try
             {
-                List<Feira> r = new();
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
                 using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
                 {
@@ -174,7 +174,6 @@ namespace FeirasEspinhoBlazorApp.Data
                         r.Add(new Feira(idFeira,nome,dataI,dataF,precoCand,criadorEmail,categoria));
                     }
                     connection.Close();
-                    return r;
                 }
             }
             catch (SqlException ex)
@@ -189,10 +188,8 @@ namespace FeirasEspinhoBlazorApp.Data
                         "Procedure: " + ex.Errors[i].Procedure + "\n");
                 }
                 Console.WriteLine(errorMessages.ToString());
-            }
-            return null;
-        }
-
-
+			}
+			return r;
+		}
     }
 }

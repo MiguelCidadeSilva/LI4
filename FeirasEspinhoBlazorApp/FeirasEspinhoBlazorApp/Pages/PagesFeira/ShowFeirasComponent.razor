@@ -35,7 +35,7 @@ else
 						<th>Data Início</th>
 						<th>Data Fim</th>
 						<th>Categoria</th>
-						@if (type)
+						@if (!type)
 						{
 							<th>Preço Candidatura</th>
 						}
@@ -51,12 +51,26 @@ else
 							<tr class=@tabelContent.Cssclasses[feira.Item1] @onclick="() => tabelContent.SelectedRow(feira.Item1)">
 							<td> @feira.Item2.IDFeira</td>
 							<td> @feira.Item2.Nome</td>
-							<td> @feira.Item2.DataInicio</td>
-							<td> @feira.Item2.DataFim</td>
-							<td> @feira.Item2.Categoria</td>
-							@if (type)
+							<td> @feira.Item2.DataInicio.ToShortDateString()</td>
+							@if (feira.Item2.DataFim.HasValue)
 							{
-								<th>@feira.Item2.PrecoCandidatura</th>
+								<td> @feira.Item2.DataFim.Value.ToShortDateString()</td>
+							}
+							else
+							{
+								<td><b>-</b></td>
+							}
+							@if(feira.Item2.Categoria.HasValue)
+							{
+								<td> @categoria[feira.Item2.IDFeira].Name</td>
+							}
+							else
+							{
+								<td><b>-</b></td>
+							}
+							@if (!type)
+							{
+								<td>@feira.Item2.PrecoCandidatura</td>
 							}
 							else
 							{
@@ -87,8 +101,10 @@ else
 	[Parameter, EditorRequired]
 	public string email { get; set; }
 	private bool type;
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private Table<Feira> tabelContent;
 	private int erro = 0;
+	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
 	private bool showFeira = false;
@@ -97,14 +113,15 @@ else
 	private int feiraSelecionada = 0;
 	protected override void OnInitialized()
 	{
-		Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(email);
+		Utilizador utilizador = facade.GetUtilizador(email);
 		showFeiras = this;
 		List<Feira> feiras;
 		type = utilizador is Cliente;
 		if(type)
-			feiras = SistemaFeiras.GetInstance().GetFeiras();
+			feiras = facade.GetFeiras();
 		else
-			feiras = SistemaFeiras.GetInstance().FeirasNotStarted();
+			feiras = facade.FeirasNotStarted();
+		feiras.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
 		List<(Feira, int)> conteudo = new List<(Feira, int)>();
 		feiras.ForEach(f => conteudo.Add((f, 0)));
 		this.tabelContent = new Table<Feira>(conteudo);

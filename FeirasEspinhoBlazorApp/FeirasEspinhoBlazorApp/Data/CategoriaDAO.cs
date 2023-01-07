@@ -5,6 +5,7 @@ using FeirasEspinhoBlazorApp.SourceCode;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -116,9 +117,10 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-        }
+		}
+		public Categoria? this[int id] => GetCategoria(id);
 
-        public Categoria? GetCategoria(int id)
+		public Categoria? GetCategoria(int id)
         {
             try
             {

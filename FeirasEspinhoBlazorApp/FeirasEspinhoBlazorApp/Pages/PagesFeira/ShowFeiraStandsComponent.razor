@@ -83,6 +83,7 @@
 	public string email { get; set; }
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private Feira feira;
 	private int avaliacao = -1;
 	private bool showAvaliacao = false;
@@ -98,24 +99,24 @@
 	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
-		Utilizador utilizador = SistemaFeiras.GetInstance().GetUtilizador(email);
+		Utilizador utilizador = facade.GetUtilizador(email);
 		type = utilizador is Cliente;
 		if (type)
 		{
 			showBancas = this;
-			List<Stand> stands = SistemaFeiras.GetInstance().GetStandsFeira(idFeira);
+			List<Stand> stands = facade.GetStandsFeira(idFeira);
 			List<(Stand, int)> conteudo = new List<(Stand, int)>();
 			stands.ForEach(s => conteudo.Add((s, 0)));
 			foreach(Stand s in stands)
 			{
-				Utilizador dono = SistemaFeiras.GetInstance().GetUtilizador(s.EmailDono);
+				Utilizador dono = facade.GetUtilizador(s.EmailDono);
 				nomes[dono.Email] = dono.Username;
 			}
 			this.tabelContent = new Table<Stand>(conteudo);
 		}
 		else
 		{
-			List<Stand> stands = SistemaFeiras.GetInstance().GetStandFeirante(email);
+			List<Stand> stands = facade.GetStandFeirante(email);
 			List<(Stand, int)> conteudo = new List<(Stand, int)>();
 			nomes[utilizador.Email] = utilizador.Username;
 			stands.ForEach(s => conteudo.Add((s, 0)));
