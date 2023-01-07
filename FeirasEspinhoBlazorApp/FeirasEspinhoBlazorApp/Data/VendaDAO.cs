@@ -5,6 +5,7 @@ using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -15,6 +16,39 @@ namespace FeirasEspinhoBlazorApp.Data
         public static VendaDAO GetInstance()
         {
             return instance;
+        }
+
+        public bool ContainsKeyVenda(int idVenda)
+        {
+            bool r = false;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using (SqlCommand command = new("SELECT * FROM [Venda] WHERE email = (@idVenda)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idVenda", idVenda);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    r = response.HasRows;
+                    connection.Close();
+                }
+                return r;
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
         }
 
         public void Insert(Venda venda)
@@ -91,5 +125,50 @@ namespace FeirasEspinhoBlazorApp.Data
             }
             return null;
         }
+
+        public List<Venda>? ListAllVendas()
+        {
+            try
+            {
+                List<Venda> r = new();
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [Venda]", connection))
+                {
+                    connection.Open();
+                    SqlDataReader response = command.ExecuteReader();
+                    while (response.Read())
+                    {
+                        Venda v = new()
+                        {
+                            IdVenda = response.GetFieldValue<int>("idVenda"),
+                            Data = response.GetFieldValue<DateTime>("data"),
+                            Preco = (float)response.GetFieldValue<double>("preco"),
+                            EmailCliente = response.GetFieldValue<string>("emailCl"),
+                            IdFeira = response.GetFieldValue<int>("idFeira"),
+                            Negociacao = response.GetFieldValue<int>("negociacao"),
+                            IdStand = response.GetFieldValue<int>("idStand")
+                        };
+                        r.Add(v);
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return null;
+        }
+
     }
 }
