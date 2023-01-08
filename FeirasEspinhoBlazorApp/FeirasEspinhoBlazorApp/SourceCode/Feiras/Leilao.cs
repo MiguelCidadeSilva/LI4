@@ -20,8 +20,8 @@
             get { return valorMinimo; }
             set { valorMinimo = value; }
         }
-        private float valorMaximo;
-        public float ValormMaximo
+        private float? valorMaximo;
+        public float? ValormMaximo
         {
             get { return valorMaximo; }
             set { valorMaximo = value; }
@@ -57,7 +57,7 @@
             set { bidAtual = value; }
         }
         public Leilao() { }
-        public Leilao(int id, DateTime date, float valormMinimo, float valormMaximo, int produto, int quantidade, int stand, int feira, float bidAtual)
+        public Leilao(int id, DateTime date, float valormMinimo, float? valormMaximo, int produto, int quantidade, int stand, int feira, float bidAtual)
         {
             this.id = id;
             this.date = date;

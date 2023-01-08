@@ -549,7 +549,7 @@ namespace FeirasEspinhoBlazorApp.Data
             try
             {
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("UPDATE [Produto] SET disponivel = (@disponivel), WHERE idProd = (@idProd)", connection))
+                using (SqlCommand command = new("UPDATE [Produto] SET disponivel = (@disponivel) WHERE idProd = (@idProd)", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@disponivel",!GetDisponibilidadeProduto(idProd));

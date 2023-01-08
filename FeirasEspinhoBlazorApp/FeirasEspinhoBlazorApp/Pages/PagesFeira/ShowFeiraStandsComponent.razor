@@ -19,11 +19,11 @@
 	}
 	else if (showStand)
 	{
-		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" emailCL="@email"/>
+		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" email="@email"/>
 	}
 	else if (showLeilao)
 	{
-		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand"/>
+		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand" email="@email"/>
 	}
 	else if(showCandidatura)
 	{
@@ -92,7 +92,7 @@
 	private bool showCandidatura = false;
 	private bool type;
 	private int idStand = 0;
-	private Dictionary<int, Categoria?> categoria = new();
+	private Dictionary<int, Categoria> categoria = new();
 	private Dictionary<string, string> nomes = new Dictionary<string, string>();
 	private Table<Stand> tabelContent;
 	private int erro = 0;

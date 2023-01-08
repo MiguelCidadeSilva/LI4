@@ -36,6 +36,7 @@ else
 				<thead>
 					<tr>
 						<th>Produto</th>
+						<th>Nome</th>
 						<th>Preço</th>
 						<th>Stock</th>
 						<th>Quantidade</th>
@@ -46,6 +47,7 @@ else
 					{
 							<tr class=@tabelContent.Cssclasses[produto.Item1]>
 								<td> @produto.Item2.IdProduto</td>
+								<td> @produto.Item2.Nome</td>
 								<td> @produto.Item2.Preco</td>
 								<td> @produto.Item2.Stock</td>
 								<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)"/></td>

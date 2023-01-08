@@ -43,7 +43,15 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
     }
 
+	public class BidValueInvalid : Exception
+	{
+		public BidValueInvalid() { }
 
+		public BidValueInvalid(string mensagem) : base(mensagem) { }
+
+		public BidValueInvalid(string message, Exception innerException) : base(message, innerException) { }
+
+	}
 
 
 

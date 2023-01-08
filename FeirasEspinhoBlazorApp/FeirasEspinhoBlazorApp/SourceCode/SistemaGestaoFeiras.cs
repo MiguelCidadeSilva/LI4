@@ -20,6 +20,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private FeiraDAO feiras;
 		private StandDAO stands;
 		private VendaDAO vendas;
+		private LeilaoDAO leiloes;
 		private CategoriaDAO categorias;
 		private int feirasCounter;
         private int vendasCounter;
@@ -40,6 +41,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			stands = StandDAO.GetInstance();
 			vendas = VendaDAO.GetInstance();
 			categorias = CategoriaDAO.GetInstance();
+			leiloes = LeilaoDAO.GetInstance();
 			feirasCounter = 0;
 			vendasCounter = 0;
 			standsCounter = 0;
@@ -154,10 +156,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Leilao> GetLeiloesFeira(int idFeira)
 		{
-			Feira f = feiras[idFeira];
-			List<Leilao> res = new();
-			f.ListaLeiloes.Values.ToList().ForEach(res.AddRange);
-			return res;
+			return leiloes.ListLeiloesFeira(idFeira);
 		}
 		// TO DO
 		public List<Leilao> GetLeiloesCL(string email)
@@ -169,10 +168,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Stand> GetStandsFeira(int idFeira)
 		{
-			Feira f = feiras[idFeira];
-			List<Stand> stands = new();
-			f.ListaStands.Values.ToList().ForEach(stands.AddRange);
-			return stands;
+			return feiras.StandsDaFeira(idFeira);
 		}
 		// TO DO
 		public List<Venda> GetNegociacoes(string email)
@@ -218,6 +214,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			vendas.Insert(venda);
 			vendasCounter++;
 		}
+		public Produto GetProduto(int idProduto)
+		{
+			return stands.GetProduto(idProduto);
+		}
 
 		// TO DO
 		public void AddNegociacaoVenda(Venda venda, Negociacao negociacao)
@@ -236,6 +236,18 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		public int AddCategoria(string nome)
 		{
 			return 0;
+		}
+		public void Licitar(int idLeilao, string email, float licitacao)
+		{
+			if (leiloes.GetMaiorBid(idLeilao) < licitacao)
+			{
+				if (leiloes.LeilaoHasBidFromCliente(idLeilao, email))
+					leiloes.UpdateBid(idLeilao, email, licitacao);
+				else
+					leiloes.InsertBid(idLeilao, email, licitacao);
+			}
+			else
+				throw new BidValueInvalid("Valor menor que a última exceção");
 		}
 		public void AddStand(Stand s)
 		{

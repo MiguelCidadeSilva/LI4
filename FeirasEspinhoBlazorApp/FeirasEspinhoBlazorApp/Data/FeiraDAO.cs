@@ -99,12 +99,16 @@ namespace FeirasEspinhoBlazorApp.Data
                     {
                         response.Read();
                         string nome = response.GetFieldValue<string>("nome");
-                        DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio");
-                        DateTime dataFim = response.GetFieldValue<DateTime>("dataFim");
-                        float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
-                        string criadorEmail = response.GetFieldValue<string>("criadorEmail");
-                        int categoria = response.GetFieldValue<int>("categoria");
-                        List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
+                        DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio"); 
+                        DateTime? dataFim = null;
+						if (!response.IsDBNull("dataFim"))
+							dataFim = response.GetDateTime("dataFim");
+						float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
+                        string criadorEmail = response.GetFieldValue<string>("criadorEmail"); 
+                        int? categoria = null;
+						if (!response.IsDBNull("categoria"))
+							categoria = response.GetInt32("categoria");
+						List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
                         List<Stand> standsdafeira = StandsDaFeira(id);
                         return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
                     }
@@ -281,7 +285,8 @@ namespace FeirasEspinhoBlazorApp.Data
                         while (response.Read())
                         {
                             int idStand = response.GetFieldValue<int>("idStand");
-                            r.Add(StandDAO.GetInstance().GetStand(idStand));
+                            Stand s = StandDAO.GetInstance()[idStand];
+                            r.Add(s);
                         }
                     }
                     connection.Close();

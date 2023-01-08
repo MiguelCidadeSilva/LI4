@@ -100,7 +100,6 @@ namespace FeirasEspinhoBlazorApp.Data
                     r = response.HasRows;
                     connection.Close();
                 }
-                return r;
             }
             catch (SqlException ex)
             {
@@ -114,9 +113,9 @@ namespace FeirasEspinhoBlazorApp.Data
                         "Procedure: " + ex.Errors[i].Procedure + "\n");
                 }
                 Console.WriteLine(errorMessages.ToString());
-                return r;
-            }
-        }
+			}
+			return r;
+		}
 
         public void InsertLeilao(Leilao leilao)
         {
@@ -153,7 +152,7 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public void InsertBid(int leilao, String clienteEmail, float quantia)
+        public void InsertBid(int leilao, string clienteEmail, float quantia)
         {
             try
             {
@@ -182,8 +181,23 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
         }
+		public void UpdateBid(int leilao, string clienteEmail, float quantia)
+        {
 
-        public float? GetBid(int leilao, String clienteEmail)
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("UPDATE [PrecosLeilao] SET precoProposto = (@precoProposto) WHERE leilao = (@idleilao) AND clienteEmail = (@clienteEmail)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@precoProposto", quantia);
+				command.Parameters.AddWithValue("@idleilao", leilao);
+				command.Parameters.AddWithValue("@clienteEmail", clienteEmail);
+				command.ExecuteNonQuery();
+				connection.Close();
+			}
+		}
+
+
+		public float? GetBid(int leilao, String clienteEmail)
         {
             try
             {
@@ -452,7 +466,9 @@ namespace FeirasEspinhoBlazorApp.Data
                             int id = response.GetFieldValue<int>("id");
                             DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
                             float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
-                            float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+							float? valorMaximo = null;
+							if (!response.IsDBNull("valorMaximo"))
+								valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
                             int produto = response.GetFieldValue<int>("produto");
                             int quantidade = response.GetFieldValue<int>("quantidade");
                             int stand = response.GetFieldValue<int>("stand");

@@ -1,9 +1,11 @@
 ﻿@page "/showleiloesfeira"
 
-<ShowLeiloesComponent idStand="-1" idFeira="@idFeira" emailCL=""/>
+<ShowLeiloesComponent idStand="-1" idFeira="@idFeira" emailCL="@email"/>
 
 @code
 {
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
+	[Parameter, EditorRequired]
+	public string email { get; set; }
 }

@@ -6,12 +6,19 @@
 <PageTitle>Leilão</PageTitle>
 <h3>Bem vindo ao Leilão</h3>
 
+@if(erro)
+{
+	<WarningComponent mensagem="@codigo_erro" page="7" sucess="false"/>
+}
 <div>
-
-</div>
-<div>
+	<label><b>Produto</b></label>
+	<input type="text" class="tb" id="produto" name="produto" readonly="readonly" @bind-value="produto.Nome" />
+	<label><b>Quantidade</b></label>
+	<input type="text" class="tb" id="quantidade" name="quantidade" readonly="readonly" @bind-value="quantidade" />
+	<label><b>Última licitação</b></label>
+	<input type="text" class="tb" id="valorUltimaBid" name="valorUltimaBid" readonly="readonly" @bind-value="ultimaLicitação" />
 	<label><b>Valor da licitação</b></label>
-	<input type="text" class="tb" id="valorLicitação" name="nrcartao" placeholder="xxxxxxxx" @bind-value="valorLicitação" />
+	<input type="text" class="tb" id="valorLicitação" name="valorLicitação" placeholder="xxxxxxxx" @bind-value="valorLicitação" />
 </div>
 <div>
 	<button class="buttonA buttonTable1" @onclick="Licitar">Licitar</button>
@@ -22,18 +29,48 @@
 {
 	[Parameter, EditorRequired]
 	public Leilao leilao { get; set; }
+	[Parameter, EditorRequired]
+	public string email { get; set; }
+	private float ultimaLicitação;
 	private float valorLicitação;
+	private int quantidade;
+	private Produto produto;
+	private string codigo_erro = "";
+	private bool erro = false;
+	private static ShowLeilaoComponent showLeilaoComponent; 
 	protected override void OnInitialized()
 	{
-		
+		showLeilaoComponent = this;
+		produto = SistemaFeiras.GetInstance().GetProduto(leilao.Produto);
+		quantidade = leilao.Quantidade;
+		ultimaLicitação = leilao.BidAtual;
+	}
+	public static ShowLeilaoComponent GetInstance()
+	{
+		return showLeilaoComponent;
 	}
 	private void Licitar()
 	{
-
+		try
+		{
+			SistemaFeiras.GetInstance().Licitar(leilao.Id, email, valorLicitação);
+			ShowLeiloesComponent.GetInstance().GetBack("Licitação registada");
+		}
+		catch (Exception e)
+		{
+			erro = true;
+			codigo_erro = e.Message;
+		}
 	}
 	private void Voltar()
 	{
 		ShowLeiloesComponent.GetInstance().GetBack();
+	}
+	public void CleanWarning()
+	{
+		codigo_erro = "";
+		erro = false;
+		StateHasChanged();
 	}
 
 
