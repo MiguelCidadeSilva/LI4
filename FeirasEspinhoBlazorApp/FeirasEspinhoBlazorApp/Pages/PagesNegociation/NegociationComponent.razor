@@ -57,9 +57,12 @@ else
 	{
 		negociation = this;
 		SistemaFeiras sistema = SistemaFeiras.GetInstance();
-		Venda venda = sistema.GetVenda(idVenda);
-		Negociacao negociacao = sistema.GetNegociacao((int) venda.Negociacao);
-		Stand stand = sistema.GetStand(venda.IdStand);
+		venda = sistema.GetVenda(idVenda);
+		if(venda.Negociacao.HasValue)
+		{
+			negociacao = sistema.GetNegociacao((int) venda.Negociacao);
+		}
+		stand = sistema.GetStand(venda.IdStand);
 	}
 	public NegociationComponent GetInstance()
 	{

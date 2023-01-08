@@ -98,7 +98,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Feira> GetFeiras() 
 		{
-			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) <= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Now) >= 0)).ToList();
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Today) <= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Today) >= 0)).ToList();
 		}
 		public Categoria? GetCategoria(int id)
 		{
@@ -107,7 +107,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Feira> FeirasNotStarted()
 		{
-			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Now) > 0).ToList();
+			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Today) > 0).ToList();
 		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{
@@ -134,7 +134,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return stands.ListAllStands().Where(s => s.EmailDono.Equals(feirante)).ToList();
 		}
-		public void AddStandFeira(int stand, int feira)
+		public void AprovarCandidatura(int candidatura)
+		{
+
+		}
+		public void CriaCandidatura (int stand, int feira)
 		{
 
 		}
@@ -147,6 +151,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			res.Where(lei => lei.Feira == idFeira && lei.Stand == idStand);
 			return res;
 		}
+
 		public List<Leilao> GetLeiloesFeira(int idFeira)
 		{
 			Feira f = feiras[idFeira];
@@ -161,6 +166,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			//verificar 
 			return new();
 		}
+
 		public List<Stand> GetStandsFeira(int idFeira)
 		{
 			Feira f = feiras[idFeira];
@@ -203,16 +209,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         }
         public Venda GetVenda(int idVenda)
 		{
-			Venda venda = vendas[idVenda];
-			if (venda == null)
-			{
-				return new Venda();
-			}
-			else
-			{
-                return venda;
-            }
-			
+			return vendas[idVenda];
 		}
 		// TO DO
 		public void AddVenda(Venda venda)
@@ -229,9 +226,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			venda.Negociacao = idNeg;
 			AddVenda(venda);
 			negociacao.IdNegociacao = negociacoesCounter;
+			// insert negociacao
 			negociacoesCounter++;
 		}
-		public int AddSubCategoria(string nome, float imposto)
+		public int AddSubCategoria(int categoria, float imposto)
+		{
+			return 0;
+		}
+		public int AddCategoria(string nome)
 		{
 			return 0;
 		}

@@ -26,8 +26,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             get { return preco; }
             set { preco = value; }
         }
-        private string? emailCliente;
-        public string? EmailCliente
+        private string emailCliente;
+        public string EmailCliente
         {
             get { return emailCliente; }
             set { emailCliente = value; }

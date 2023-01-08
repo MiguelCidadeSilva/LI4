@@ -251,7 +251,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     SqlDataReader response = command.ExecuteReader();
                     if (response.HasRows)
                     {
-                        response.Read(response);
+                        response.Read();
                         bool negociavel = response.GetFieldValue<bool>("negociavel");
                         int consultantes = response.GetFieldValue<int>("consultantes");
                         DateTime dataCriacao = response.GetFieldValue<DateTime>("dataCriacao");
