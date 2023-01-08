@@ -85,7 +85,7 @@
 	{
 		return instance;
 	}
-	private List<Leilao> OnInitializedCL()
+	private List<Leilao> OnInitializedUser()
 	{
 		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesCL(emailCL);
 		return conteudo;
@@ -111,7 +111,7 @@
 		else if(idFeira != -1)
 			conteudo = OnInitializedFeira();
 		else
-			conteudo = OnInitializedCL();
+			conteudo = OnInitializedUser();
 		SistemaFeiras sistema = SistemaFeiras.GetInstance();
 		this.table = new Table<Leilao>(conteudo);
 		foreach(Leilao leilao in conteudo)

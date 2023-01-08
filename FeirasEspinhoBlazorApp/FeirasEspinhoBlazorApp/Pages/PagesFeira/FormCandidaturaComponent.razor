@@ -1,5 +1,6 @@
 ﻿@page "/formcandidatura"
 @using SourceCode;
+@using SourceCode.Feiras;
 @inject NavigationManager navigation;
 
 @if(confirmou)
@@ -17,7 +18,7 @@ else
 		<br />
 		<div>
 			<label><b>Id Feira</b></label>
-			<input type="text" class="tb" id="feira" name="feira" @bind-value="idFeira" readonly="readonly" />
+			<input type="text" class="tb" id="feira" name="feira" @bind-value="nameFeira" readonly="readonly" />
 		</div>
 		<div>
 			<label><b>Id Stand</b></label>
@@ -38,10 +39,13 @@ else
 	public int idFeira {get; set;}
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
+	private string nameFeira;
 	private bool confirmou = false;
 
 	public void Confirmar()
 	{
+		Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
+		nameFeira = f.Nome;
 		SistemaFeiras.GetInstance().CriaCandidatura(idStand, idFeira);
 		confirmou = true;
 	}

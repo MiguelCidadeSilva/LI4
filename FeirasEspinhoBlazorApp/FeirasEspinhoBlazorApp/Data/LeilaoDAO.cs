@@ -336,8 +336,10 @@ namespace FeirasEspinhoBlazorApp.Data
                             int id = response.GetFieldValue<int>("id");
                             DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
                             float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
-                            float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
-                            int produto = response.GetFieldValue<int>("produto");
+                            float? valorMaximo = null;
+                            if (!response.IsDBNull("valorMaximo"))
+								valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+							int produto = response.GetFieldValue<int>("produto");
                             int quantidade = response.GetFieldValue<int>("quantidade");
                             int stand = response.GetFieldValue<int>("stand");
                             int feira = response.GetFieldValue<int>("feira");

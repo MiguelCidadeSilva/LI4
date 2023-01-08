@@ -147,23 +147,35 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 
 		public List<Leilao> GetLeiloesFeiraStand(int idFeira, int idStand)
 		{
-			Stand s = stands[idStand];
-			Feira f = feiras[idFeira];
-			List<Leilao> res = f.ListaLeiloes[s.EmailDono];
-			res.Where(lei => lei.Feira == idFeira && lei.Stand == idStand);
-			return res;
+			return leiloes.ListLeiloesFeira(idFeira)
+				.Where(lei => lei.Stand == idStand)
+				.Where(lei => !lei.ValormMaximo.HasValue || lei.BidAtual <= lei.ValormMaximo.Value)
+				.Where(lei => lei.Date.CompareTo(DateTime.Today) >= 0)
+				.ToList();
 		}
 
 		public List<Leilao> GetLeiloesFeira(int idFeira)
 		{
-			return leiloes.ListLeiloesFeira(idFeira);
+			return leiloes.ListLeiloesFeira(idFeira)
+				.Where(lei => !lei.ValormMaximo.HasValue || lei.BidAtual <= lei.ValormMaximo.Value)
+				.Where(lei => lei.Date.CompareTo(DateTime.Today) >= 0)
+				.ToList(); ;
 		}
 		// TO DO
 		public List<Leilao> GetLeiloesCL(string email)
 		{
-			Utilizador? cliente = users[email];
-			//verificar 
-			return leiloes.ListAllLeiloes().Where();
+			Utilizador cliente = users[email];
+			//verificar
+			List<Leilao> r = new();
+			if(cliente is Cliente)
+			{
+
+			}
+			else if (cliente is Feirante)
+			{
+				r = leiloes.ListAllLeiloes().Where(l => stands[l.Stand].EmailDono.Equals(email)).ToList();
+			}
+			return r;
 		}
 
 		public List<Stand> GetStandsFeira(int idFeira)
@@ -239,13 +251,21 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public void Licitar(int idLeilao, string email, float licitacao)
 		{
-			if (leiloes.GetMaiorBid(idLeilao) < licitacao)
+			Leilao l = leiloes.GetLeilao(idLeilao);
+			bool aux = false;
+			if (l.ValormMaximo.HasValue && l.ValormMaximo.Value <= l.BidAtual)
+				aux = true;
+			if (!aux && l.BidAtual < licitacao && l.ValormMinimo <= licitacao)
 			{
 				if (leiloes.LeilaoHasBidFromCliente(idLeilao, email))
 					leiloes.UpdateBid(idLeilao, email, licitacao);
 				else
 					leiloes.InsertBid(idLeilao, email, licitacao);
 			}
+			else if (aux)
+				throw new BidValueInvalid("Valor máximo já foi atingido");
+			else if (l.ValormMinimo > licitacao)
+				throw new BidValueInvalid("Valor menor que o valor mínimo");
 			else
 				throw new BidValueInvalid("Valor menor que a última exceção");
 		}

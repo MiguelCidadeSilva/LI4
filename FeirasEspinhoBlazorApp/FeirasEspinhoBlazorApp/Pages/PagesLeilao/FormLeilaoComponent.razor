@@ -7,22 +7,17 @@
 <h3>FormLeilaoComponent</h3>
 <div>
 	<div>
-		<label><b>Nome do leilão</b></label>
-		<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="nome" />
-	</div>
-	<br />
-	<div>
 		<label><b>Quantidade a leiloar</b></label>
 		<input type="text" class="tb" id="quantidade" name="quantidade" placeholder="Insira a quantidade a vender" @bind-value="quantidade" />
-	</div>
-	<div>
+		<br />
 		<label><b>Valor máximo</b></label>
 		<input type="text" class="tb" id="valormax" name="valormax" @bind-value="valorMax" />
-	</div>
-	<br />
-	<div>
+		<br />
 		<label><b>Valor mínimo</b></label>
 		<input type="text" class="tb" id="valormin" name="valormin" @bind-value="valorMin" />
+		<br />
+		<label><b>Data Limite</b></label>
+		<input type="text" class="tb" id="date" name="date" @bind-value="date" />
 	</div>
 	<div class="tableFixHead">
 		<table>
@@ -54,10 +49,12 @@
 {
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
-	private string nome = "";
+	[Parameter, EditorRequired]
+	public int idFeira { get; set; }
 	private int quantidade = 0;
 	private int valorMax = 0;
 	private int valorMin = 0;
+	private string date = "";
 	private Table<Produto> tabelContent;
 	protected override void OnInitialized()
 	{
@@ -67,7 +64,12 @@
 	}
 	private void CriarLeilao()
 	{
-		
+		DateTime param;
+		if(DateTime.TryParse(date, out param))
+		{
+			Produto p = tabelContent.GetElement();
+			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, p.Stand, idStand, idFeira, 0);
+		}
 	}
 
 }
