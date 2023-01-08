@@ -62,7 +62,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             IdStand = 0;
         }
 
-        public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
+        public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int? negociacao, int idStand)
         {
             IdVenda = idVenda;
             Data = data;

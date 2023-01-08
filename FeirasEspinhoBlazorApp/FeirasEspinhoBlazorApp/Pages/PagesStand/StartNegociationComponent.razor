@@ -8,6 +8,11 @@
 
 <div>
 	<div>
+		<label><b>Valor Total</b></label>
+		<input type="text" class="tb" id="preco" name="preco" @bind-value="venda.Preco" readonly="readonly" />
+	</div>
+	<br />
+	<div>
 		<label><b>Insira o valor que pretende pagar</b></label>
 		<input type="text" class="tb" id="precoNegocicao" name="precoNegocicao" placeholder="xxxxxxxx" @bind-value="valorapagar" />
 	</div>
@@ -24,18 +29,18 @@
 	public Venda venda { get; set; }
 	[Parameter, EditorRequired]
 	public int returnPage { get; set; }
-	private string valorapagar = "";
+	private float valorapagar = 0;
 	public void Confirmar()
 	{
 		if(returnPage == 0)
 		{
-			SistemaFeiras.GetInstance().AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, float.Parse(valorapagar), false, false));
+			SistemaFeiras.GetInstance().AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, valorapagar, false, false));
 			ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
 			showStandComponent.ShowStand("Negociação registada");
 		}
 		else
 		{
-			SistemaFeiras.GetInstance().RegistaNovoPreco((int) venda.Negociacao, float.Parse(valorapagar));
+			SistemaFeiras.GetInstance().RegistaNovoPreco((int)venda.Negociacao, valorapagar);
 			ShowNegociacoesComponent.GetInstance().GetBack("Preço Registado");
 		}
 

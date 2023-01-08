@@ -9,6 +9,11 @@
 
 <div>
 	<div>
+		<label><b>Valor Total</b></label>
+		<input type="text" class="tb" id="preco" name="preco" @bind-value="venda.Preco" readonly="readonly"/>
+	</div>
+	<br />
+	<div>
 		<label><b>Insira o número do cartão</b></label>
 		<input type="text" class="tb" id="nrcartao" name="nrcartao" placeholder="xxxxxxxx" @bind-value="numeroCartao" />
 	</div>

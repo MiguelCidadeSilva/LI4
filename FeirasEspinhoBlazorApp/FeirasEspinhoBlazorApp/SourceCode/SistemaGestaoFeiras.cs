@@ -163,7 +163,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			Utilizador? cliente = users[email];
 			//verificar 
-			return new();
+			return leiloes.ListAllLeiloes().Where();
 		}
 
 		public List<Stand> GetStandsFeira(int idFeira)
@@ -200,12 +200,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         // TO DO
         public void RegistaNovoPreco(int idNegociacao, float novoPreco)
 		{
-            //receber todas as vendas
-            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
-        }
-        public Venda GetVenda(int idVenda)
-		{
-			return vendas[idVenda];
+			//receber todas as vendas
+			//for vendas verifica se é a negociaçao, se sim devolve a negociacao
 		}
 		// TO DO
 		public void AddVenda(Venda venda)
@@ -214,11 +210,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			vendas.Insert(venda);
 			vendasCounter++;
 		}
-		public Produto GetProduto(int idProduto)
-		{
-			return stands.GetProduto(idProduto);
-		}
-
 		// TO DO
 		public void AddNegociacaoVenda(Venda venda, Negociacao negociacao)
 		{
@@ -229,6 +220,15 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			// insert negociacao
 			negociacoesCounter++;
 		}
+		public Venda GetVenda(int idVenda)
+		{
+			return vendas[idVenda];
+		}
+		public Produto GetProduto(int idProduto)
+		{
+			return stands.GetProduto(idProduto);
+		}
+
 		public int AddSubCategoria(int categoria, float imposto)
 		{
 			return 0;

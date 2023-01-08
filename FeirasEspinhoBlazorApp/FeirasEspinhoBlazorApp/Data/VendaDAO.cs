@@ -63,7 +63,10 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@preco", venda.Preco);
                     command.Parameters.AddWithValue("@emailCl", venda.EmailCliente);
                     command.Parameters.AddWithValue("@idFeira", venda.IdFeira);
-                    command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
+                    if(venda.Negociacao.HasValue)
+                        command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
+                    else
+                        command.Parameters.AddWithValue("@negociacao",DBNull.Value);
                     command.Parameters.AddWithValue("@idStand", venda.IdStand);
                     command.ExecuteNonQuery();
                     connection.Close();
