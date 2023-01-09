@@ -6,6 +6,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Runtime.CompilerServices;
+using FeirasEspinhoBlazorApp.SourceCode.Vendas;
+using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -345,5 +347,152 @@ namespace FeirasEspinhoBlazorApp.Data
                 connection.Close();
             }
         }
+
+        //Avaliação
+
+        public bool ContainsKeyAvaliacaoFeirantes(String emailCl, String emailF)
+        {
+            bool r = false;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [AvaliacaoFeirantes] WHERE emailCl = (@emailCl) AND emailF = (@emailF)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@emailCl", emailCl);
+                command.Parameters.AddWithValue("@emailF", emailF);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
+            }
+            return r;
+        }
+
+        public bool ContainsKeyAvaliacaoFeiras(String emailCl, int idFeira)
+        {
+            bool r = false;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [AvaliacaoFeiras] WHERE emailCliente = (@emailCl) AND idFeira = (@idFeira)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@emailCl", emailCl);
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
+            }
+            return r;
+        }
+
+        public void InsertAvaliacaoFeirante(String emailCl, String emailF, int avaliacao)
+        {
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[AvaliacaoFeirantes] VALUES (@emailCl, @emailF, @avaliacao)", connection);
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@emailCl", emailCl);
+                command.Parameters.AddWithValue("@emailF", emailF);
+                command.Parameters.AddWithValue("@avaliacao", avaliacao);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void InsertAvaliacaoFeira(String emailCl, int idFeira, int avaliacao)
+        {
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[AvaliacaoFeirantes] VALUES (@emailCliente, @idFeira, @avaliacao)", connection);
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@emailCliente", emailCl);
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.Parameters.AddWithValue("@avaliacao", avaliacao);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void UpdateAvaliacaoFeirante(String emailCl, String emailF, int avaliacaoNova) 
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("UPDATE [AvaliacaoFeirantes] SET avaliacao = (@avaliacao) WHERE emailCl = (@emailCl) AND emailF = (@emailF)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@avaliacao", avaliacaoNova);
+                command.Parameters.AddWithValue("@emailCl", emailCl);
+                command.Parameters.AddWithValue("@emailF", emailF);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void UpdateAvaliacaoFeira(String emailCl, int idFeira, int avaliacaoNova)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("UPDATE [AvaliacaoFeiras] SET avaliacao = (@avaliacao) WHERE emailCl = (@emailCl) AND idFeira = (@idFeira)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@avaliacao", avaliacaoNova);
+                command.Parameters.AddWithValue("@emailCl", emailCl);
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public float getAvaliacaoFeirante(String emailF) 
+        {
+            float r = 0;
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT AVG(avaliacao) AS Media FROM AvaliacaoFeirantes WHERE emailF = (@emailF)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@emailF", emailF);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    if (response.IsDBNull(0))
+                        r = (float)response.GetFieldValue<double>("Media");
+                }
+                connection.Close();
+            }
+            return r;
+        }
+
+        public float getAvaliacaoFeira(int idFeira)
+        {
+            float r = 0;
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT AVG(avaliacao) AS Media FROM AvaliacaoFeiras WHERE idFeira = (@idFeira)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    if (response.IsDBNull(0))
+                        r = (float)response.GetFieldValue<double>("Media");
+                }
+                connection.Close();
+            }
+            return r;
+        }
+
+        public void AvaliaFeirante(String emaicl, String emailF, int avaliacao)
+        {
+            if (ContainsKeyAvaliacaoFeirantes(emaicl, emailF)) UpdateAvaliacaoFeirante(emaicl,emailF,avaliacao);
+            else InsertAvaliacaoFeirante(emaicl,emailF,avaliacao);
+        }
+
+        public void AvaliaFeira(String emaicl, int idFeira, int avaliacao)
+        {
+            if (ContainsKeyAvaliacaoFeiras(emaicl, idFeira)) UpdateAvaliacaoFeira(emaicl,idFeira,avaliacao);
+            else UpdateAvaliacaoFeira(emaicl, idFeira, avaliacao);
+        }
+
     }
 }
