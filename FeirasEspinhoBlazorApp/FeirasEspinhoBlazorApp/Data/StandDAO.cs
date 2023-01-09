@@ -377,7 +377,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void AumentaStockProduto(int idProd, int incremento){
 
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
-            using (SqlCommand command = new("UPDATE [Produto] SET stock = (@stock), WHERE idProd = (@idProd)", connection))
+            using (SqlCommand command = new("UPDATE [Produto] SET stock = (@stock) WHERE idProd = (@idProd)", connection))
             {
                 connection.Open();
                 int stockOriginal = GetStockProduto(idProd);

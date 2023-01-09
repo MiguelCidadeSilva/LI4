@@ -192,7 +192,19 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public void NovaProposta(int idNegociacao, float proposta)
+		public void Insucesso(int idNegociacao)
+		{
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("DELETE FROM [Negociacao] WHERE idNeg = (@idNegociacao)", connection))
+			{
+                connection.Open();
+				command.Parameters.AddWithValue("@idNegociacao", idNegociacao);
+                command.ExecuteNonQuery();
+                connection.Close();
+			}
+		}
+
+		public void NovaProposta(int idNegociacao, float proposta)
         {
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
             using (SqlCommand command = new("UPDATE [Negociacao] SET precoNeg = (@precoNeg) WHERE idNeg = (@idNeg)", connection))

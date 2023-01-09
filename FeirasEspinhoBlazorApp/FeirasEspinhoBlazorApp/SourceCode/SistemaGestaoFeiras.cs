@@ -226,7 +226,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			//for vendas verifica se é uma negociaçao, se sim adicionar a lista
 			return negociacoes.ListAllNegociacoes()
 				.Where(n => !n.Sucesso)
-				.Select(n => vendas.getNegocicaoVenda(n.IdNegociacao))
+				.Select(n => vendas.GetNegocicaoVenda(n.IdNegociacao))
 				.Where(v => v.EmailCliente.Equals(email) || stands[v.IdStand].EmailDono.Equals(email)).ToList();
 		}
 		// TO DO
@@ -244,6 +244,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         // TO DO
         public void RegistaInsucesso(int idNegociacao)
 		{
+			Venda venda = vendas.GetNegocicaoVenda(idNegociacao);
+			vendas.DeleteVenda(venda.IdVenda);
+			negociacoes.Insucesso(idNegociacao);
+			venda.Produtos.ForEach(p => stands.AumentaStockProduto(p.Item1.IdProduto, p.Item2));
             //receber todas as vendas
             //for vendas verifica se é a negociaçao, se sim devolve a negociacao
         }

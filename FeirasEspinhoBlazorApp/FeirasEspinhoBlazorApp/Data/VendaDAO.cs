@@ -189,7 +189,7 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public Venda? getNegocicaoVenda(int idNeg)
+        public Venda? GetNegocicaoVenda(int idNeg)
         {
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
             using (SqlCommand command = new("SELECT * FROM [Venda] WHERE negociacao = (@negociacao)", connection))
@@ -206,6 +206,29 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 connection.Close();
                 return null;
+            }
+        }
+        public void DeleteProdutosVendidos(int idVenda)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("DELETE FROM [ProdutosVendidos] WHERE idVenda=(@idVenda)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@idVenda", idVenda);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        public void DeleteVenda(int idVenda)
+        {
+            DeleteProdutosVendidos(idVenda);
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("DELETE FROM [Venda] WHERE idVenda=(@idVenda)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@idVenda", idVenda);
+                   command.ExecuteNonQuery();
+                   connection.Close() ;
             }
         }
     }
