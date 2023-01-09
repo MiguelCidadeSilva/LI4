@@ -38,16 +38,19 @@ namespace FeirasEspinhoBlazorApp.Data
         public void InsertProdutosVendidos(int idVenda, List<(Produto, int)> produtos, float taxaCamara)
         {
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @precoProd, @quantidade, @taxaCamara)", connection);
             {
                 connection.Open();
-                foreach ((Produto, int) prod in produtos) {
-                    command.Parameters.AddWithValue("idVenda", idVenda);
-                    command.Parameters.AddWithValue("idProd", prod.Item1.IdProduto);
-                    command.Parameters.AddWithValue("precoProd", prod.Item1.Preco);
-                    command.Parameters.AddWithValue("quantidade", prod.Item2);
-                    command.Parameters.AddWithValue("taxaCamara", taxaCamara);
-                    command.ExecuteNonQuery();
+                foreach ((Produto, int) prod in produtos) 
+                {
+					using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @precoProd, @quantidade, @taxaCamara)", connection);
+                    {
+                        command.Parameters.AddWithValue("idVenda", idVenda);
+                        command.Parameters.AddWithValue("idProd", prod.Item1.IdProduto);
+                        command.Parameters.AddWithValue("precoProd", prod.Item1.Preco);
+                        command.Parameters.AddWithValue("quantidade", prod.Item2);
+                        command.Parameters.AddWithValue("taxaCamara", taxaCamara);
+                        command.ExecuteNonQuery();
+                    }
                 }
                 connection.Close();
             }
@@ -70,10 +73,11 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@negociacao",DBNull.Value);
                 command.Parameters.AddWithValue("@idStand", venda.IdStand);
                 command.ExecuteNonQuery();
-                if(venda.Produtos.Count > 0) {
+				connection.Close();
+				if (venda.Produtos.Count > 0) 
+                {
                     InsertProdutosVendidos(venda.IdVenda,venda.Produtos,0);
                 }
-                connection.Close();
             }
         }
 
@@ -169,7 +173,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idVenda AS MaiorID FROM [Venda]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idVenda)+1,0) AS MaiorID FROM [Venda]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -177,10 +181,10 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
-                return r + 1;
+                return r;
             }
         }
     }

@@ -41,7 +41,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void Insert(Negociacao negociacao)
         {
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("INSERT INTO [dbo].[Negocicao] VALUES (@idNeg, @precoBase, @precoNeg, @sucesso, @ultimoPropor)", connection);
+            using SqlCommand command = new("INSERT INTO [dbo].[Negociacao] VALUES (@idNeg, @precoBase, @precoNeg, @sucesso, @ultimoPropor)", connection);
             {
                 connection.Open();
                 command.Parameters.AddWithValue("idNeg",negociacao.IdNegociacao);
@@ -108,7 +108,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idNeg AS MaiorID FROM [Negociacao]", connection);
+            using SqlCommand command = new("SELECT ISNULL(MAX(idNeg)+1,0) AS MaiorID FROM [Negociacao]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -119,7 +119,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
-                return r + 1;
+                return r;
             }
         }
 

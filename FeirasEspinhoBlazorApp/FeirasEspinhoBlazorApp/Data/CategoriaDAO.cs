@@ -270,7 +270,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idCategoria AS MaiorID FROM [Categoria]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idCategoria)+1,0) AS MaiorID FROM [Categoria]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -278,10 +278,11 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					if (response.IsDBNull(0))
+						r = response.GetFieldValue<int>("MaiorID")+1;
                 }
                 connection.Close();
-                return r + 1;
+                return r;
             }
         }
 
@@ -289,7 +290,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idSC AS MaiorID FROM [SubCategoria]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idSC)+1,0) AS MaiorID FROM [SubCategoria]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -297,10 +298,11 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					if (response.IsDBNull(0))
+						r = response.GetFieldValue<int>("MaiorID")+1;
                 }
                 connection.Close();
-                return r + 1;
+                return r;
             }
         }
     }

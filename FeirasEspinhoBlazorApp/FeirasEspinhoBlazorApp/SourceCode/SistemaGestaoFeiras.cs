@@ -21,17 +21,24 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		private StandDAO stands;
 		private VendaDAO vendas;
 		private LeilaoDAO leiloes;
+		private NegociacaoDAO negociacoes;
 		private CategoriaDAO categorias;
+		private CandidaturaDAO candidaturas;
+		private int categoriaCounter;
+		private int subCategoriaCounter;
 		private int feirasCounter;
         private int vendasCounter;
         private int standsCounter;
 		private int negociacoesCounter;
 		private int leiloesCounter;
 		private int produtosCounter;
+		private int candidaturasCounter;
 		private static SistemaFeiras instance = new SistemaFeiras();
 
 		public static SistemaFeiras GetInstance()
 		{
+			if(instance == null)
+				instance= new SistemaFeiras();
 			return instance;
 		}
 
@@ -44,12 +51,17 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			vendas = VendaDAO.GetInstance();
 			categorias = CategoriaDAO.GetInstance();
 			leiloes = LeilaoDAO.GetInstance();
-			feirasCounter = 0;
-			vendasCounter = 0;
-			standsCounter = 0;
-			negociacoesCounter = 0;
-			leiloesCounter = 19;
-			produtosCounter = 0;
+			negociacoes = NegociacaoDAO.GetInstance();
+			candidaturas = CandidaturaDAO.GetInstance();
+			feirasCounter = feiras.GetNextId();
+			vendasCounter = vendas.GetNextId();
+			standsCounter = stands.GetNextIdStand();
+			negociacoesCounter = negociacoes.GetNextId();
+			leiloesCounter = leiloes.GetNextId();
+			produtosCounter = stands.GetNextIdProduto();
+			categoriaCounter = categorias.GetNextIdCategoria();
+			subCategoriaCounter = categorias.GetNextSubCategoria();
+			candidaturasCounter = candidaturas.GetNextId();
 		}
 
 
@@ -193,7 +205,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			List<Leilao> r = new();
 			if(cliente is Cliente)
 			{
-
+				r = leiloes.GetLeiloesCliente(email);
 			}
 			else if (cliente is Feirante)
 			{
@@ -210,6 +222,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		public List<Venda> GetNegociacoes(string email)
 		{
 			Utilizador? cliente = users[email];
+			negociacoes.ListAllNegociacoes().Where(n => vendas[n.IdNegociacao].EmailCliente.Equals(email) ||  stands[vendas[n.IdNegociacao].IdStand].EmailDono.Equals(email));
 			//receber todas as vendas
 			//for vendas verifica se é uma negociaçao, se sim adicionar a lista
 			return new();
@@ -251,12 +264,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		// TO DO
 		public void AddNegociacaoVenda(Venda venda, Negociacao negociacao)
 		{
-			int idNeg = negociacao.IdNegociacao;
-			venda.Negociacao = idNeg;
-			AddVenda(venda);
+			venda.Negociacao = negociacoesCounter;
 			negociacao.IdNegociacao = negociacoesCounter;
-			// insert negociacao
+			negociacoes.Insert(negociacao);
 			negociacoesCounter++;
+			AddVenda(venda);
 		}
 		public Venda GetVenda(int idVenda)
 		{

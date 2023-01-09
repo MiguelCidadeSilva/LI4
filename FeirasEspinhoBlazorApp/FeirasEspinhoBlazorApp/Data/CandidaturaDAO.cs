@@ -9,11 +9,11 @@ using FeirasEspinhoBlazorApp.SourceCode.Stands;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
-    public class CandidadturaDAO
+    public class CandidaturaDAO
     {
-        private static CandidadturaDAO instance = new CandidadturaDAO();
+        private static CandidaturaDAO instance = new CandidaturaDAO();
 
-        public static CandidadturaDAO GetInstance()
+        public static CandidaturaDAO GetInstance()
         {
             return instance;
         }
@@ -103,7 +103,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idCandidatura AS MaiorID FROM [Candidatura]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idCandidatura)+1,0) AS MaiorID FROM [Candidatura]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -111,10 +111,10 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
-                return r+1;
+                return r;
             }
         }
     }

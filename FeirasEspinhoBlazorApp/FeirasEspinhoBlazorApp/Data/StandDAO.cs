@@ -451,27 +451,8 @@ namespace FeirasEspinhoBlazorApp.Data
         public int GetNextIdProduto()
         {
             int r = 0;
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT MAX idProd AS MaiorID FROM [Produto]", connection);
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        r = response.GetFieldValue<int>("MaiorID");
-                    }
-                    connection.Close();
-                    return r + 1;
-                }
-        }
-
-        public int GetNextIdStand()
-        {
-            int r = 1;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idStand AS MaiorID FROM [Stand]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idProd)+1,0) AS MaiorID FROM [Produto]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -479,10 +460,29 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
-                return r + 1;
+                return r;
+            }
+        }
+
+        public int GetNextIdStand()
+        {
+            int r = 1;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idStand)+1,0) AS MaiorID FROM [Stand]", connection);
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+					r = response.GetFieldValue<int>("MaiorID");
+                }
+                connection.Close();
+                return r;
             }
         }
     }

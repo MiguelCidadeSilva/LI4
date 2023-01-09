@@ -228,7 +228,7 @@ namespace FeirasEspinhoBlazorApp.Data
         {
             int r = 0;
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("SELECT MAX idFeira AS MaiorID FROM [Feira]", connection);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(idFeira)+1,0) AS MaiorID FROM [Feira]", connection);
             {
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -236,10 +236,10 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    r = response.GetFieldValue<int>("MaiorID");
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
-                return r + 1;
+                return r;
             }
         }
     }

@@ -172,11 +172,7 @@ else
 	}
 	private void CreateVenda()
 	{
-		List<(Produto, int)> list = new();
-		foreach(var prod in tabelContent.Content)
-		{
-			list.Add((prod.Item2, quantidades[prod.Item1]));
-		}
+		List<(Produto, int)> list = tabelContent.Content.Where(p => quantidades[p.Item1] > 0).Select(p => (p.Item2, quantidades[p.Item1])).ToList();
 		venda = new Venda(0,DateTime.Now,precoTotal,email,idFeira,null,idStand,list);
 	}
 	public void CompraRapida()
@@ -204,6 +200,7 @@ else
 		fastPurchase = false;
 		negociation = false;
 		formProduto = false;
+		precoTotal = 0;
 		StateHasChanged();
 	}
 
@@ -216,6 +213,7 @@ else
 		fastPurchase = false;
 		negociation = false;
 		formProduto = false;
+		precoTotal = 0;
 		StateHasChanged();
 	}
 	public void AdicionarProduto()
