@@ -51,8 +51,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             get { return idStand; }
             set { idStand = value; }
         }
-        private List<Produto> produtos;
-        public List<Produto> Produtos
+        private List<(Produto, int)> produtos;
+        public List<(Produto, int)> Produtos
         {
             get { return produtos; }
         }
@@ -68,7 +68,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             IdStand = 0;
         }
 
-        public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int? negociacao, int idStand)
+        public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int? negociacao, int idStand, List<(Produto, int)> produtos)
         {
             IdVenda = idVenda;
             Data = data;
@@ -77,6 +77,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             IdFeira = idFeira;
             Negociacao = negociacao;
             IdStand = idStand;
+            this.produtos = new();
+            produtos.ForEach(p => this.produtos.Add((new Produto(p.Item1),p.Item2)));
         }
 
         public Venda(Venda v)

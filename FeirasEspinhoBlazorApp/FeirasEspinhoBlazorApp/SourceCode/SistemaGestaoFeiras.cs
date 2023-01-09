@@ -242,7 +242,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			venda.IdVenda = vendasCounter;
 			vendas.Insert(venda);
-			
+			List<(Produto, int)> prods = venda.Produtos;
+			prods.ForEach(p => stands.DiminuiStockProduto(p.Item1.idProduto, p.Item2));
 			vendasCounter++;
 		}
 		// TO DO

@@ -122,7 +122,7 @@ else
 		}
 		else
 		{
-			
+
 		}
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
@@ -147,7 +147,12 @@ else
 	}
 	private void CreateVenda()
 	{
-		venda = new Venda(0,DateTime.Now,precoTotal,email,idFeira,null,idStand);
+		List<(Produto, int)> list = new();
+		for(var prod in tabelContent.Content)
+		{
+			list.Add((prod.Item2, quantidades[prod.Item1]));
+		}
+		venda = new Venda(0,DateTime.Now,precoTotal,email,idFeira,null,idStand,list);
 	}
 	public void CompraRapida()
 	{
