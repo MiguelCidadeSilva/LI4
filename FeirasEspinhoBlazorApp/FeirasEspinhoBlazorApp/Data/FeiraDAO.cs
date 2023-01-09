@@ -353,5 +353,40 @@ namespace FeirasEspinhoBlazorApp.Data
             return r;
         }
 
+        public int GetNextId()
+        {
+            int r = 1;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT MAX idFeira AS MaiorID FROM [Feira]", connection);
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {
+                        response.Read();
+                        r = response.GetFieldValue<int>("MaiorID");
+                    }
+                    connection.Close();
+                    return r + 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
     }
 }

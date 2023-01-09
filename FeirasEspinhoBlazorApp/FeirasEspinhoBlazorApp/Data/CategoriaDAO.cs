@@ -96,10 +96,10 @@ namespace FeirasEspinhoBlazorApp.Data
                 }
                 Console.WriteLine(errorMessages.ToString());
             }
-		}
-		public Categoria? this[int id] => GetCategoria(id);
+        }
+        public Categoria? this[int id] => GetCategoria(id);
 
-		public Categoria? GetCategoria(int id)
+        public Categoria? GetCategoria(int id)
         {
             try
             {
@@ -110,11 +110,11 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idCategoria", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    if(response.HasRows)
+                    if (response.HasRows)
                     {
                         response.Read();
                         string nome = response.GetFieldValue<string>("nome");
-                        return new Categoria(id,nome);
+                        return new Categoria(id, nome);
                     }
                     connection.Close();
                 }
@@ -146,11 +146,11 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idCategoria", id);
                     command.ExecuteNonQuery();
                     SqlDataReader response = command.ExecuteReader();
-                    if(response.HasRows)
+                    if (response.HasRows)
                     {
                         response.Read();
                         string nome = response.GetFieldValue<string>("nome");
-                        return  nome;
+                        return nome;
                     }
                     connection.Close();
                 }
@@ -263,7 +263,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         float imposto = (float)response.GetFieldValue<double>("imposto");
                         int categoria = response.GetFieldValue<int>("categoria");
                         string nome = GetNomeCategoria(categoria);
-                        return new SubCategoria(categoria,nome,id,imposto);
+                        return new SubCategoria(categoria, nome, id, imposto);
                     }
                     connection.Close();
                 }
@@ -326,10 +326,10 @@ namespace FeirasEspinhoBlazorApp.Data
         }
 
         private void GenerateDataCat()
-		{
-			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
-			{
-				string sql = @"INSERT INTO Categoria (idCategoria, nome)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+            {
+                string sql = @"INSERT INTO Categoria (idCategoria, nome)
                 VALUES
                     (1, 'Fruta'),
                     (2, 'Vestuário'),
@@ -341,18 +341,18 @@ namespace FeirasEspinhoBlazorApp.Data
                     (8, 'Ferramentas'),
                     (9, 'Desporto'),
                     (10, 'Jardinagem')";
-				SqlCommand command = new(sql, connection);
-				connection.Open();
-				command.ExecuteNonQuery();
-				connection.Close();
-			}
-		}
-		private void GenerateDataSC()
-		{
-			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
-			{
+                SqlCommand command = new(sql, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        private void GenerateDataSC()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
+            {
 
-				string sql = @"INSERT INTO SubCategoria (idSC, imposto, categoria)
+                string sql = @"INSERT INTO SubCategoria (idSC, imposto, categoria)
                             VALUES
                                 (1, 0.01, 1),
                                 (2, 0.02, 2),
@@ -379,17 +379,89 @@ namespace FeirasEspinhoBlazorApp.Data
                                 (23, 0.23, 3),
                                 (24, 0.01, 4),
                                 (25, 0.02, 5)";
-				SqlCommand command = new(sql, connection);
-				connection.Open();
-				command.ExecuteNonQuery();
-				connection.Close();
-			}
+                SqlCommand command = new(sql, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
 
-		}
-		public void GenerateData()
-		{
-			GenerateDataCat();
-			GenerateDataSC();
-		}
-	}
+        }
+        public void GenerateData()
+        {
+            GenerateDataCat();
+            GenerateDataSC();
+        }
+
+        public int GetNextIdCategoria()
+        {
+            int r = 1;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT MAX idCategoria AS MaiorID FROM [Categoria]", connection);
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {
+                        response.Read();
+                        r = response.GetFieldValue<int>("MaiorID");
+                    }
+                    connection.Close();
+                    return r + 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
+
+        public int GetNextSubCategoria()
+        {
+            int r = 1;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT MAX idSC AS MaiorID FROM [SubCategoria]", connection);
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {
+                        response.Read();
+                        r = response.GetFieldValue<int>("MaiorID");
+                    }
+                    connection.Close();
+                    return r + 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
+        }
+    }
 }

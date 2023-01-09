@@ -102,7 +102,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         bool Aprovacao = response.GetFieldValue<bool>("aprovacao");
                         int IdStand = response.GetFieldValue<int>("idStand");
                         int IdFeira = response.GetFieldValue<int>("idFeira");
-                        return new Candidatura(idCandidatura,DataSubmissao,Aprovacao,IdStand,IdFeira);
+                        return new Candidatura(idCandidatura, DataSubmissao, Aprovacao, IdStand, IdFeira);
                     }
                     connection.Close();
                 }
@@ -164,6 +164,42 @@ namespace FeirasEspinhoBlazorApp.Data
                 Console.WriteLine(errorMessages.ToString());
             }
             return r;
+        }
+
+        public int GetNextId()
+        {
+            int r = 1;
+            try
+            {
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("SELECT MAX idCandidatura AS MaiorID FROM [Candidatura]", connection);
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {
+                        response.Read();
+                        r = response.GetFieldValue<int>("MaiorID");
+                    }
+                    connection.Close();
+                    return r+1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+                return r;
+            }
         }
     }
 }
