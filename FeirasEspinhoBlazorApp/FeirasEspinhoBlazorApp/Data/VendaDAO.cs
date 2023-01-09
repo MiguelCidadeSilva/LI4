@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using FeirasEspinhoBlazorApp.SourceCode.Stands;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -40,9 +41,9 @@ namespace FeirasEspinhoBlazorApp.Data
             using SqlConnection connection = new(ConnectionDAO.connectionString);
             {
                 connection.Open();
-                foreach ((Produto, int) prod in produtos) 
+                foreach ((Produto, int) prod in produtos)
                 {
-					using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @precoProd, @quantidade, @taxaCamara)", connection);
+                    using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @precoProd, @quantidade, @taxaCamara)", connection);
                     {
                         command.Parameters.AddWithValue("idVenda", idVenda);
                         command.Parameters.AddWithValue("idProd", prod.Item1.IdProduto);
@@ -67,21 +68,21 @@ namespace FeirasEspinhoBlazorApp.Data
                 command.Parameters.AddWithValue("@preco", venda.Preco);
                 command.Parameters.AddWithValue("@emailCl", venda.EmailCliente);
                 command.Parameters.AddWithValue("@idFeira", venda.IdFeira);
-                if(venda.Negociacao.HasValue)
+                if (venda.Negociacao.HasValue)
                     command.Parameters.AddWithValue("@negociacao", venda.Negociacao);
                 else
-                    command.Parameters.AddWithValue("@negociacao",DBNull.Value);
+                    command.Parameters.AddWithValue("@negociacao", DBNull.Value);
                 command.Parameters.AddWithValue("@idStand", venda.IdStand);
                 command.ExecuteNonQuery();
-				connection.Close();
-				if (venda.Produtos.Count > 0) 
+                connection.Close();
+                if (venda.Produtos.Count > 0)
                 {
-                    InsertProdutosVendidos(venda.IdVenda,venda.Produtos,0);
+                    InsertProdutosVendidos(venda.IdVenda, venda.Produtos, 0);
                 }
             }
         }
 
-        public List<(Produto,int)> GetProdutosVendidosNumaVenda(int idVenda)
+        public List<(Produto, int)> GetProdutosVendidosNumaVenda(int idVenda)
         {
             List<(Produto, int)> r = new();
             using SqlConnection connection = new(ConnectionDAO.connectionString);
@@ -98,7 +99,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         int idProd = response.GetFieldValue<int>("idProd");
                         Produto? p = StandDAO.GetInstance().GetProduto(idProd);
                         int quantidade = response.GetFieldValue<int>("quantidade");
-                        if(p!= null)
+                        if (p != null)
                             r.Add((p, quantidade));
                     }
                 }
@@ -131,7 +132,7 @@ namespace FeirasEspinhoBlazorApp.Data
                         negociacao = response.GetFieldValue<int>("negociacao");
                     int idStand = response.GetFieldValue<int>("idStand");
                     connection.Close();
-                    List<(Produto,int)> produtos = GetProdutosVendidosNumaVenda(id);
+                    List<(Produto, int)> produtos = GetProdutosVendidosNumaVenda(id);
                     return new Venda(id, data, preco, emailCl, idFeira, negociacao, idStand, produtos);
                 }
             }
@@ -151,17 +152,17 @@ namespace FeirasEspinhoBlazorApp.Data
                 {
                     while (response.Read())
                     {
-                     int idVenda = response.GetFieldValue<int>("idVenda");
-                     DateTime data = response.GetFieldValue<DateTime>("data");
-                     float preco = (float)response.GetFieldValue<double>("preco");
-                     String emailCliente = response.GetFieldValue<string>("emailCl");
-                     int idFeira = response.GetFieldValue<int>("idFeira");
-                     int? negociacao = null;
-                     if (!response.IsDBNull("negociacao"))
-                         negociacao = response.GetFieldValue<int>("negociacao");
-                     int idStand = response.GetFieldValue<int>("idStand");
+                        int idVenda = response.GetFieldValue<int>("idVenda");
+                        DateTime data = response.GetFieldValue<DateTime>("data");
+                        float preco = (float)response.GetFieldValue<double>("preco");
+                        String emailCliente = response.GetFieldValue<string>("emailCl");
+                        int idFeira = response.GetFieldValue<int>("idFeira");
+                        int? negociacao = null;
+                        if (!response.IsDBNull("negociacao"))
+                            negociacao = response.GetFieldValue<int>("negociacao");
+                        int idStand = response.GetFieldValue<int>("idStand");
                         List<(Produto, int)> produtos = GetProdutosVendidosNumaVenda(idVenda);
-                        r.Add(new Venda(idVenda,data,preco,emailCliente,idFeira,negociacao,idStand,produtos));
+                        r.Add(new Venda(idVenda, data, preco, emailCliente, idFeira, negociacao, idStand, produtos));
                     }
                 }
                 connection.Close();
@@ -181,10 +182,30 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-					r = response.GetFieldValue<int>("MaiorID");
+                    r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
                 return r;
+            }
+        }
+
+        public Venda? getNegocicaoVenda(int idNeg)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Venda] WHERE negociacao = (@negociacao)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@negociacao", idNeg);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    int idVenda = response.GetFieldValue<int>("idVenda");
+                    return GetVenda(idVenda); 
+                }
+                connection.Close();
+                return null;
             }
         }
     }
