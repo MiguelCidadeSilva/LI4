@@ -21,34 +21,17 @@ namespace FeirasEspinhoBlazorApp.Data
         public bool ContainsKey(String tabela, String email)
         {
             bool r = false;
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM ["+tabela+"] WHERE email = (@email)", connection))
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM ["+tabela+"] WHERE email = (@email)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", email);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    r = response.HasRows;
-                    connection.Close();
-                }
-                return r;
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
-            }
+            return r;
         }
 
         public bool ContainsKey(String email)
@@ -64,158 +47,126 @@ namespace FeirasEspinhoBlazorApp.Data
         //Insere utilizador na tabela
         public void Insert(Utilizador utilizador)
         {
-            try
+            if (utilizador is Cliente)
             {
-                if (utilizador is Cliente)
+                Cliente? cliente = utilizador as Cliente;
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[Cliente] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
                 {
-                    Cliente? cliente = utilizador as Cliente;
-                    using SqlConnection connection = new(ConnectionDAO.connectionString);
-                    using SqlCommand command = new("INSERT INTO [dbo].[Cliente] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
-                    {
-                        connection.Open();
-                        command.Parameters.AddWithValue("@email", cliente.Email);
-                        command.Parameters.AddWithValue("@nome", cliente.Username);
-                        command.Parameters.AddWithValue("@password", cliente.Password);
-                        command.Parameters.AddWithValue("@dataNascimento", cliente.DataNascimento);
-                        command.Parameters.AddWithValue("@dataCriacao", cliente.DataCriacao);
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                    }
-                }
-                else if (utilizador is Feirante)
-                {
-                    Feirante? feirante = utilizador as Feirante;
-                    using SqlConnection connection = new(ConnectionDAO.connectionString);
-                    using SqlCommand command = new("INSERT INTO [dbo].[Feirante] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao, @nrconta)", connection);
-                    {
-                        connection.Open();
-                        command.Parameters.AddWithValue("@email", feirante.Email);
-                        command.Parameters.AddWithValue("@nome", feirante.Username);
-                        command.Parameters.AddWithValue("@password", feirante.Password);
-                        command.Parameters.AddWithValue("@dataNascimento", feirante.DataNascimento);
-                        command.Parameters.AddWithValue("@dataCriacao", feirante.DataCriacao);
-                        command.Parameters.AddWithValue("@nrconta", feirante.IDconta);
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                    }
-                }
-                else if (utilizador is Administrador)
-                {
-                    Administrador? admin = utilizador as Administrador;
-                    using SqlConnection connection = new(ConnectionDAO.connectionString);
-                    using SqlCommand command = new("INSERT INTO [dbo].[Administrador] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
-                    {
-                        connection.Open();
-                        command.Parameters.AddWithValue("@email", admin.Email);
-                        command.Parameters.AddWithValue("@nome", admin.Username);
-                        command.Parameters.AddWithValue("@password", admin.Password);
-                        command.Parameters.AddWithValue("@dataNascimento", admin.DataNascimento);
-                        command.Parameters.AddWithValue("@dataCriacao", admin.DataCriacao);
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                    }
+                    connection.Open();
+                    command.Parameters.AddWithValue("@email", cliente.Email);
+                    command.Parameters.AddWithValue("@nome", cliente.Username);
+                    command.Parameters.AddWithValue("@password", cliente.Password);
+                    command.Parameters.AddWithValue("@dataNascimento", cliente.DataNascimento);
+                    command.Parameters.AddWithValue("@dataCriacao", cliente.DataCriacao);
+                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
-            catch (SqlException ex)
+            else if (utilizador is Feirante)
             {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
+                Feirante? feirante = utilizador as Feirante;
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[Feirante] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao, @nrconta)", connection);
                 {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                    connection.Open();
+                    command.Parameters.AddWithValue("@email", feirante.Email);
+                    command.Parameters.AddWithValue("@nome", feirante.Username);
+                    command.Parameters.AddWithValue("@password", feirante.Password);
+                    command.Parameters.AddWithValue("@dataNascimento", feirante.DataNascimento);
+                    command.Parameters.AddWithValue("@dataCriacao", feirante.DataCriacao);
+                    command.Parameters.AddWithValue("@nrconta", feirante.IDconta);
+                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
-                Console.WriteLine(errorMessages.ToString());
+            }
+            else if (utilizador is Administrador)
+            {
+                Administrador? admin = utilizador as Administrador;
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[Administrador] VALUES (@email, @nome, @password, @dataNascimento, @dataCriacao)", connection);
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@email", admin.Email);
+                    command.Parameters.AddWithValue("@nome", admin.Username);
+                    command.Parameters.AddWithValue("@password", admin.Password);
+                    command.Parameters.AddWithValue("@dataNascimento", admin.DataNascimento);
+                    command.Parameters.AddWithValue("@dataCriacao", admin.DataCriacao);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
         }
 
         //Obtem utilizador com base no seu email
         public Utilizador? this[string email] => GetUtilizador(email);
         public Utilizador? GetUtilizador(String email) {
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Cliente] WHERE email = (@email)", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Cliente] WHERE email = (@email)", connection))
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if(response.HasRows)
                 {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", email);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if(response.HasRows)
+                    response.Read();
+                    Cliente c = new()
                     {
-                        response.Read();
-                        Cliente c = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
-                        };
-                        connection.Close();
-                        return c;
-                    }
-                }
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Administrador] WHERE email = (@email)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", email);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        Administrador a = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
-                        };
-                        connection.Close();
-                        return a;
-                    }
-                }
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Feirante] WHERE email = (@email)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@email", email);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        Feirante f = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
-                            iDconta = response.GetFieldValue<int>("nrconta")
-                        };
-                        connection.Close();
-                        return f;
-                    }
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+                    };
+                    connection.Close();
+                    return c;
                 }
             }
-            catch (SqlException ex)
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Administrador] WHERE email = (@email)", connection))
             {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                    response.Read();
+                    Administrador a = new()
+                    {
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+                    };
+                    connection.Close();
+                    return a;
                 }
-                Console.WriteLine(errorMessages.ToString());
+            }
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Feirante] WHERE email = (@email)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    Feirante f = new()
+                    {
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
+                        iDconta = response.GetFieldValue<int>("nrconta")
+                    };
+                    connection.Close();
+                    return f;
+                }
             }
             return null;
         }
@@ -224,43 +175,26 @@ namespace FeirasEspinhoBlazorApp.Data
 		public List<Cliente> ListAllClientes()
 		{
             List<Cliente> r = new();
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Cliente]", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Cliente]", connection))
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    response.Read();
+                    Cliente cliente = new()
                     {
-                        response.Read();
-                        Cliente cliente = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
-                        };
-                        r.Add(cliente);
-                    }
-                    connection.Close();
-                    return r;
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+                    };
+                    r.Add(cliente);
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
 		}
@@ -268,43 +202,26 @@ namespace FeirasEspinhoBlazorApp.Data
         public List<Administrador>? ListAllAdmins()
         {
             List<Administrador> r = new();
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Administrador]", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Administrador]", connection))
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    response.Read();
+                    Administrador admin = new()
                     {
-                        response.Read();
-                        Administrador admin = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
-                        };
-                        r.Add(admin);
-                    }
-                    connection.Close();
-                    return r;
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+                    };
+                    r.Add(admin);
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
         }
@@ -312,50 +229,32 @@ namespace FeirasEspinhoBlazorApp.Data
         public List<Feirante>? ListAllFeirantes()
         {
             List<Feirante> r = new();
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Feirante]", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Feirante]", connection))
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    response.Read();
+                    Feirante feirante = new()
                     {
-                        response.Read();
-                        Feirante feirante = new()
-                        {
-                            Email = response.GetFieldValue<string>("email"),
-                            Username = response.GetFieldValue<string>("nome"),
-                            Password = response.GetFieldValue<string>("password"),
-                            DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
-                            DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
-                            iDconta = response.GetFieldValue<int>("nrconta")
-                        };
-                        r.Add(feirante);
-                    }
-                    connection.Close();
-                    return r;
+                        Email = response.GetFieldValue<string>("email"),
+                        Username = response.GetFieldValue<string>("nome"),
+                        Password = response.GetFieldValue<string>("password"),
+                        DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+                        DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
+                        iDconta = response.GetFieldValue<int>("nrconta")
+                    };
+                    r.Add(feirante);
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
         }
 
-
-        //Testado
+            //Testado
         public void GenerateDataClientes()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))

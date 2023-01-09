@@ -21,115 +21,68 @@ namespace FeirasEspinhoBlazorApp.Data
         public bool ContainsKey(int idFeira)
         {
             bool r = false;
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection))
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", idFeira);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    r = response.HasRows;
-                    connection.Close();
-                }
-                return r;
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
-            }
+            return r;
         }
+
         public void Insert(Feira feira)
         {
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria)", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria)", connection);
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
-                    command.Parameters.AddWithValue("@nome", feira.Nome);
-                    command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
-                    if (feira.DataFim.HasValue)
-                        command.Parameters.AddWithValue("@dataFim", feira.DataFim);
-                    else
-                        command.Parameters.AddWithValue("dataFim", DBNull.Value);
-                    command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
-                    command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
-                    command.Parameters.AddWithValue("@categoria", feira.Categoria);
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-            }
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
+                command.Parameters.AddWithValue("@nome", feira.Nome);
+                command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
+                if (feira.DataFim.HasValue)
+                    command.Parameters.AddWithValue("@dataFim", feira.DataFim);
+                else
+                    command.Parameters.AddWithValue("dataFim", DBNull.Value);
+                command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
+                command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
+                command.Parameters.AddWithValue("@categoria", feira.Categoria);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }          
         }
+
         public Feira? this[int id] => GetFeira(id);
         public Feira? GetFeira(int id)
         {
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection);
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", id);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        string nome = response.GetFieldValue<string>("nome");
-                        DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio"); 
-                        DateTime? dataFim = null;
-						if (!response.IsDBNull("dataFim"))
-							dataFim = response.GetDateTime("dataFim");
-						float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
-                        string criadorEmail = response.GetFieldValue<string>("criadorEmail"); 
-                        int? categoria = null;
-						if (!response.IsDBNull("categoria"))
-							categoria = response.GetInt32("categoria");
-						List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
-                        List<Stand> standsdafeira = StandsDaFeira(id);
-                        return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
-                    }
-                    connection.Close();
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {    
+                    response.Read();
+                    string nome = response.GetFieldValue<string>("nome");
+                    DateTime dataInicio = response.GetFieldValue<DateTime>("dataInicio"); 
+                    DateTime? dataFim = null;
+	    			if (!response.IsDBNull("dataFim"))
+    	    			dataFim = response.GetDateTime("dataFim");
+    				float precoCandidatura = (float)response.GetFieldValue<double>("precoCandidatura");
+                    string criadorEmail = response.GetFieldValue<string>("criadorEmail"); 
+                    int? categoria = null;
+					if (!response.IsDBNull("categoria"))
+						categoria = response.GetInt32("categoria");
+					List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
+                       List<Stand> standsdafeira = StandsDaFeira(id);
+                       return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return null;
         }
@@ -137,50 +90,34 @@ namespace FeirasEspinhoBlazorApp.Data
         public List<Feira> ListAllFeiras()
 		{
 			List<Feira> r = new();
-			try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [Feira]", connection))
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
-                        while (response.Read())
-                        {
-                            int idFeira = response.GetInt32("idFeira");
-                            String nome = response.GetString("nome");
-                            DateTime dataI = response.GetDateTime("dataInicio");
-                            DateTime? dataF = null;
-                            if (!response.IsDBNull("dataFim"))
-                                dataF = response.GetDateTime("dataFim");
-                            float precoCand = (float)response.GetDouble("precoCandidatura");
-                            String criadorEmail = response.GetString("criadorEmail");
-                            int? categoria = null;
-                            if (!response.IsDBNull("categoria"))
-                                categoria = response.GetInt32("categoria");
-                            List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
-                            List<Stand> standsdafeira = StandsDaFeira(idFeira);
-                            r.Add(new Feira(idFeira, nome, dataI, dataF, precoCand, criadorEmail, categoria, standsdafeira, leiloesdafeira));
-                        }
+                        int idFeira = response.GetInt32("idFeira");
+                        String nome = response.GetString("nome");
+                        DateTime dataI = response.GetDateTime("dataInicio");
+                        DateTime? dataF = null;
+                        if (!response.IsDBNull("dataFim"))
+                            dataF = response.GetDateTime("dataFim");
+                        float precoCand = (float)response.GetDouble("precoCandidatura");
+                        String criadorEmail = response.GetString("criadorEmail");
+                        int? categoria = null;
+                        if (!response.IsDBNull("categoria"))
+                            categoria = response.GetInt32("categoria");
+                        List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
+                        List<Stand> standsdafeira = StandsDaFeira(idFeira);
+                        r.Add(new Feira(idFeira, nome, dataI, dataF, precoCand, criadorEmail, categoria, standsdafeira, leiloesdafeira));
                     }
-                    connection.Close();
                 }
+                connection.Close();
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-			}
 			return r;
 		}
 
@@ -211,102 +148,53 @@ namespace FeirasEspinhoBlazorApp.Data
 
         public void InsertStandParticipante(int idStand, int idFeira)
         {
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[StandParticipa] VALUES (@idStand, @idFeira)", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("INSERT INTO [dbo].[StandParticipa] VALUES (@idStand, @idFeira)", connection);
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    command.Parameters.AddWithValue("@idStand", idStand);
-                    command.Parameters.AddWithValue("@idFeira", idFeira);
-                    connection.Close();
-                }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Open();
+                command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@idStand", idStand);
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                connection.Close();
             }
         }
-
+          
         public Boolean feiraTemStands(int idFeira)
         {
             bool r = false;
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", idFeira);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    r = response.HasRows;
-                    connection.Close();
-                }
-                return r;
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
-            }
+            return r;
         }
 
         public List<Stand> StandsDaFeira(int idFeira)
         {
             List<Stand> r = new();
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [StandParticipa] WHERE idFeira = (@idFeira)", connection))
+                connection.Open();
+                command.Parameters.AddWithValue("@idFeira", idFeira);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idFeira", idFeira);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
-                        while (response.Read())
-                        {
-                            int idStand = response.GetFieldValue<int>("idStand");
-                            Stand s = StandDAO.GetInstance()[idStand];
-                            r.Add(s);
-                        }
+                        int idStand = response.GetFieldValue<int>("idStand");
+                        Stand? s = StandDAO.GetInstance()[idStand];
+                        if (s != null) r.Add(s);
                     }
-                    connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
         }
@@ -314,78 +202,44 @@ namespace FeirasEspinhoBlazorApp.Data
         public Dictionary<int,List<int>> FeirasStands()
         {
             Dictionary<int, List<int>> r = new();
-            try
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [StandParticipa]", connection))
             {
-                using (SqlConnection connection = new(ConnectionDAO.connectionString))
-                using (SqlCommand command = new("SELECT * FROM [StandParticipa]", connection))
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
-                        while (response.Read())
-                        {
-                            int idStand = response.GetFieldValue<int>("idStand");
-                            int idFeira = response.GetFieldValue<int>("idFeira");
-                            if (!r.ContainsKey(idFeira))
-                                r.Add(idFeira, new());
-                            r[idFeira].Add(idStand);
-                        }
+                        int idStand = response.GetFieldValue<int>("idStand");
+                        int idFeira = response.GetFieldValue<int>("idFeira");
+                        if (!r.ContainsKey(idFeira))
+                            r.Add(idFeira, new());
+                        r[idFeira].Add(idStand);
                     }
-                    connection.Close();
-                    return r;
                 }
+                connection.Close();
+                return r;
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-            }
-            return r;
         }
 
         public int GetNextId()
         {
-            int r = 1;
-            try
+            int r = 0;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT MAX idFeira AS MaiorID FROM [Feira]", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT MAX idFeira AS MaiorID FROM [Feira]", connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        r = response.GetFieldValue<int>("MaiorID");
-                    }
-                    connection.Close();
-                    return r + 1;
+                    response.Read();
+                    r = response.GetFieldValue<int>("MaiorID");
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
+                connection.Close();
+                return r + 1;
             }
         }
     }

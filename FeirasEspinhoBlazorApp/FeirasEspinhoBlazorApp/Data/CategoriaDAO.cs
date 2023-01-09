@@ -22,87 +22,53 @@ namespace FeirasEspinhoBlazorApp.Data
         public bool ContainsKey(int id)
         {
             bool r = false;
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [Categoria] WHERE idCategoria = (@id)", connection))
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using (SqlCommand command = new("SELECT * FROM [Categoria] WHERE idCategoria = (@id)", connection))
-                {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    r = response.HasRows;
-                    connection.Close();
-                }
-                return r;
+                connection.Open();
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
             }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
-            }
+            return r;
         }
 
         public void InsertCategoria(Categoria categoria)
         {
-            try
+            if (!this.ContainsKey(categoria.Id))
             {
-                if (!this.ContainsKey(categoria.Id))
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[Categoria] VALUES (@idCategoria, @nome)", connection);
                 {
-                    using SqlConnection connection = new(ConnectionDAO.connectionString);
-                    using SqlCommand command = new("INSERT INTO [dbo].[Categoria] VALUES (@idCategoria, @nome)", connection);
-                    {
-                        connection.Open();
-                        command.Parameters.AddWithValue("@idCategoria", categoria.Id);
-                        command.Parameters.AddWithValue("@nome", categoria.Name);
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                    }
-                }
-                if (categoria is SubCategoria)
-                {
-                    SubCategoria? sc = categoria as SubCategoria;
-                    using SqlConnection connection = new(ConnectionDAO.connectionString);
-                    using SqlCommand command = new("INSERT INTO [dbo].[SubCategoria] VALUES (@idSC, @imposto, @categoria)", connection);
-                    {
-                        connection.Open();
-                        command.Parameters.AddWithValue("@idSC", value: sc.IdS);
-                        command.Parameters.AddWithValue("@imposto", sc.Imposto);
-                        command.Parameters.AddWithValue("@categoria", sc.Id);
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                    }
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idCategoria", categoria.Id);
+                    command.Parameters.AddWithValue("@nome", categoria.Name);
+                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
-            catch (SqlException ex)
+            if (categoria is SubCategoria)
             {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
+                SubCategoria? sc = categoria as SubCategoria;
+                using SqlConnection connection = new(ConnectionDAO.connectionString);
+                using SqlCommand command = new("INSERT INTO [dbo].[SubCategoria] VALUES (@idSC, @imposto, @categoria)", connection);
                 {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                    connection.Open();
+                    command.Parameters.AddWithValue("@idSC", sc.IdS);
+                    command.Parameters.AddWithValue("@imposto", sc.Imposto);
+                    command.Parameters.AddWithValue("@categoria", sc.Id);
+                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
-                Console.WriteLine(errorMessages.ToString());
             }
         }
+
         public Categoria? this[int id] => GetCategoria(id);
 
         public Categoria? GetCategoria(int id)
         {
-            try
-            {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Categoria] WHERE idCategoria = (@idCategoria)", connection);
                 {
@@ -118,63 +84,31 @@ namespace FeirasEspinhoBlazorApp.Data
                     }
                     connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-            }
             return null;
         }
 
         public String? GetNomeCategoria(int id)
         {
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [Categoria] WHERE idCategoria = (@idCategoria)", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Categoria] WHERE idCategoria = (@idCategoria)", connection);
+                connection.Open();
+                command.Parameters.AddWithValue("@idCategoria", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idCategoria", id);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        string nome = response.GetFieldValue<string>("nome");
-                        return nome;
-                    }
-                    connection.Close();
+                    response.Read();
+                    string nome = response.GetFieldValue<string>("nome");
+                    return nome;
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return null;
         }
 
         public int? GetIdCategoria(String nome)
         {
-            try
-            {
                 using SqlConnection connection = new(ConnectionDAO.connectionString);
                 using SqlCommand command = new("SELECT * FROM [Categoria] WHERE nome = (@nome)", connection);
                 {
@@ -190,96 +124,51 @@ namespace FeirasEspinhoBlazorApp.Data
                     }
                     connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-            }
             return null;
         }
 
         public List<Categoria> ListAllCategoria()
         {
             List<Categoria> r = new();
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [Categoria]", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [Categoria]", connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
-                        while (response.Read())
-                        {
-                            int idCategoria = response.GetFieldValue<int>("idCategoria");
-                            String nome = response.GetFieldValue<String>("nome");
-                            r.Add(new Categoria(idCategoria, nome));
-                        }
+                        int idCategoria = response.GetFieldValue<int>("idCategoria");
+                        String nome = response.GetFieldValue<String>("nome");
+                        r.Add(new Categoria(idCategoria, nome));
                     }
-                    connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
         }
 
         public SubCategoria? GetSubCategoria(int id)
         {
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [SubCategoria] WHERE idSC = (@idSC)", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [SubCategoria] WHERE idSC = (@idSC)", connection);
+                connection.Open();
+                command.Parameters.AddWithValue("@idSC", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.Parameters.AddWithValue("@idSC", id);
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        float imposto = (float)response.GetFieldValue<double>("imposto");
-                        int categoria = response.GetFieldValue<int>("categoria");
-                        string nome = GetNomeCategoria(categoria);
+                    response.Read();
+                    float imposto = (float)response.GetFieldValue<double>("imposto");
+                    int categoria = response.GetFieldValue<int>("categoria");
+                    string? nome = GetNomeCategoria(categoria);
+                    if(nome != null)
                         return new SubCategoria(categoria, nome, id, imposto);
-                    }
-                    connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return null;
         }
@@ -287,40 +176,24 @@ namespace FeirasEspinhoBlazorApp.Data
         public List<SubCategoria> ListAllSubCategoria()
         {
             List<SubCategoria> r = new();
-            try
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [SubCategoria]", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT * FROM [SubCategoria]", connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
+                    while (response.Read())
                     {
-                        while (response.Read())
-                        {
-                            int idSC = response.GetFieldValue<int>("idSC");
-                            float imposto = (float)response.GetFieldValue<double>("imposto");
-                            int categoria = response.GetFieldValue<int>("categoria");
-                            string nome = GetNomeCategoria(categoria);
-                            r.Add(new SubCategoria(categoria, nome, idSC, imposto));
-                        }
+                        int idSC = response.GetFieldValue<int>("idSC");
+                        float imposto = (float)response.GetFieldValue<double>("imposto");
+                        int categoria = response.GetFieldValue<int>("categoria");
+                        string nome = GetNomeCategoria(categoria);
+                        r.Add(new SubCategoria(categoria, nome, idSC, imposto));
                     }
-                    connection.Close();
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
+                connection.Close();
             }
             return r;
         }
@@ -394,73 +267,39 @@ namespace FeirasEspinhoBlazorApp.Data
 
         public int GetNextIdCategoria()
         {
-            int r = 1;
-            try
+            int r = 0;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT MAX idCategoria AS MaiorID FROM [Categoria]", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT MAX idCategoria AS MaiorID FROM [Categoria]", connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        r = response.GetFieldValue<int>("MaiorID");
-                    }
-                    connection.Close();
-                    return r + 1;
+                    response.Read();
+                    r = response.GetFieldValue<int>("MaiorID");
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
+                connection.Close();
+                return r + 1;
             }
         }
 
         public int GetNextSubCategoria()
         {
-            int r = 1;
-            try
+            int r = 0;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT MAX idSC AS MaiorID FROM [SubCategoria]", connection);
             {
-                using SqlConnection connection = new(ConnectionDAO.connectionString);
-                using SqlCommand command = new("SELECT MAX idSC AS MaiorID FROM [SubCategoria]", connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    SqlDataReader response = command.ExecuteReader();
-                    if (response.HasRows)
-                    {
-                        response.Read();
-                        r = response.GetFieldValue<int>("MaiorID");
-                    }
-                    connection.Close();
-                    return r + 1;
+                    response.Read();
+                    r = response.GetFieldValue<int>("MaiorID");
                 }
-            }
-            catch (SqlException ex)
-            {
-                StringBuilder errorMessages = new StringBuilder();
-                for (int i = 0; i < ex.Errors.Count; i++)
-                {
-                    errorMessages.Append("Index #" + i + "\n" +
-                        "Message: " + ex.Errors[i].Message + "\n" +
-                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                        "Source: " + ex.Errors[i].Source + "\n" +
-                        "Procedure: " + ex.Errors[i].Procedure + "\n");
-                }
-                Console.WriteLine(errorMessages.ToString());
-                return r;
+                connection.Close();
+                return r + 1;
             }
         }
     }
