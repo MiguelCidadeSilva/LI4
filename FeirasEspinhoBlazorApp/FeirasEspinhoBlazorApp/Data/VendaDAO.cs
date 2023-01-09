@@ -38,7 +38,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void InsertProdutosVendidos(int idVenda, List<(Produto, int)> produtos, float taxaCamara)
         {
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @quantidade, @taxaCamara)", connection);
+            using SqlCommand command = new("INSERT INTO [dbo].[ProdutosVendidos] VALUES (@idVenda, @idProd, @precoProd, @quantidade, @taxaCamara)", connection);
             {
                 connection.Open();
                 foreach ((Produto, int) prod in produtos) {

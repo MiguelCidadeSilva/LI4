@@ -319,7 +319,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     {
                         int? leilao = response.GetFieldValue<int>("leilao");
                         if(leilao!=null)
-                            r.Add(GetLeilao(leilao));
+                            r.Add(GetLeilao(leilao.Value));
                     }
                 }
                 connection.Close();
