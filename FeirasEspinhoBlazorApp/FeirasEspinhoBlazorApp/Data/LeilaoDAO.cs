@@ -128,7 +128,10 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@id", leilao.Id);
                     command.Parameters.AddWithValue("@dataLimite", leilao.Date);
                     command.Parameters.AddWithValue("@valorMinimo", leilao.ValormMinimo);
-                    command.Parameters.AddWithValue("@valorMaximo", leilao.ValormMaximo);
+                    if(leilao.ValormMaximo.HasValue)
+                        command.Parameters.AddWithValue("@valorMaximo", leilao.ValormMaximo);
+                    else
+                        command.Parameters.AddWithValue("@valorMaximo", DBNull.Value);
                     command.Parameters.AddWithValue("@produto", leilao.ValormMaximo);
                     command.Parameters.AddWithValue("@quantidade", leilao.Quantidade);
                     command.Parameters.AddWithValue("@stand", leilao.Stand);
@@ -291,7 +294,9 @@ namespace FeirasEspinhoBlazorApp.Data
                         response.Read();
                         DateTime dataLimite = response.GetFieldValue<DateTime>("dataLimite");
                         float valorMinimo = (float)response.GetFieldValue<double>("valorMinimo");
-                        float valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
+                        float? valorMaximo = null;
+                        if (!response.IsDBNull("valorMaximo"))
+                            valorMaximo = (float)response.GetFieldValue<double>("valorMaximo");
                         int produto = response.GetFieldValue<int>("produto");
                         int quantidade = response.GetFieldValue<int>("quantidade");
                         int stand = response.GetFieldValue<int>("stand");
@@ -498,7 +503,45 @@ namespace FeirasEspinhoBlazorApp.Data
             return r;
         }
 
-
+        public List<Leilao> GetLeiloesCliente(String clienteEmail)
+        {
+            List<Leilao> r = new List<Leilao>();
+            try
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("SELECT * FROM [PrecosLeilao] WHERE clienteEmail = (@clienteEmail)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@clienteEmail", clienteEmail);
+                    command.ExecuteNonQuery();
+                    SqlDataReader response = command.ExecuteReader();
+                    if (response.HasRows)
+                    {
+                        while (response.Read())
+                        {
+                            int leilao = response.GetFieldValue<int>("leilao");
+                            r.Add(LeilaoDAO.GetInstance().GetLeilao(leilao));
+                        }
+                    }
+                    connection.Close();
+                    return r;
+                }
+            }
+            catch (SqlException ex)
+            {
+                StringBuilder errorMessages = new StringBuilder();
+                for (int i = 0; i < ex.Errors.Count; i++)
+                {
+                    errorMessages.Append("Index #" + i + "\n" +
+                        "Message: " + ex.Errors[i].Message + "\n" +
+                        "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                        "Source: " + ex.Errors[i].Source + "\n" +
+                        "Procedure: " + ex.Errors[i].Procedure + "\n");
+                }
+                Console.WriteLine(errorMessages.ToString());
+            }
+            return r;
+        }
 
     }
 }

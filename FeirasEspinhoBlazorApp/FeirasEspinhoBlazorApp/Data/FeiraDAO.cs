@@ -61,7 +61,10 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
                     command.Parameters.AddWithValue("@nome", feira.Nome);
                     command.Parameters.AddWithValue("@dataInicio", feira.DataInicio);
-                    command.Parameters.AddWithValue("@dataFim", feira.DataFim);
+                    if (feira.DataFim.HasValue)
+                        command.Parameters.AddWithValue("@dataFim", feira.DataFim);
+                    else
+                        command.Parameters.AddWithValue("dataFim", DBNull.Value);
                     command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
                     command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
                     command.Parameters.AddWithValue("@categoria", feira.Categoria);
@@ -308,9 +311,9 @@ namespace FeirasEspinhoBlazorApp.Data
             return r;
         }
 
-        public Dictionary<int,int> FeirasStands()
+        public Dictionary<int,List<int>> FeirasStands()
         {
-            Dictionary<int, int> r = new();
+            Dictionary<int, List<int>> r = new();
             try
             {
                 using (SqlConnection connection = new(ConnectionDAO.connectionString))
@@ -325,10 +328,13 @@ namespace FeirasEspinhoBlazorApp.Data
                         {
                             int idStand = response.GetFieldValue<int>("idStand");
                             int idFeira = response.GetFieldValue<int>("idFeira");
-                            r.Add(idFeira, idStand);
+                            if (!r.ContainsKey(idFeira))
+                                r.Add(idFeira, new());
+                            r[idFeira].Add(idStand);
                         }
                     }
                     connection.Close();
+                    return r;
                 }
             }
             catch (SqlException ex)
