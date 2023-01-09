@@ -222,21 +222,22 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		public List<Venda> GetNegociacoes(string email)
 		{
 			Utilizador? cliente = users[email];
-			negociacoes.ListAllNegociacoes().Where(n => vendas[n.IdNegociacao].EmailCliente.Equals(email) ||  stands[vendas[n.IdNegociacao].IdStand].EmailDono.Equals(email));
 			//receber todas as vendas
 			//for vendas verifica se é uma negociaçao, se sim adicionar a lista
-			return new();
+			return negociacoes.ListAllNegociacoes()
+				.Where(n => !n.Sucesso)
+				.Select(n => vendas.getNegocicaoVenda(n.IdNegociacao))
+				.Where(v => v.EmailCliente.Equals(email) || stands[v.IdStand].EmailDono.Equals(email)).ToList();
 		}
 		// TO DO
 		public Negociacao GetNegociacao(int idNegociacao)
 		{
-            //receber todas as vendas
-            //for vendas verifica se é a negociaçao, se sim devolve a negociacao
-            return new Negociacao();
+            return negociacoes.Get(idNegociacao);
 		}
 		// TO DO
 		public void RegistaSucesso(int idNegociacao)
 		{
+			negociacoes.AlteraSucesso(idNegociacao);
             //receber todas as vendas
             //for vendas verifica se é a negociaçao, se sim devolve a negociacao
         }
@@ -249,6 +250,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         // TO DO
         public void RegistaNovoPreco(int idNegociacao, float novoPreco)
 		{
+			negociacoes.NovaProposta(idNegociacao,novoPreco);
 			//receber todas as vendas
 			//for vendas verifica se é a negociaçao, se sim devolve a negociacao
 		}

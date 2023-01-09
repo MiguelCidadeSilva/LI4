@@ -6,7 +6,7 @@
 <PageTitle>Negociações</PageTitle>
 @if(showNegociation)
 {
-	<NegociationComponent idVenda="idVenda"/>
+	<NegociationComponent idVenda="@idVenda" email="@email"/>
 }
 else
 {
@@ -24,7 +24,8 @@ else
 			<thead>
 				<tr>
 					<th>Pedido</th>
-					<th>Preço</th>
+					<th>Preço Base</th>
+					<th>Preço Debate</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,6 +34,7 @@ else
 					<tr class=@table.Cssclasses[venda.Item1] @onclick="() => table.SelectedRow(venda.Item1)">
 						<td> @venda.Item2.Negociacao</td>
 						<td> @venda.Item2.Preco</td>
+						<td> @dict[venda.Item2.IdVenda].PrecoNegociacao</td>
 					</tr>
 				}
 			</tbody>
@@ -50,16 +52,23 @@ else
 	private Table<Venda> table;
 	private bool showNegociation;
 	private int idVenda;
+	private Dictionary<int, Negociacao> dict = new();
 	private static ShowNegociacoesComponent showNegociacoes;
 	private int erro;
 	private bool sucess;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private string sucessMessage;
+	private void InitializeData()
+	{
+		dict.Clear();
+		List<Venda> negociacaos = SistemaFeiras.GetInstance().GetNegociacoes(email);
+		negociacaos.ForEach(v => dict.Add(v.IdVenda, SistemaFeiras.GetInstance().GetNegociacao(v.Negociacao.Value)));
+		table = new Table<Venda>(negociacaos);
+	}
 	protected override void OnInitialized()
 	{
 		codigosErro[0] = "Negociação não registada";
-		List<Venda> negociacaos = SistemaFeiras.GetInstance().GetNegociacoes(email);
-		table = new Table<Venda>(negociacaos);
+		InitializeData();
 		// public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
 		showNegociacoes = this;
 	}
@@ -78,9 +87,11 @@ else
 	}
 	public void GetBack()
 	{
+		InitializeData();
 		showNegociation = false;
 		erro = 0;
 		sucess = false;
+		table.Unselect();
 		StateHasChanged();
 	}
 
@@ -89,15 +100,18 @@ else
 		showNegociation = false;
 		this.erro = erro;
 		sucess = false;
+		table.Unselect();
 		StateHasChanged();
 	}
 
 	public void GetBack(string message)
 	{
+		InitializeData();
 		showNegociation = false;
 		erro = 0;
 		sucess = true;
 		sucessMessage = message;
+		table.Unselect();
 		StateHasChanged();
 	}
 }
