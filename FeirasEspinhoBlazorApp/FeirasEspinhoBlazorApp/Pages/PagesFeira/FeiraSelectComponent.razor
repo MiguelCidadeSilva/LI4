@@ -1,0 +1,126 @@
+﻿@page "/showfeirasfeirante/"
+@using SourceCode.WebClasses;
+@using SourceCode.Feiras;
+@using SourceCode;
+@using SourceCode.Utilizadores;
+@using System.Text.Json;
+@using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
+@inject NavigationManager navigationManager
+
+<PageTitle>Feiras</PageTitle>
+
+@if(showForm)
+{
+	<FormLeilaoComponent idFeira="@feiraSelected" idStand="@standSelected"/>
+}
+else
+{
+	<div>
+		<h3>Selecione uma feira</h3>
+		<br />
+		<div>
+			@if (erro != 0)
+			{
+				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="3" />
+			}
+			<div class="tableFixHead">
+				<table>
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nome</th>
+							<th>Data Início</th>
+							<th>Data Fim</th>
+							<th>Categoria</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var feira in tabelContent.Content)
+						{
+							<tr class=@tabelContent.Cssclasses[feira.Item1] @onclick="() => tabelContent.SelectedRow(feira.Item1)">
+								<td> @feira.Item2.IDFeira</td>
+								<td> @feira.Item2.Nome</td>
+								<td> @feira.Item2.DataInicio.ToShortDateString()</td>
+								@if (feira.Item2.DataFim.HasValue)
+								{
+									<td> @feira.Item2.DataFim.Value.ToShortDateString()</td>
+								}
+								else
+								{
+									<td><b>-</b></td>
+								}
+								@if (feira.Item2.Categoria.HasValue)
+								{
+									<td> @categoria[feira.Item2.IDFeira].Name</td>
+								}
+								else
+								{
+									<td><b>-</b></td>
+								}
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<button class="buttonA buttonTable1" @onclick="SelecionarFeira">Selecionar Feira</button>
+				<button class="buttonA buttonTable2" @onclick="Retroceder">Retroceder</button>
+			</div>
+			<br />
+		</div>
+	</div>
+}
+@code
+{
+	[Parameter, EditorRequired]
+	public string email { get; set; }
+	private int erro = 0;
+	private bool showForm = false;
+	private int feiraSelected;
+	private int standSelected;
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
+	private static FeiraSelectComponent component;
+	private Dictionary<int, Categoria?> categoria = new();
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private Table<Feira> tabelContent;
+	protected override void OnInitialized()
+	{
+		component = this;
+		List<Feira> feira = facade.GetFeiranteParticipacoes(email);
+		feira.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
+		tabelContent = new Table<Feira>(feira);
+		codigosErro[1] = "Nenhuma feira selecionada";
+	}
+	public static FeiraSelectComponent GetInstance()
+	{
+		return component;
+	}
+	public void SelecionarFeira()
+	{
+		if (tabelContent.IdValid())
+		{
+			feiraSelected = tabelContent.GetElement().IDFeira;
+			standSelected = facade.GetStandsFeira(feiraSelected).Where(s => s.EmailDono.Equals(email)).First().IdStand;
+			showForm = true;
+		}
+		else
+			erro = 1;
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
+	}
+	public void GetBack()
+	{
+		tabelContent.Unselect();
+		erro = 0;
+		showForm = false;
+		StateHasChanged();
+	}
+	public void Retroceder()
+	{
+		ShowLeiloesComponent.GetInstance().GetBack();
+	}
+
+}

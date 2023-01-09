@@ -4,14 +4,18 @@
 @using SourceCode.Stands;
 @using SourceCode.WebClasses;
 @using SourceCode;
-@using Pages.PagesFeira;
+@using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 
 <PageTitle>Leilões</PageTitle>
 
 <div>
 	@if(showLeilao)
 	{
-		<ShowLeilaoComponent leilao="@table.GetElement()" email="@emailCL"/>
+		<ShowLeilaoComponent leilao="@table.GetElement()" email="@email"/>
+	}
+	else if (formLeilao)
+	{
+		<FeiraSelectComponent email="@email"/>
 	}
 	else
 	{
@@ -59,6 +63,10 @@
 			{
 				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 			}
+			else if(isFeirante)
+			{
+				<button class="buttonA buttonTable2" @onclick="CriarLeilao">Criar Leilão</button>	
+			}
 		</div>
 	}
 </div>
@@ -68,7 +76,7 @@
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
 	[Parameter, EditorRequired]
-	public string emailCL { get; set; }
+	public string email { get; set; }
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
 	private bool sucess = false;
@@ -77,8 +85,11 @@
 	private Dictionary<int, string> nomesDonos = new Dictionary<int, string>();
 	private Dictionary<int, string> nomesProdutos = new Dictionary<int, string>();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private static ShowLeiloesComponent instance;
 	private bool showLeilao;
+	private bool isFeirante = false;
+	private bool formLeilao = false;
 	private int retroceder = 0;
 	private int erro = 0;
 	public static ShowLeiloesComponent GetInstance()
@@ -87,19 +98,21 @@
 	}
 	private List<Leilao> OnInitializedUser()
 	{
-		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesCL(emailCL);
+		Utilizador user = facade.GetUtilizador(email);
+		isFeirante = user is Feirante;
+		List<Leilao> conteudo = facade.GetLeiloesCL(email);
 		return conteudo;
 	}
 	private List<Leilao> OnInitializedFeira()
 	{
-		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesFeira(idFeira);
+		List<Leilao> conteudo = facade.GetLeiloesFeira(idFeira);
 		retroceder = 1;
 		return conteudo;
 	}
 	private List<Leilao> OnInitializedFeiraStand()
 	{
 		retroceder = 2;
-		List<Leilao> conteudo = SistemaFeiras.GetInstance().GetLeiloesFeiraStand(idFeira,idStand);
+		List<Leilao> conteudo = facade.GetLeiloesFeiraStand(idFeira, idStand);
 		return conteudo;
 	}
 	protected override void OnInitialized()
@@ -112,12 +125,11 @@
 			conteudo = OnInitializedFeira();
 		else
 			conteudo = OnInitializedUser();
-		SistemaFeiras sistema = SistemaFeiras.GetInstance();
 		this.table = new Table<Leilao>(conteudo);
 		foreach(Leilao leilao in conteudo)
 		{
-			Stand stand = sistema.GetStand(leilao.Stand);
-			Feirante feirante = (Feirante) sistema.GetUtilizador(stand.EmailDono);
+			Stand stand = facade.GetStand(leilao.Stand);
+			Feirante feirante = (Feirante)facade.GetUtilizador(stand.EmailDono);
 			Produto produto = stand.Produtos.Find(p => p.IdProduto == leilao.Produto);
 			nomesProdutos[leilao.Produto] = produto.Nome;
 			nomesDonos[leilao.Stand] = feirante.Username;
@@ -152,6 +164,7 @@
 	public void GetBack()
 	{
 		showLeilao = false;
+		formLeilao = false;
 		sucess = false;
 		erro = 0;
 		table.Unselect();
@@ -160,10 +173,15 @@
 	public void GetBack(string message)
 	{
 		showLeilao = false;
+		formLeilao = false;
 		sucess = true;
 		sucess_msg = message;
 		table.Unselect();
 		StateHasChanged();
+	}
+	public void CriarLeilao()
+	{
+		formLeilao = true;
 	}
 
 }

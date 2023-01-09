@@ -3,9 +3,10 @@
 @using SourceCode.Stands;
 @using SourceCode;
 @using SourceCode.WebClasses;
+@using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 
-<h3>FormLeilaoComponent</h3>
 <div>
+	<h3>Criar Leilão</h3>
 	<div>
 		<label><b>Quantidade a leiloar</b></label>
 		<input type="text" class="tb" id="quantidade" name="quantidade" placeholder="Insira a quantidade a vender" @bind-value="quantidade" />
@@ -19,6 +20,7 @@
 		<label><b>Data Limite</b></label>
 		<input type="text" class="tb" id="date" name="date" @bind-value="date" />
 	</div>
+	<br />
 	<div class="tableFixHead">
 		<table>
 			<thead>
@@ -26,14 +28,13 @@
 					<th>Produto</th>
 					<th>Preço</th>
 					<th>Stock</th>
-					<th>Quantidade</th>
 				</tr>
 			</thead>
 			<tbody>
 			@foreach (var produto in tabelContent.Content)
 			{
-					<tr class=@tabelContent.Cssclasses[produto.Item1] @onclick="() => tabelContent.SelectedRow(produto.Item1)">
-					<td> @produto.Item2.IdProduto</td>
+				<tr class=@tabelContent.Cssclasses[produto.Item1] @onclick="() => tabelContent.SelectedRow(produto.Item1)">
+					<td> @produto.Item2.Nome</td>
 					<td> @produto.Item2.Preco</td>
 					<td> @produto.Item2.Stock</td>
 				</tr>
@@ -41,8 +42,10 @@
 			</tbody>
 		</table>
 	</div>
+	<br />
 	<div>
 		<button class="buttonA buttonTable1" @onclick="CriarLeilao">Criar Leilão</button>
+		<button class="buttonA buttonTable2" @onclick="Retroceder">Retroceder</button>
 	</div>
 </div>
 @code 
@@ -56,6 +59,7 @@
 	private int valorMin = 0;
 	private string date = "";
 	private Table<Produto> tabelContent;
+	private int lp = -1;
 	protected override void OnInitialized()
 	{
 		Stand stand = SistemaFeiras.GetInstance().GetStand(idStand);
@@ -69,7 +73,13 @@
 		{
 			Produto p = tabelContent.GetElement();
 			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, p.Stand, idStand, idFeira, 0);
+			SistemaFeiras.GetInstance().AddLeilao(l);
+			ShowLeiloesComponent.GetInstance().GetBack();
 		}
+	}
+	private void Retroceder()
+	{
+		FeiraSelectComponent.GetInstance().GetBack();
 	}
 
 }

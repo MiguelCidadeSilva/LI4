@@ -26,6 +26,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         private int vendasCounter;
         private int standsCounter;
 		private int negociacoesCounter;
+		private int leiloesCounter;
         private static SistemaFeiras instance = new SistemaFeiras();
 
 		public static SistemaFeiras GetInstance()
@@ -46,6 +47,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			vendasCounter = 0;
 			standsCounter = 0;
 			negociacoesCounter = 0;
+			leiloesCounter = 19;
 		}
 
 
@@ -136,6 +138,26 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return stands.ListAllStands().Where(s => s.EmailDono.Equals(feirante)).ToList();
 		}
+		public List<Feira> GetFeiranteParticipacoes(string feirante)
+		{
+			List<Feira> feiraList = new();
+			List<Stand> list = GetStandFeirante(feirante);
+			Dictionary<int, List<int>> dict = feiras.FeirasStands();
+			foreach (int idfeira in dict.Keys) 
+			{
+				List<int> standsFeira = dict[idfeira];
+				if(list.Where(s => standsFeira.Contains(s.IdStand)).Count() > 0)
+					feiraList.Add(GetFeira(idfeira));
+			}
+			return feiraList;
+		}
+		public void AddLeilao(Leilao leilao)
+		{
+			leilao.Id = leiloesCounter;
+			leiloesCounter++;
+			leiloes.InsertLeilao(leilao);
+			stands.DiminuiStockProduto(leilao.Produto, leilao.Quantidade);
+		}
 		public void AprovarCandidatura(int candidatura)
 		{
 
@@ -220,6 +242,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			venda.IdVenda = vendasCounter;
 			vendas.Insert(venda);
+			
 			vendasCounter++;
 		}
 		// TO DO
@@ -273,6 +296,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			// adicionar produto + stand, cuidado com os ids
 			// associar aos produtos a sub-categoria + id stand
+		}
+		public void IncrementConsultantes(int stand)
+		{
+			stands.AumentaConsultantesNoStand(stand);
 		}
 
 

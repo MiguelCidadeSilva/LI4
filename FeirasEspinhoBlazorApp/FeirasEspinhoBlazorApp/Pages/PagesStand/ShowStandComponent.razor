@@ -45,13 +45,13 @@ else
 				<tbody>
 					@foreach (var produto in tabelContent.Content)
 					{
-							<tr class=@tabelContent.Cssclasses[produto.Item1]>
-								<td> @produto.Item2.IdProduto</td>
-								<td> @produto.Item2.Nome</td>
-								<td> @produto.Item2.Preco</td>
-								<td> @produto.Item2.Stock</td>
-								<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)"/></td>
-							</tr>
+						<tr class=@tabelContent.Cssclasses[produto.Item1]>
+							<td> @produto.Item2.IdProduto</td>
+							<td> @produto.Item2.Nome</td>
+							<td> @produto.Item2.Preco</td>
+							<td> @produto.Item2.Stock</td>
+							<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)" /></td>
+						</tr>
 					}
 				</tbody>
 			</table>
@@ -114,6 +114,7 @@ else
 		type = user is Cliente;
 		if(type)
 		{
+			facade.IncrementConsultantes(idStand);
 			for (int i = 0; i < conteudo.Count; i++)
 				quantidades[i] = 0;
 			codigosErro[2] = "Compra cancelada";

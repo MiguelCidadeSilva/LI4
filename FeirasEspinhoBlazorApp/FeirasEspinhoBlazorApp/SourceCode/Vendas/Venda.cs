@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FeirasEspinhoBlazorApp.SourceCode.Stands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             get { return idStand; }
             set { idStand = value; }
         }
+        private List<Produto> produtos;
+        public List<Produto> Produtos
+        {
+            get { return produtos; }
+        }
 
         public Venda()
         {
@@ -82,6 +88,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Vendas
             IdFeira = v.IdFeira;
             Negociacao = v.Negociacao;
             IdStand = v.IdStand;
+            this.produtos = v.Produtos;
 
         }
 
