@@ -189,8 +189,9 @@ namespace FeirasEspinhoBlazorApp.Data
                         int idSC = response.GetFieldValue<int>("idSC");
                         float imposto = (float)response.GetFieldValue<double>("imposto");
                         int categoria = response.GetFieldValue<int>("categoria");
-                        string nome = GetNomeCategoria(categoria);
-                        r.Add(new SubCategoria(categoria, nome, idSC, imposto));
+                        string? nome = GetNomeCategoria(categoria);
+                        if(nome != null)
+                            r.Add(new SubCategoria(categoria, nome, idSC, imposto));
                     }
                 }
                 connection.Close();
