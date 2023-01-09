@@ -27,7 +27,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         private int standsCounter;
 		private int negociacoesCounter;
 		private int leiloesCounter;
-        private static SistemaFeiras instance = new SistemaFeiras();
+		private int produtosConter;
+		private static SistemaFeiras instance = new SistemaFeiras();
 
 		public static SistemaFeiras GetInstance()
 		{
@@ -48,6 +49,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			standsCounter = 0;
 			negociacoesCounter = 0;
 			leiloesCounter = 19;
+			produtosConter = 0;
 		}
 
 
@@ -243,7 +245,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			venda.IdVenda = vendasCounter;
 			vendas.Insert(venda);
 			List<(Produto, int)> prods = venda.Produtos;
-			prods.ForEach(p => stands.DiminuiStockProduto(p.Item1.idProduto, p.Item2));
+			prods.ForEach(p => stands.DiminuiStockProduto(p.Item1.IdProduto, p.Item2));
 			vendasCounter++;
 		}
 		// TO DO
@@ -264,7 +266,13 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return stands.GetProduto(idProduto);
 		}
-
+		public void AddProduto(Produto produto, string cat)
+		{
+			// falta associar a categoria / sub-categoria
+			produto.IdProduto = produtosConter;
+			produtosConter++;
+			stands.InsertProduto(produto);
+		}
 		public int AddSubCategoria(int categoria, float imposto)
 		{
 			return 0;
@@ -301,6 +309,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		public void IncrementConsultantes(int stand)
 		{
 			stands.AumentaConsultantesNoStand(stand);
+		}
+		public void AumentaStock(int produto, int quantidade)
+		{
+			stands.AumentaStockProduto(produto, quantidade);
+		}
+		public void EliminaProduto(int produto)
+		{
+			stands.TrocaDisponibilidadeProduto(produto);
 		}
 
 

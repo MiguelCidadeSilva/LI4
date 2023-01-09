@@ -47,6 +47,10 @@
 				return res;
 			}
 		}
+		public int GetSelected()
+		{
+			return index;
+		}
 		public Dictionary<int, string> Cssclasses { get => cssclasses; }
 
 		public void SelectedRow(int row)

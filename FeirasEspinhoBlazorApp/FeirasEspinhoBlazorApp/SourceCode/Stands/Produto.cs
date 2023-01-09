@@ -9,7 +9,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Stands
 {
     public class Produto
     {
-        public int idProduto;
+        private int idProduto;
         public int IdProduto
         {
             get { return idProduto; }

@@ -18,6 +18,10 @@ else if (negociation)
 
 	<StartNegociationComponent venda="@venda" returnPage="0"/>
 }
+else if (formProduto)
+{
+	<FormProdutoComponent page="1" stand="@idStand"/>
+}
 else
 {
 	<div>
@@ -39,7 +43,14 @@ else
 						<th>Nome</th>
 						<th>Preço</th>
 						<th>Stock</th>
-						<th>Quantidade</th>
+						@if(type)
+						{
+							<th>Quantidade</th>
+						}
+						else
+						{
+							<th>Aumento Stock</th>
+						}
 					</tr>
 				</thead>
 				<tbody>
@@ -71,6 +82,14 @@ else
 				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 			</div>
 		}
+		else
+		{
+			<div>
+				<button class="buttonA buttonTable1" @onclick="CompraRapida">Adicionar Produto</button>
+				<button class="buttonA buttonTable1" @onclick="AumentarStockProduto">Aumentar Stock Produto</button>
+				<button class="buttonA buttonTable1" @onclick="EliminarProduto">Eliminar Produto</button>
+			</div>
+		}
 	</div>
 }
 @code
@@ -90,11 +109,12 @@ else
 	private bool sucess;
 	private bool fastPurchase = false;
 	private bool negociation = false;
+	private bool formProduto = false;
 	private float precoTotal = 0;
 	private bool type;
 	private Venda venda;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private Dictionary<int, float> quantidades = new Dictionary<int, float>();
+	private Dictionary<int, int> quantidades = new Dictionary<int, int>();
 	private static ShowStandComponent standComponent;
 	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	protected override void OnParametersSet()
@@ -104,25 +124,30 @@ else
 		if (!bool.TryParse(sucessStr, out sucess))
 			sucess = false ;
 	}
+	private void InitializedTable()
+	{
+		stand = facade.GetStand(idStand);
+		List<Produto> conteudo = stand.Produtos.Where(p => p.Disponivel).ToList();
+		this.tabelContent = new Table<Produto>(conteudo);
+		for (int i = 0; i < conteudo.Count; i++)
+			quantidades[i] = 0;
+	}
 	protected override async void OnInitialized()
 	{
 		Utilizador user = facade.GetUtilizador(email);
 		standComponent = this;
-		stand = facade.GetStand(idStand);
-		List<Produto> conteudo = stand.Produtos;
-		this.tabelContent = new Table<Produto>(conteudo);
+		InitializedTable();
 		type = user is Cliente;
 		if(type)
 		{
 			facade.IncrementConsultantes(idStand);
-			for (int i = 0; i < conteudo.Count; i++)
-				quantidades[i] = 0;
 			codigosErro[2] = "Compra cancelada";
 			codigosErro[3] = "Negociação cancelada";
 		}
 		else
 		{
-
+			codigosErro[2] = "Nenhum produto selecionado";
+			codigosErro[3] = "Adicionar produto cancelado";
 		}
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
@@ -138,8 +163,8 @@ else
 	}
 	private void RecalculaPrecoTotal(ChangeEventArgs args, int key)
 	{
-		float number;
-		if(float.TryParse(args.Value.ToString(),out number))
+		int number;
+		if(int.TryParse(args.Value.ToString(),out number))
 			quantidades[key] = number;
 		else
 			quantidades[key] = 0;
@@ -148,7 +173,7 @@ else
 	private void CreateVenda()
 	{
 		List<(Produto, int)> list = new();
-		for(var prod in tabelContent.Content)
+		foreach(var prod in tabelContent.Content)
 		{
 			list.Add((prod.Item2, quantidades[prod.Item1]));
 		}
@@ -178,6 +203,7 @@ else
 		this.erro = cod;
 		fastPurchase = false;
 		negociation = false;
+		formProduto = false;
 		StateHasChanged();
 	}
 
@@ -188,6 +214,35 @@ else
 		sucessMessage = message;
 		fastPurchase = false;
 		negociation = false;
+		formProduto = false;
 		StateHasChanged();
+	}
+	public void AdicionarProduto()
+	{
+		formProduto = true;
+	}
+
+	public void AumentarStockProduto()
+	{
+		if (tabelContent.IdValid())
+		{
+			Produto p = tabelContent.GetElement();
+			facade.AumentaStock(p.IdProduto, quantidades[tabelContent.GetSelected()]);
+			InitializedTable();
+		}
+		else
+			erro = 2;
+	}
+
+	public void EliminarProduto()
+	{
+		if (tabelContent.IdValid())
+		{
+			Produto p = tabelContent.GetElement();
+			facade.EliminaProduto(p.IdProduto);
+			InitializedTable();
+		}
+		else
+			erro = 2;
 	}
 }
