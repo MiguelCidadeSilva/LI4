@@ -90,7 +90,6 @@ namespace FeirasEspinhoBlazorApp.Data
                 {
                     while (response.Read())
                     {
-                        response.Read();
                         int idNegociacao = response.GetFieldValue<int>("idNeg");
                         float precoBase = (float)response.GetFieldValue<double>("precoBase");
                         float precoNeg = (float)response.GetFieldValue<double>("precoNeg");
