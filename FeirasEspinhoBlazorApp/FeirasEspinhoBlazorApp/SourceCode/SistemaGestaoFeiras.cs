@@ -27,7 +27,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
         private int standsCounter;
 		private int negociacoesCounter;
 		private int leiloesCounter;
-		private int produtosConter;
+		private int produtosCounter;
 		private static SistemaFeiras instance = new SistemaFeiras();
 
 		public static SistemaFeiras GetInstance()
@@ -49,7 +49,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			standsCounter = 0;
 			negociacoesCounter = 0;
 			leiloesCounter = 19;
-			produtosConter = 0;
+			produtosCounter = 0;
 		}
 
 
@@ -266,11 +266,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return stands.GetProduto(idProduto);
 		}
-		public void AddProduto(Produto produto, string cat)
+		public void AddProduto(Produto produto, float imposto)
 		{
-			// falta associar a categoria / sub-categoria
-			produto.IdProduto = produtosConter;
-			produtosConter++;
+			Stand s = stands.GetStand(produto.Stand);
+			int categoria = s.Categoria;
+			int id = AddSubCategoria(categoria, imposto);
+			produto.IdSubCategoria = id;
+			produto.IdProduto = produtosCounter;
+			produtosCounter++;
 			stands.InsertProduto(produto);
 		}
 		public int AddSubCategoria(int categoria, float imposto)
