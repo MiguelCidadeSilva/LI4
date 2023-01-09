@@ -23,11 +23,6 @@
 	<label><b>Preco</b></label>
 	<input type="text" class="tb" id="email" name="email" placeholder="Preço produto" @bind-value="preco" />
 </div>
-@if(page == 1)
-{
-	<label><b>Categoria</b></label>
-	<input type="text" class="tb" id="categoria" name="categoria" placeholder="Nome categoria" @bind-value="categoria" />
-}
 <div>
 	<button class="buttonA" @onclick="AdicionarProduto">Adicionar Produto</button>
 	<button class="buttonA" @onclick="Retroceder">Retroceder</button>
@@ -55,7 +50,7 @@
 	{
 		if (page == 0)
 		{
-			FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true));
+			FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true),imposto);
 			FormStandComponent.GetInstance().GetBack();
 		}
 		else

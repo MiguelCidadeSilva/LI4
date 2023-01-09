@@ -296,11 +296,26 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public int AddSubCategoria(int categoria, float imposto)
 		{
-			return 0;
+			int? id = categorias.GetSubCategoriaImposto(categoria, imposto);
+			if(!id.HasValue)
+			{
+				Categoria cat = categorias.GetCategoria(categoria);
+				id = subCategoriaCounter;
+				categorias.InsertCategoria(new SubCategoria(cat.Id, cat.Name,id.Value, imposto));
+				subCategoriaCounter++;
+			}
+			return id.Value;
 		}
 		public int AddCategoria(string nome)
 		{
-			return 0;
+			int? id = categorias.GetIdCategoria(nome);
+			if (!id.HasValue) 
+			{
+				id = categoriaCounter;
+				categorias.InsertCategoria(new Categoria(id.Value, nome));
+				categoriaCounter++;
+			}
+			return id.Value;
 		}
 		public void Licitar(int idLeilao, string email, float licitacao)
 		{
@@ -322,10 +337,18 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			else
 				throw new BidValueInvalid("Valor menor que a última exceção");
 		}
-		public void AddStand(Stand s)
+		public void AddStand(Stand s, string cat, List<float> impostos)
 		{
-			// adicionar produto + stand, cuidado com os ids
-			// associar aos produtos a sub-categoria + id stand
+			s.IdStand = standsCounter;
+			standsCounter++;
+			int catID = AddCategoria(cat);
+			impostos.ForEach(i => AddSubCategoria(catID, i));
+			s.Categoria= catID;
+			stands.InsertStand(s);
+			s.Produtos.ForEach(p => { p.IdProduto = produtosCounter; produtosCounter++; });
+			s.Produtos.ForEach(p => p.Stand = s.IdStand);
+			s.Produtos.ForEach(p => stands.InsertProduto(p));
+
 		}
 		public void IncrementConsultantes(int stand)
 		{

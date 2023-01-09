@@ -70,11 +70,12 @@ else
 	private string sucmensagem;
 	private bool sucess = false;
 	private bool formProduto = false;
-	private string categoria;
+	private string categoria = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Table<Produto> table = new Table<Produto>(new List<(Produto, int)>());
 	private bool negociavel = false;
 	private static FormStandComponent formStand;
+	private Dictionary<int, float> impostos = new();
 	protected override void OnInitialized()
 	{
 		formStand = this;
@@ -88,12 +89,13 @@ else
 		// METER CATEGORIA DIREITA
 		// public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
 		Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
-		SistemaFeiras.GetInstance().AddStand(stand);
+		SistemaFeiras.GetInstance().AddStand(stand,categoria, impostos.Values.ToList());
 		ShowStandsFeiranteComponent.GetInstance().GetBack();
 	}
-	public void AdicionaProduto(Produto p)
+	public void AdicionaProduto(Produto p, float imposto)
 	{
-		this.table.AddElement(p);
+		int paux = this.table.AddElement(p);
+		impostos.Add(paux, imposto);
 	}
 	public void AdicionarProduto()
 	{

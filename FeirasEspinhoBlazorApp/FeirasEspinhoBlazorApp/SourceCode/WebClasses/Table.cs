@@ -85,7 +85,7 @@
 		{
 			return index != -1;
 		}
-		public void AddElement(Tipo item)
+		public int AddElement(Tipo item)
 		{
 			int pos = content.Count;
 			this.content.Add((item,0)); 
@@ -93,6 +93,7 @@
 				cssclasses[pos] = "evenRow";
 			else
 				cssclasses[pos] = "";
+			return pos;
 
 		}
 	}

@@ -56,13 +56,27 @@ else
 				<tbody>
 					@foreach (var produto in tabelContent.Content)
 					{
-						<tr class=@tabelContent.Cssclasses[produto.Item1]>
-							<td> @produto.Item2.IdProduto</td>
-							<td> @produto.Item2.Nome</td>
-							<td> @produto.Item2.Preco</td>
-							<td> @produto.Item2.Stock</td>
-							<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)" /></td>
-						</tr>
+						@if (type)
+						{
+							<tr class=@tabelContent.Cssclasses[produto.Item1]>
+								<td> @produto.Item2.IdProduto</td>
+								<td> @produto.Item2.Nome</td>
+								<td> @produto.Item2.Preco</td>
+								<td> @produto.Item2.Stock</td>
+								<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @oninput="(args) => RecalculaPrecoTotal(args,produto.Item1)" /></td>
+							</tr>
+						}
+						else
+						{
+							<tr class=@tabelContent.Cssclasses[produto.Item1] @onclick="() => tabelContent.SelectedRow(produto.Item1)">
+								<td> @produto.Item2.IdProduto</td>
+								<td> @produto.Item2.Nome</td>
+								<td> @produto.Item2.Preco</td>
+								<td> @produto.Item2.Stock</td>
+								<td> <input type="text" class="tb tb_smaller" id="quantidade" name="quantidade" placeholder="Quantidade" @bind-value="quantidades[produto.Item1]" /></td>
+							</tr>
+								
+						}
 					}
 				</tbody>
 			</table>
@@ -85,9 +99,10 @@ else
 		else
 		{
 			<div>
-				<button class="buttonA buttonTable1" @onclick="CompraRapida">Adicionar Produto</button>
-				<button class="buttonA buttonTable1" @onclick="AumentarStockProduto">Aumentar Stock Produto</button>
-				<button class="buttonA buttonTable1" @onclick="EliminarProduto">Eliminar Produto</button>
+				<button class="buttonA buttonTable1" @onclick="AdicionarProduto">Adicionar Produto</button>
+				<button class="buttonA buttonTable2" @onclick="AumentarStockProduto">Aumentar Stock Produto</button>
+				<button class="buttonA" @onclick="EliminarProduto">Eliminar Produto</button>
+				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 			</div>
 		}
 	</div>
@@ -129,6 +144,7 @@ else
 		stand = facade.GetStand(idStand);
 		List<Produto> conteudo = stand.Produtos.Where(p => p.Disponivel).ToList();
 		this.tabelContent = new Table<Produto>(conteudo);
+		quantidades.Clear();
 		for (int i = 0; i < conteudo.Count; i++)
 			quantidades[i] = 0;
 	}
@@ -190,8 +206,15 @@ else
 	}
 	public void Retroceder()
 	{
-		ShowFeiraStandsComponent showFeirasStandsComponent = ShowFeiraStandsComponent.GetInstace();
-		showFeirasStandsComponent.GetBack();
+		@if(type)
+		{
+			ShowFeiraStandsComponent showFeirasStandsComponent = ShowFeiraStandsComponent.GetInstace();
+			showFeirasStandsComponent.GetBack();
+		}
+		else
+		{
+			ShowStandsFeiranteComponent.GetInstance().GetBack();
+		}
 	}
 	public void ShowStand(int cod)
 	{
@@ -223,14 +246,8 @@ else
 
 	public void AumentarStockProduto()
 	{
-		if (tabelContent.IdValid())
-		{
-			Produto p = tabelContent.GetElement();
-			facade.AumentaStock(p.IdProduto, quantidades[tabelContent.GetSelected()]);
-			InitializedTable();
-		}
-		else
-			erro = 2;
+		tabelContent.Content.ForEach(p => { if (quantidades[p.Item1] > 0) facade.AumentaStock(p.Item2.IdProduto, quantidades[p.Item1]); });
+		InitializedTable();
 	}
 
 	public void EliminarProduto()

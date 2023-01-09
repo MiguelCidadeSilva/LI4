@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Azure;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -278,8 +279,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-					if (response.IsDBNull(0))
-						r = response.GetFieldValue<int>("MaiorID")+1;
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
                 return r;
@@ -298,12 +298,30 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-					if (response.IsDBNull(0))
-						r = response.GetFieldValue<int>("MaiorID")+1;
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
                 return r;
             }
+        }
+        public int? GetSubCategoriaImposto(int idCat, float imposto)
+        {
+            int? r = null;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT * FROM [SubCategoria] WHERE categoria=(@categoria) AND imposto=(@imposto)", connection);
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@categoria", idCat);
+                command.Parameters.AddWithValue("@imposto", imposto);
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    r = response.GetFieldValue<int>("idSC");
+				}
+                connection.Close();
+            }
+            return r;
         }
     }
 }
