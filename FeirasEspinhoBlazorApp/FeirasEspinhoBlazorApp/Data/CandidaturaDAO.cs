@@ -84,7 +84,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 SqlDataReader response = command.ExecuteReader();
                 if (response.HasRows)
                 {
-                    while (response.HasRows)
+                    while (response.Read())
                     {
                         int idCandidatura = response.GetFieldValue<int>("idCandidatura");
                         DateTime DataSubmissao = response.GetFieldValue<DateTime>("dataSubmissao");

@@ -155,10 +155,10 @@ namespace FeirasEspinhoBlazorApp.Data
             using SqlCommand command = new("INSERT INTO [dbo].[StandParticipa] VALUES (@idStand, @idFeira)", connection);
             {
                 connection.Open();
-                command.ExecuteNonQuery();
                 command.Parameters.AddWithValue("@idStand", idStand);
                 command.Parameters.AddWithValue("@idFeira", idFeira);
-                connection.Close();
+				command.ExecuteNonQuery();
+				connection.Close();
             }
         }
           

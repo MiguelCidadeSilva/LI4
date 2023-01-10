@@ -94,6 +94,7 @@ else
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
 							break;
 						case "Administrador":
+							NavBar.GetInstance().LoginAdmin(email);
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
 							break;
 					}

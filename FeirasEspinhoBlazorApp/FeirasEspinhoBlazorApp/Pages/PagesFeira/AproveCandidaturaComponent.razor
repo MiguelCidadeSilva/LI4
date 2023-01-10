@@ -1,4 +1,4 @@
-﻿@page "/aprovecandidaturas"
+﻿@page "/aprovecandidaturas/{emailAdmin}"
 @using SourceCode.Feiras;
 @using SourceCode.WebClasses;
 @using SourceCode.Utilizadores;
@@ -56,8 +56,8 @@
 		feiras = new();
 		users = new();
 		table = new Table<Candidatura>(facade.GetCandidaturasAnalise(emailAdmin));
-		table.Content.ForEach(c => feiras.Add(c.Item2.IdFeira, facade.GetFeira(c.Item2.IdFeira)));
-		table.Content.ForEach(c => users.Add(c.Item2.IdStand, (facade.GetUtilizador(facade.GetStand(c.Item2.IdStand).EmailDono), facade.GetAvaliacoesStands(c.Item2.IdStand))));
+		table.Content.ForEach(c => { if (!feiras.ContainsKey(c.Item2.IdFeira)) feiras.Add(c.Item2.IdFeira, facade.GetFeira(c.Item2.IdFeira)); });
+		table.Content.ForEach(c => { if (!users.ContainsKey(c.Item2.IdStand)) users.Add(c.Item2.IdStand, (facade.GetUtilizador(facade.GetStand(c.Item2.IdStand).EmailDono), facade.GetAvaliacoesStands(c.Item2.IdStand))); });
 	}
 	protected override void OnInitialized()
 	{
@@ -69,6 +69,7 @@
 		{
 			Candidatura c = table.GetElement();
 			facade.AprovarCandidatura(c.IdCandidatura);
+			InitializeData();
 		}
 	}
 	private void RecusarCandidatura()
@@ -77,6 +78,7 @@
 		{
 			Candidatura c = table.GetElement();
 			facade.RemoveCandidatura(c.IdCandidatura);
+			InitializeData();
 		}
 	}
 

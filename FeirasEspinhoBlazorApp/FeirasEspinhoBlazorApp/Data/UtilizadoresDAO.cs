@@ -44,7 +44,7 @@ namespace FeirasEspinhoBlazorApp.Data
             if (!r)
                 r = ContainsKey("Feirante", email);
             if (!r)
-                r = ContainsKey("Admin", email);
+                r = ContainsKey("Administrador", email);
             return r;
         }
 

@@ -1,4 +1,4 @@
-﻿@page "/formfeira"
+﻿@page "/formfeira/{email}"
 @using SourceCode;
 @using SourceCode.Feiras;
 @inject NavigationManager navigation;
@@ -8,19 +8,19 @@
 <div>
 	<div>
 		<label><b>Nome</b></label>
-		<input type="text" class="tb" id="name" name="name" placeholder="Insira aqui o nome da feira" @bind-value="nome" readonly="readonly" />
+		<input type="text" class="tb" id="name" name="name" placeholder="Insira aqui o nome da feira" @bind-value="nome"/>
 		<br />
 		<label><b>Categoria</b></label>
-		<input type="text" class="tb" id="cat" name="cat" placeholder="Insira aqui o nome da categoria da feira" @bind-value="categoria" readonly="readonly" />
+		<input type="text" class="tb" id="cat" name="cat" placeholder="Insira aqui o nome da categoria da feira" @bind-value="categoria"/>
 		<br />
 		<label><b>Data de Início</b></label>
-		<input type="text" class="tb" id="dinit" name="dinit" placeholder="Insira aqui a data de início" @bind-value="dataInit" readonly="readonly" />
+		<input type="text" class="tb" id="dinit" name="dinit" placeholder="Insira aqui a data de início" @bind-value="dataInit" />
 		<br />
 		<label><b>Data de Fim</b></label>
-		<input type="text" class="tb" id="dfim" name="dfim" placeholder="Insira aqui a data de fim" @bind-value="dataFim" readonly="readonly" />
+		<input type="text" class="tb" id="dfim" name="dfim" placeholder="Insira aqui a data de fim" @bind-value="dataFim"/>
 		<br />
 		<label><b>Preço candidatura</b></label>
-		<input type="text" class="tb" id="dfim" name="dfim"@bind-value="preco" readonly="readonly" />
+		<input type="text" class="tb" id="dfim" name="dfim"@bind-value="preco"/>
 	</div>
 	<div>
 		<button class="buttonA" @onclick="Confirmar">Confirmar</button>

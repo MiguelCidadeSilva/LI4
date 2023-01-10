@@ -9,10 +9,10 @@
         {
             int lo = (int)menusNomes.Login;
             this.menus[lo] = new()
-			{
+            {
                 new Opcao("Início", "oi oi-home", ""),
                 new Opcao("Login", "oi oi-account-login", "login"),
-                new Opcao("Criar Conta", "oi oi-plus", "createacc")
+                new Opcao("Criar Conta", "oi oi-plus", "createacc/" + "0")
             };
         }
         private void InicializeClientNav()
@@ -53,11 +53,10 @@
 			this.menus[fe] = new()
 			{
 				new Opcao("Página inicial", "oi oi-home", "user/" +email ),
-				new Opcao("Os meus stands","oi oi-home","showstandsfeirante/" + email),
+				new Opcao("Os meus stands","oi oi-briefcase","showstandsfeirante/" + email),
 				new Opcao("Inscrição numa feira", "oi oi-list", "showfeiras/" + email),
 				new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
-				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
-				new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
+				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email)
 			};
 		}
 		private void InicializeAdminNav()
@@ -65,7 +64,18 @@
             int ad = (int)menusNomes.Admin;
             menus[ad] = new List<Opcao>();
         }
-        private void InicializeGeralNav()
+        public void LoginAdmin(string email)
+        {
+            int ad = (int)menusNomes.Admin;
+            this.menus[ad] = new()
+            {
+                new Opcao("Página inicial", "oi oi-home", "user/" +email ),
+                new Opcao("Criar Feira","oi oi-briefcase","formfeira/" + email),
+                new Opcao("Aprovar Candidatura", "oi oi-list", "aprovecandidaturas/" + email),
+				new Opcao("Criar Admin", "oi oi-plus", "createacc/" + "00")
+			};
+        }
+		private void InicializeGeralNav()
         {
             int ge = (int)menusNomes.Geral;
             this.menus[ge] = new List<Opcao>

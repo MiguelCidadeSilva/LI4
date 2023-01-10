@@ -1,4 +1,4 @@
-﻿@page "/createacc"
+﻿@page "/createacc/{log}"
 @using SourceCode.Utilizadores;
 @using SourceCode;
 @using Data;
@@ -45,12 +45,15 @@
 			<input type="password" class="tb" id="passwordRepeat" name="passwordRepeat" @bind-value="passwordRepat"/>
 		</div>
 		<br />
-		<div>
-			<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected(1)" checked=@(selected == 1) /><b> Cliente</b>
+		@if (log.Length == 1)
+		{
+			<div>
+				<input type="radio" name="tipo" value="Cliente" @onclick="() => Selected(1)" checked=@(selected == 1) /><b> Cliente</b>
+				<br />
+				<input type="radio" name="tipo" value="Feirante" @onclick="() => Selected(2)" checked=@(selected == 2)/><b> Feirante</b>
+			</div>
 			<br />
-			<input type="radio" name="tipo" value="Feirante" @onclick="() => Selected(2)" checked=@(selected == 2)/><b> Feirante</b>
-		</div>
-		<br />
+		}
 		@if(this.selected == 2)
 		{
 			<div>
@@ -67,6 +70,8 @@
 
 @code
 {
+	[Parameter, EditorRequired]
+	public string log { get; set; }
 	private bool sucess = false;
 	private string sucmensagem = "Conta criada com sucesso";
 	private int selected;
@@ -120,26 +125,35 @@
 			this.bornDate = "";
 			this.erro = 3;
 		}
-		else if (selected == 0)
+		else if (selected == 0 && log.Length == 1)
 			this.erro = 4;
 		else
 		{
 			Utilizador utilizador = null;
 			bool b = false;
-			switch (selected)
+			if(log.Length > 1)
 			{
-				case 1:
-					b = true;
-					utilizador = new Cliente(name, password, email, date, DateTime.Now);
-					break;
-				case 2:
-					b = true;
-					int num = 0;
-					if (int.TryParse(numConta, out num))
-						utilizador = new Feirante(name, password, email, date, DateTime.Now,num);
-					else
-						this.erro = 5;
-					break;
+				erro = 0;
+				b = true;
+				utilizador = new Administrador(name, password, email, date, DateTime.Today);
+			}
+			else
+			{
+				switch (selected)
+				{
+					case 1:
+						b = true;
+						utilizador = new Cliente(name, password, email, date, DateTime.Today);
+						break;
+					case 2:
+						b = true;
+						int num = 0;
+						if (int.TryParse(numConta, out num))
+							utilizador = new Feirante(name, password, email, date, DateTime.Today, num);
+						else
+							this.erro = 5;
+						break;
+				}
 			}
 			if(b && this.erro == 0)
 			{

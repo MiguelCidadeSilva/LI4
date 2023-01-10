@@ -213,10 +213,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			int idF = c.IdFeira;
 			int stand = c.IdStand;
 			feiras.InsertStandParticipante(stand, idF);
+			candidaturas.Aprova(c.IdCandidatura, true);
 		}
 		public void RemoveCandidatura(int candidatura)
 		{
-
+			candidaturas.Aprova(candidatura, false);
 		}
 		public List<Candidatura> GetCandidaturasAnalise(string email)
 		{

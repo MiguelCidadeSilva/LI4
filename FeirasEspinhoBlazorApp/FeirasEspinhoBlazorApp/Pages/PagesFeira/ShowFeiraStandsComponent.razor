@@ -15,7 +15,6 @@
 	@if (showAvaliacao)
 	{
 		<EvaluationComponent avaliar="1" email="@email" feirante="@feirante" idFeira="-1"/>
-
 	}
 	else if (showStand)
 	{
@@ -208,8 +207,16 @@
 	}
 	public void Retroceder()
 	{
-		ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
-		showFeirasComponent.Avalia();
+		if(type)
+		{
+			ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
+			showFeirasComponent.Avalia();
+		}
+		else
+		{
+			ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
+			showFeirasComponent.GetBack();
+		}
 	}
 	public void SelecionarStand()
 	{
