@@ -8,6 +8,8 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using FeirasEspinhoBlazorApp.SourceCode.Feiras;
+using FeirasEspinhoBlazorApp.SourceCode;
+using FeirasEspinhoBlazorApp.SourceCode.Stands;
 
 namespace FeirasEspinhoBlazorApp.Data
 {
@@ -497,6 +499,162 @@ namespace FeirasEspinhoBlazorApp.Data
             else 
                 InsertAvaliacaoFeira(emaicl, idFeira, avaliacao);
         }
+
+        //notificacao
+
+        public bool ContainsKeyNotificacaoCliente(int id)
+        {
+            bool r = false;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [NotificacaoCliente] WHERE id = (@id)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
+            }
+            return r;
+        }
+
+        public bool ContainsKeyNotificacaoFeirante(int id)
+        {
+            bool r = false;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using (SqlCommand command = new("SELECT * FROM [NotificacaoFeirante] WHERE id = (@id)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                r = response.HasRows;
+                connection.Close();
+            }
+            return r;
+        }
+
+        public void InsertNotificacaoCliente(Notificacao notificacao)
+        {
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[NotificacaoCliente] VALUES (@id, @email, @assunto, @mensagem, @vista, @dataEnvio)", connection);
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@id", notificacao.Id);
+                command.Parameters.AddWithValue("@email", notificacao.Email);
+                command.Parameters.AddWithValue("@assunto", notificacao.Assunto);
+                command.Parameters.AddWithValue("@mensagem", notificacao.Mensagem);
+                command.Parameters.AddWithValue("@vista", notificacao.Vista);
+                command.Parameters.AddWithValue("@dataEnvio", notificacao.Data);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void InsertNotificacaoFeirante(Notificacao notificacao)
+        {
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("INSERT INTO [dbo].[NotificacaoFeirante] VALUES (@id, @email, @assunto, @mensagem, @vista, @dataEnvio)", connection);
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@id", notificacao.Id);
+                command.Parameters.AddWithValue("@email", notificacao.Email);
+                command.Parameters.AddWithValue("@assunto", notificacao.Assunto);
+                command.Parameters.AddWithValue("@mensagem", notificacao.Mensagem);
+                command.Parameters.AddWithValue("@vista", notificacao.Vista);
+                command.Parameters.AddWithValue("@dataEnvio", notificacao.Data);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public List<Notificacao> ListAllNotificacoesCliente(String email)
+        {
+            List<Notificacao> r = new();
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [NotificacaoCliente] WHERE email = (@email)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@email",email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    while (response.Read())
+                    {
+                        Notificacao notificacao = new()
+                        {
+                            Id = response.GetFieldValue<int>("id"),
+                            Email = response.GetFieldValue<String>("email"),
+                            Assunto = response.GetFieldValue<String>("assunto"),
+                            Mensagem = response.GetFieldValue<String>("mensagem"),
+                            Vista = response.GetFieldValue<bool>("vista"),
+                            Data = response.GetFieldValue<DateTime>("dataEnvio")
+                        };
+                        r.Add(notificacao);
+                    }
+                }
+                connection.Close();
+            }
+            return r;
+        }
+
+        public List<Notificacao> ListAllNotificacoesFeirante(String email)
+        {
+            List<Notificacao> r = new();
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("SELECT * FROM [NotificacaoFeirante] WHERE email = (@email)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    while (response.Read())
+                    {
+                        Notificacao notificacao = new()
+                        {
+                            Id = response.GetFieldValue<int>("id"),
+                            Email = response.GetFieldValue<String>("email"),
+                            Assunto = response.GetFieldValue<String>("assunto"),
+                            Mensagem = response.GetFieldValue<String>("mensagem"),
+                            Vista = response.GetFieldValue<bool>("vista"),
+                            Data = response.GetFieldValue<DateTime>("dataEnvio")
+                        };
+                        r.Add(notificacao);
+                    }
+                }
+                connection.Close();
+            }
+            return r;
+        }
+
+        public void ClienteVeNotifs(String email)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("UPDATE NotificacaoCliente SET vista = 1 WHERE email = (@email) ", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void FeiranteVeNotifs(String email)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("UPDATE NotificacaoFeirante SET vista = 1 WHERE email = (@email) ", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@email", email);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+
 
     }
 }

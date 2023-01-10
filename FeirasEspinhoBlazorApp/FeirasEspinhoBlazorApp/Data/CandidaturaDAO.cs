@@ -117,5 +117,36 @@ namespace FeirasEspinhoBlazorApp.Data
                 return r;
             }
         }
+
+        public void DeleteCandidatura(int idCandidatura)
+        {
+            using (SqlConnection connection = new(ConnectionDAO.connectionString))
+            using (SqlCommand command = new("DELETE FROM [Candidatura] WHERE idCandidatura=(@idCandidatura)", connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@idCandidatura", idCandidatura);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void Aprova(int idCandidatura, bool aprovacao)
+        {
+            if (aprovacao)
+            {
+                using (SqlConnection connection = new(ConnectionDAO.connectionString))
+                using (SqlCommand command = new("UPDATE [Candidatura] SET aprovacao = (@aprovacao) WHERE idCandidatura = (@idCandidatura)", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@aprovacao", true);
+                    command.Parameters.AddWithValue("@idCandidatura", idCandidatura);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            else DeleteCandidatura(idCandidatura);
+        }
+
+
     }
 }

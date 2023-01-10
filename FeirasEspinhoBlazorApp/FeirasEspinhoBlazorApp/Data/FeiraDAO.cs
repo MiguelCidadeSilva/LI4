@@ -46,10 +46,13 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (feira.DataFim.HasValue)
                     command.Parameters.AddWithValue("@dataFim", feira.DataFim);
                 else
-                    command.Parameters.AddWithValue("dataFim", DBNull.Value);
+                    command.Parameters.AddWithValue("@dataFim", DBNull.Value);
                 command.Parameters.AddWithValue("@precoCandidatura", feira.PrecoCandidatura);
                 command.Parameters.AddWithValue("@criadorEmail", feira.CriadorEmail);
-                command.Parameters.AddWithValue("@categoria", feira.Categoria);
+                if (feira.Categoria.HasValue)
+                    command.Parameters.AddWithValue("@categoria", feira.Categoria);
+                else 
+                    command.Parameters.AddWithValue("@categoria", DBNull.Value);
                 command.ExecuteNonQuery();
                 connection.Close();
             }          
