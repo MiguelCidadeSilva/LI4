@@ -68,13 +68,12 @@
 			{
 				<button class="buttonA buttonTable1" @onclick="ConsultarStand">Consultar Stand</button>
 				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
-				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 			}
 			else
 			{
-				<button class="buttonA" @onclick="SelecionarStand">Selecionar Stand</button>
-				
+				<button class="buttonA buttonTable1" @onclick="SelecionarStand">Selecionar Stand</button>
 			}
+			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 		</div>
 	}
 </div>
@@ -117,7 +116,7 @@
 		}
 		else
 		{
-			stands = facade.GetStandFeirante(email);
+			stands = facade.GetStandFeirante(email,idFeira);
 			nomes[utilizador.Email] = utilizador.Username;
 			stands.ForEach(s => conteudo.Add((s, 0)));
 		}

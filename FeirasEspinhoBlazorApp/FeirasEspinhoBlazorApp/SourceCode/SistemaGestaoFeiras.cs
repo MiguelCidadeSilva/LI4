@@ -152,6 +152,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return stands.ListAllStands().Where(s => s.EmailDono.Equals(feirante)).ToList();
 		}
+		public List<Stand> GetStandFeirante(string feirante, int feira)
+		{
+			Feira f = feiras[feira];
+			List<Stand> res = GetStandFeirante(feirante);
+			return f.Categoria.HasValue ? res.Where(s => s.Categoria == f.Categoria.Value).ToList() : res;
+		}
 		public List<Feira> GetFeiranteParticipacoes(string feirante)
 		{
 			List<Feira> feiraList = new();
