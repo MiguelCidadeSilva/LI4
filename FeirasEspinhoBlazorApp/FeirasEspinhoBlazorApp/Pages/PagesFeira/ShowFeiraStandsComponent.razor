@@ -45,7 +45,7 @@
 						<th>Feirante</th>
 						<th>Data Criação</th>
 						<th>Categoria</th>
-						<th>Avaliação</th>
+						<th>Avaliação Feirante</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -56,7 +56,14 @@
 							<td> @nomes[stand.Item2.EmailDono]</td>
 							<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
 							<td> @categoria[stand.Item2.IdStand].Name</td>
-							<td> @stand.Item3</td>
+							@if (stand.Item3.HasValue)
+							{
+								<td> @stand.Item3.Value</td>
+							}
+							else
+							{
+								<td><b>-</b></td>
+							}
 						</tr>
 					}
 				</tbody>
@@ -92,22 +99,22 @@
 	private bool type;
 	private int idStand = 0;
 	private Dictionary<int, Categoria> categoria = new();
-	private Dictionary<string, string> nomes = new Dictionary<string, string>();
+	private Dictionary<string, string> nomes = new();
 	private Table<Stand> tabelContent;
 	private int erro = 0;
-	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private Dictionary<int, string> codigosErro = new();
 	private static ShowFeiraStandsComponent showBancas;
 	protected override void OnInitialized()
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
 		type = utilizador is Cliente;
-		List<(Stand, int)> conteudo = new();
+		List<(Stand, float?)> conteudo = new();
 		List<Stand> stands;
 		if (type)
 		{
 			showBancas = this;
 			stands = facade.GetStandsFeira(idFeira);
-			stands.ForEach(s => conteudo.Add((s, 0)));
+			stands.ForEach(s => conteudo.Add((s, facade.GetAvaliacoesStands(s.IdStand))));
 			foreach(Stand s in stands)
 			{
 				Utilizador dono = facade.GetUtilizador(s.EmailDono);

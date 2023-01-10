@@ -72,7 +72,7 @@ else
 	private bool formProduto = false;
 	private string categoria = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private Table<Produto> table = new Table<Produto>(new List<(Produto, int)>());
+	private Table<Produto> table = new Table<Produto>(new List<Produto>());
 	private bool negociavel = false;
 	private static FormStandComponent formStand;
 	private Dictionary<int, float> impostos = new();

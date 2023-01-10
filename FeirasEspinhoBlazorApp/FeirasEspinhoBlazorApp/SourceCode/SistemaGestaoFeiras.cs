@@ -118,6 +118,15 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			return feiras.ListAllFeiras().Where(f => f.DataInicio.CompareTo(DateTime.Today) <= 0 && (!f.DataFim.HasValue || f.DataFim.Value.CompareTo(DateTime.Today) >= 0)).ToList();
 		}
+		public float? GetAvaliacoesFeira(int feira)
+		{
+			return users.GetAvaliacaoFeira(feira);
+		}
+		public float? GetAvaliacoesStands(int stand)
+		{
+			Stand s = stands[stand];
+			return users.GetAvaliacaoFeirante(s.EmailDono);
+		}
 		public Categoria? GetCategoria(int id)
 		{
 			return categorias[id];

@@ -2,7 +2,7 @@
 {
 	public class Table<Tipo>
 	{
-		private List<(Tipo, int)> content;
+		private List<(Tipo, float?)> content;
 		private Dictionary<int, string> cssclasses;
 		private string oldcssclasse;
 		private int index = -1;
@@ -17,9 +17,9 @@
 					cssclasses[i] = "";
 			}
 		}
-		public Table(List<(Tipo, int)> conteudo)
+		public Table(List<(Tipo, float?)> conteudo)
 		{
-			content = new List<(Tipo, int)>(conteudo);
+			content = new List<(Tipo, float?)>(conteudo);
 			cssclasses = new Dictionary<int, string>();
 			defineCss();
 			// buscar feiras às base de dados
@@ -27,17 +27,17 @@
 
 		public Table(List<Tipo> conteudo)
 		{
-			content = new List<(Tipo, int)>();
-			conteudo.ForEach(c => content.Add((c,0)));
+			content = new List<(Tipo, float?)>();
+			conteudo.ForEach(c => content.Add((c,null)));
 			cssclasses = new Dictionary<int, string>();
 			defineCss();
 			// buscar feiras às base de dados
 		}
 
-		public List<(int, Tipo, int)> Content 
+		public List<(int, Tipo, float?)> Content 
 		{
 			get {
-				List<(int, Tipo, int)> res = new List<(int, Tipo, int)>();
+				List<(int, Tipo, float?)> res = new List<(int, Tipo, float?)>();
 				int i = 0;
 				foreach (var item in content)
 				{

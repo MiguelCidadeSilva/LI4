@@ -74,7 +74,14 @@ else
 							}
 							else
 							{
-								<td> @feira.Item3</td>
+								@if (feira.Item3.HasValue)
+								{
+									<td> @feira.Item3</td>
+								}
+								else
+								{
+									<td><b>-</b></td>
+								}
 							}
 						</tr>
 					}
@@ -122,8 +129,8 @@ else
 		else
 			feiras = facade.FeirasNotStarted();
 		feiras.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
-		List<(Feira, int)> conteudo = new List<(Feira, int)>();
-		feiras.ForEach(f => conteudo.Add((f, 0)));
+		List<(Feira, float?)> conteudo = new ();
+		feiras.ForEach(f => conteudo.Add((f, facade.GetAvaliacoesFeira(f.IDFeira))));
 		this.tabelContent = new Table<Feira>(conteudo);
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}

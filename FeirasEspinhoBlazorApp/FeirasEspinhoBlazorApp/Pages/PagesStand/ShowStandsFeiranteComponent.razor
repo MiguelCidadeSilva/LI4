@@ -33,7 +33,14 @@ else
 								<td> @stand.Item2.IdStand</td>
 								<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
 								<td> @categoria[stand.Item2.IdStand].Name</td>
-								<td> @stand.Item3</td>
+								@if (stand.Item3.HasValue)
+								{
+									<td> @stand.Item3.Value</td>
+								}
+								else
+								{
+								<td><b>-</b></td>
+								}
 						</tr>
 					}
 				</tbody>
@@ -63,6 +70,8 @@ else
 	{
 		List<Stand> stands = facade.GetStandFeirante(email);
 		stands.Where(s => !categoria.ContainsKey(s.IdStand)).ToList().ForEach(s => categoria.Add(s.IdStand, facade.GetCategoria(s.Categoria)));
+		List<(Stand, float?)> content = new();
+		stands.ForEach(s => content.Add((s, facade.GetAvaliacoesStands(s.IdStand))));
 		this.tabelContent = new Table<Stand>(stands);
 	}
 	protected override void OnInitialized()

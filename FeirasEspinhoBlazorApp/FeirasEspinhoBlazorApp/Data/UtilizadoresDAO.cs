@@ -440,11 +440,11 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-        public float getAvaliacaoFeirante(String emailF) 
+        public float? GetAvaliacaoFeirante(String emailF) 
         {
-            float r = 0;
+            float? r = null;
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
-            using (SqlCommand command = new("SELECT AVG(avaliacao) AS Media FROM AvaliacaoFeirantes WHERE emailF = (@emailF)", connection))
+            using (SqlCommand command = new("SELECT ROUND(AVG(CAST(avaliacao AS FLOAT)),2) AS Media FROM AvaliacaoFeirantes WHERE emailF = (@emailF)", connection))
             {
                 connection.Open();
                 command.Parameters.AddWithValue("@emailF", emailF);
@@ -453,7 +453,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    if (response.IsDBNull(0))
+                    if (!response.IsDBNull("Media"))
                         r = (float)response.GetFieldValue<double>("Media");
                 }
                 connection.Close();
@@ -461,11 +461,11 @@ namespace FeirasEspinhoBlazorApp.Data
             return r;
         }
 
-        public float getAvaliacaoFeira(int idFeira)
+        public float? GetAvaliacaoFeira(int idFeira)
         {
-            float r = 0;
+            float? r = null;
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
-            using (SqlCommand command = new("SELECT AVG(avaliacao) AS Media FROM AvaliacaoFeiras WHERE idFeira = (@idFeira)", connection))
+            using (SqlCommand command = new("SELECT ROUND(AVG(CAST(avaliacao AS FLOAT)),2) AS Media FROM AvaliacaoFeiras WHERE idFeira = (@idFeira)", connection))
             {
                 connection.Open();
                 command.Parameters.AddWithValue("@idFeira", idFeira);
@@ -474,7 +474,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-                    if (response.IsDBNull(0))
+                    if (!response.IsDBNull("Media"))
                         r = (float)response.GetFieldValue<double>("Media");
                 }
                 connection.Close();
