@@ -1,13 +1,13 @@
-﻿@page "/user"
+﻿@page "/user/{email}"
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
-@using FeirasEspinhoBlazorApp.SourceCode.WebClasses;
+@using FeirasEspinhoBlazorApp.SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 @using System.Text.Json;
 @inject NavigationManager navigationManager
 
 <PageTitle>Página de utilizador</PageTitle>
 
-<h3>Bem vindo @email</h3>
+<h2>Bem vindo @user.Username</h2>
 
 @code
 {
@@ -16,6 +16,7 @@
 	private Utilizador user;
 	protected override void OnInitialized()
 	{
+		user = SistemaFeiras.GetInstance().GetUtilizador(email);
 		//user = JsonSerializer.Deserialize<Utilizador>(userStr);
 	}
 }

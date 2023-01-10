@@ -14,7 +14,7 @@
 <div>
 	@if (showAvaliacao)
 	{
-		<EvaluationComponent avaliacaoStr="Avalie o Stand"/>
+		<EvaluationComponent avaliar="1" email="@email" feirante="@feirante" idFeira="-1"/>
 
 	}
 	else if (showStand)
@@ -30,8 +30,8 @@
 		<FormCandidaturaComponent email="@email" idFeira="@idFeira" idStand="@idStand" />
 	}
 	else
-	{	
-		<h3>Stands disponíveis</h3>
+	{
+		<h2>Stands disponíveis</h2>
 		<br />
 		@if (erro != 0)
 		{
@@ -91,7 +91,7 @@
 	public int idFeira { get; set; }
 	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private Feira feira;
-	private int avaliacao = -1;
+	private string feirante = "";
 	private bool showAvaliacao = false;
 	private bool showStand = false;
 	private bool showLeilao = false;
@@ -104,7 +104,7 @@
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new();
 	private static ShowFeiraStandsComponent showBancas;
-	protected override void OnInitialized()
+	private void InitializeContent()
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
 		type = utilizador is Cliente;
@@ -115,20 +115,31 @@
 			showBancas = this;
 			stands = facade.GetStandsFeira(idFeira);
 			stands.ForEach(s => conteudo.Add((s, facade.GetAvaliacoesStands(s.IdStand))));
-			foreach(Stand s in stands)
+			if (nomes.Count() == 0)
 			{
-				Utilizador dono = facade.GetUtilizador(s.EmailDono);
-				nomes[dono.Email] = dono.Username;
+				foreach (Stand s in stands)
+				{
+					Utilizador dono = facade.GetUtilizador(s.EmailDono);
+					nomes[dono.Email] = dono.Username;
+				}
 			}
 		}
 		else
 		{
-			stands = facade.GetStandFeirante(email,idFeira);
-			nomes[utilizador.Email] = utilizador.Username;
+			stands = facade.GetStandFeirante(email, idFeira);
+			if (nomes.Count() == 0)
+			{
+				nomes[utilizador.Email] = utilizador.Username;
+			}
 			stands.ForEach(s => conteudo.Add((s, 0)));
 		}
-		stands.ForEach(s => categoria.Add(s.IdStand, facade.GetCategoria(s.Categoria)));
+		if(categoria.Count == 0)
+			stands.ForEach(s => categoria.Add(s.IdStand, facade.GetCategoria(s.Categoria)));
 		this.tabelContent = new Table<Stand>(conteudo);
+	}
+	protected override void OnInitialized()
+	{
+		InitializeContent();
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
 	public static ShowFeiraStandsComponent GetInstace()
@@ -175,12 +186,19 @@
 			erro = 1;
 		}
 	}
-	public void Avalia(int avaliacao)
+	public void Avalia()
 	{
-		this.avaliacao = avaliacao;
+		feirante = SistemaFeiras.GetInstance().GetStand(idStand).EmailDono;
+		showStand = false;
+		showAvaliacao = true;
+		showLeilao = false;
+		showCandidatura = false;
+		erro = 0;
+		StateHasChanged();
 	}
 	public void GetBack()
 	{
+		InitializeContent();
 		showStand = false;
 		showAvaliacao = false;
 		showLeilao = false;
@@ -191,7 +209,7 @@
 	public void Retroceder()
 	{
 		ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
-		showFeirasComponent.GetBack();
+		showFeirasComponent.Avalia();
 	}
 	public void SelecionarStand()
 	{

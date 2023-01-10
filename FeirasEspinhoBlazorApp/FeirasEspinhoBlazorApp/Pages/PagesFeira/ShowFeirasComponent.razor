@@ -17,9 +17,13 @@ else if (showLeilao)
 {
 	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada" email="@email"/>
 }
+else if (showAvaliacao)
+{
+	<EvaluationComponent idFeira="@feiraSelecionada" avaliar="0" feirante="" email="@email"/>
+}
 else
 {
-	<h3>Feiras disponíveis</h3>
+	<h2>Feiras disponíveis</h2>
 	<br />
 	<div>
 		@if (erro != 0)
@@ -114,24 +118,30 @@ else
 	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static ShowFeirasComponent showFeiras;
+	private bool showAvaliacao = false;
 	private bool showFeira = false;
 	private bool showLeilao = false;
 	private bool showForm = false;
 	private int feiraSelecionada = 0;
-	protected override void OnInitialized()
+	private void InitializedContent()
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
 		showFeiras = this;
 		List<Feira> feiras;
 		type = utilizador is Cliente;
-		if(type)
+		if (type)
 			feiras = facade.GetFeiras();
 		else
 			feiras = facade.FeirasNotStarted();
-		feiras.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
-		List<(Feira, float?)> conteudo = new ();
+		if(categoria.Count() == 0)
+			feiras.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
+		List<(Feira, float?)> conteudo = new();
 		feiras.ForEach(f => conteudo.Add((f, facade.GetAvaliacoesFeira(f.IDFeira))));
 		this.tabelContent = new Table<Feira>(conteudo);
+	}
+	protected override void OnInitialized()
+	{
+		InitializedContent();
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}
 	public static ShowFeirasComponent GetInstace()
@@ -187,10 +197,22 @@ else
 
 	public void GetBack()
 	{
+		InitializedContent();
+		showAvaliacao = false;
 		showLeilao = false;
 		showFeira = false;
 		showForm = false;
 		tabelContent.Unselect();
+		StateHasChanged();
+	}
+
+	public void Avalia()
+	{
+		showAvaliacao = true;
+		showLeilao = false;
+		showFeira = false;
+		showForm = false;
+		erro = 0;
 		StateHasChanged();
 	}
 }

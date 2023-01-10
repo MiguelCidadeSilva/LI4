@@ -127,6 +127,14 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			Stand s = stands[stand];
 			return users.GetAvaliacaoFeirante(s.EmailDono);
 		}
+		public void AddAvaliacaoFeira(string email, int feira, int aval)
+		{
+			users.AvaliaFeira(email, feira, aval);
+		}
+		public void AddAvaliacaoFeirante(string email, string feirante, int aval)
+		{
+			users.AvaliaFeirante(email, feirante, aval);
+		}
 		public Categoria? GetCategoria(int id)
 		{
 			return categorias[id];

@@ -13,7 +13,7 @@
 	<UserComponent email="@email"/>
 }
 else
-	{
+{
 	<h1>Feiras Virtuais de Espinho</h1>
 	<br />
 	<div class="page">
@@ -97,9 +97,9 @@ else
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
 							break;
 					}
-					loginSucess = true;
 					NavMenu.GetInstance().show = true;
 					NavMenu.GetInstance().Refresh();
+					navigationManager.NavigateTo("user/" + email);
 				}
 			}
 			catch (Exception e)
@@ -112,7 +112,6 @@ else
 	public void Logout()
 	{
 		this.CleanFields();
-		this.loginSucess = false;
 		StateHasChanged();
 	}
 }

@@ -401,7 +401,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void InsertAvaliacaoFeira(String emailCl, int idFeira, int avaliacao)
         {
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("INSERT INTO [dbo].[AvaliacaoFeirantes] VALUES (@emailCliente, @idFeira, @avaliacao)", connection);
+            using SqlCommand command = new("INSERT INTO [dbo].[AvaliacaoFeiras] VALUES (@emailCliente, @idFeira, @avaliacao)", connection);
             {
                 connection.Open();
                 command.Parameters.AddWithValue("@emailCliente", emailCl);
@@ -429,7 +429,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void UpdateAvaliacaoFeira(String emailCl, int idFeira, int avaliacaoNova)
         {
             using (SqlConnection connection = new(ConnectionDAO.connectionString))
-            using (SqlCommand command = new("UPDATE [AvaliacaoFeiras] SET avaliacao = (@avaliacao) WHERE emailCl = (@emailCl) AND idFeira = (@idFeira)", connection))
+            using (SqlCommand command = new("UPDATE [AvaliacaoFeiras] SET avaliacao = (@avaliacao) WHERE emailCliente = (@emailCl) AND idFeira = (@idFeira)", connection))
             {
                 connection.Open();
                 command.Parameters.AddWithValue("@avaliacao", avaliacaoNova);
@@ -484,14 +484,18 @@ namespace FeirasEspinhoBlazorApp.Data
 
         public void AvaliaFeirante(String emaicl, String emailF, int avaliacao)
         {
-            if (ContainsKeyAvaliacaoFeirantes(emaicl, emailF)) UpdateAvaliacaoFeirante(emaicl,emailF,avaliacao);
-            else InsertAvaliacaoFeirante(emaicl,emailF,avaliacao);
+            if (ContainsKeyAvaliacaoFeirantes(emaicl, emailF)) 
+                UpdateAvaliacaoFeirante(emaicl,emailF,avaliacao);
+            else 
+                InsertAvaliacaoFeirante(emaicl,emailF,avaliacao);
         }
 
         public void AvaliaFeira(String emaicl, int idFeira, int avaliacao)
         {
-            if (ContainsKeyAvaliacaoFeiras(emaicl, idFeira)) UpdateAvaliacaoFeira(emaicl,idFeira,avaliacao);
-            else UpdateAvaliacaoFeira(emaicl, idFeira, avaliacao);
+            if (ContainsKeyAvaliacaoFeiras(emaicl, idFeira)) 
+                UpdateAvaliacaoFeira(emaicl,idFeira,avaliacao);
+            else 
+                InsertAvaliacaoFeira(emaicl, idFeira, avaliacao);
         }
 
     }

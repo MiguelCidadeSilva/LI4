@@ -24,8 +24,9 @@
         {
             int cl = (int)menusNomes.Cliente;
             this.menus[cl] = new()
-            {
-                new Opcao("Consultar Feiras", "oi oi-list", "showfeiras/" + email),
+			{
+				new Opcao("Página inicial", "oi oi-home", "user/"  +email),
+				new Opcao("Consultar Feiras", "oi oi-list", "showfeiras/" + email),
                 new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
                 new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
                 new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
@@ -51,6 +52,7 @@
 			int fe = (int)menusNomes.Feirante;
 			this.menus[fe] = new()
 			{
+				new Opcao("Página inicial", "oi oi-home", "user/" +email ),
 				new Opcao("Os meus stands","oi oi-home","showstandsfeirante/" + email),
 				new Opcao("Inscrição numa feira", "oi oi-list", "showfeiras/" + email),
 				new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
@@ -66,9 +68,10 @@
         private void InicializeGeralNav()
         {
             int ge = (int)menusNomes.Geral;
-            this.menus[ge] = new List<Opcao> 
-            {
-            };
+            this.menus[ge] = new List<Opcao>
+			{
+
+			};
             int cl = (int)menusNomes.Cliente;
             int ad = (int)menusNomes.Admin;
             int fe = (int)menusNomes.Feirante;
