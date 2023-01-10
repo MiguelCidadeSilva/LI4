@@ -1,0 +1,83 @@
+﻿@page "/aprovecandidaturas"
+@using SourceCode.Feiras;
+@using SourceCode.WebClasses;
+@using SourceCode.Utilizadores;
+@using SourceCode;
+
+<div>
+	<h2>Aprovação de candidaturas</h2>
+	<div class="tableFixHead">
+		<table>
+			<thead>
+				<tr>
+					<th>Feira</th>
+					<th>Email</th>
+					<th>Feirante</th>
+					<th>Stand</th>
+					<th>Avaliação Feirante</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var candidatura in table.Content)
+				{
+					<tr class=@table.Cssclasses[candidatura.Item1] @onclick="() => table.SelectedRow(candidatura.Item1)">
+						<td> @feiras[candidatura.Item2.IdFeira].Nome</td>
+						<td> @users[candidatura.Item2.IdStand].Item1.Email</td>
+						<td> @users[candidatura.Item2.IdStand].Item1.Username</td>
+						<td> @candidatura.Item2.IdStand</td>
+						@if (@users[candidatura.Item2.IdStand].Item2.HasValue)
+						{
+							<td> @users[candidatura.Item2.IdStand].Item2</td>
+						}
+						else
+						{
+							<td> <b>-</b></td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<button class="buttonA buttonTable1" @onclick="AceitarCandidatura">Aceitar</button>
+		<button class="buttonA buttonTable2" @onclick="RecusarCandidatura">Recusar</button>
+	</div>
+</div>
+@code
+{
+	[Parameter, EditorRequired]
+	public string emailAdmin { get; set; }
+	private Table<Candidatura> table;
+	private Dictionary<int, Feira> feiras;
+	private Dictionary<int, (Utilizador, float?)> users;
+	private SistemaFeiras facade = SistemaFeiras.GetInstance();
+	private void InitializeData()
+	{
+		feiras = new();
+		users = new();
+		table = new Table<Candidatura>(facade.GetCandidaturasAnalise(emailAdmin));
+		table.Content.ForEach(c => feiras.Add(c.Item2.IdFeira, facade.GetFeira(c.Item2.IdFeira)));
+		table.Content.ForEach(c => users.Add(c.Item2.IdStand, (facade.GetUtilizador(facade.GetStand(c.Item2.IdStand).EmailDono), facade.GetAvaliacoesStands(c.Item2.IdStand))));
+	}
+	protected override void OnInitialized()
+	{
+		InitializeData();
+	}
+	private void AceitarCandidatura()
+	{
+		if(table.IdValid())
+		{
+			Candidatura c = table.GetElement();
+			facade.AprovarCandidatura(c.IdCandidatura);
+		}
+	}
+	private void RecusarCandidatura()
+	{
+		if (table.IdValid())
+		{
+			Candidatura c = table.GetElement();
+			facade.RemoveCandidatura(c.IdCandidatura);
+		}
+	}
+
+}

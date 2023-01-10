@@ -1,0 +1,51 @@
+﻿@page "/formfeira"
+@using SourceCode;
+@using SourceCode.Feiras;
+@inject NavigationManager navigation;
+
+
+<h2>Formulário feira</h2>
+<div>
+	<div>
+		<label><b>Nome</b></label>
+		<input type="text" class="tb" id="name" name="name" placeholder="Insira aqui o nome da feira" @bind-value="nome" readonly="readonly" />
+		<br />
+		<label><b>Categoria</b></label>
+		<input type="text" class="tb" id="cat" name="cat" placeholder="Insira aqui o nome da categoria da feira" @bind-value="categoria" readonly="readonly" />
+		<br />
+		<label><b>Data de Início</b></label>
+		<input type="text" class="tb" id="dinit" name="dinit" placeholder="Insira aqui a data de início" @bind-value="dataInit" readonly="readonly" />
+		<br />
+		<label><b>Data de Fim</b></label>
+		<input type="text" class="tb" id="dfim" name="dfim" placeholder="Insira aqui a data de fim" @bind-value="dataFim" readonly="readonly" />
+		<br />
+		<label><b>Preço candidatura</b></label>
+		<input type="text" class="tb" id="dfim" name="dfim"@bind-value="preco" readonly="readonly" />
+	</div>
+	<div>
+		<button class="buttonA" @onclick="Confirmar">Confirmar</button>
+	</div>
+</div>
+@code
+{
+	[Parameter,EditorRequired]
+	public string email { get; set; }
+	private string nome = "";
+	private string categoria = "";
+	private string dataInit = "";
+	private string dataFim = "";
+	private float preco = 0;
+	public void Confirmar()
+	{
+		// int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria
+		DateTime init;
+		if(DateTime.TryParse(dataInit, out init))
+		{
+			DateTime end;
+			if (DateTime.TryParse(dataFim, out end))
+				SistemaFeiras.GetInstance().AddFeira(new Feira(0, nome, init, end, preco, email, null), categoria);
+			else
+				SistemaFeiras.GetInstance().AddFeira(new Feira(0, nome, init, null, preco, email, null), categoria);
+		}
+	}
+}

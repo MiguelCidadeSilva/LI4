@@ -3,32 +3,23 @@
 @using SourceCode.Feiras;
 @inject NavigationManager navigation;
 
-@if(confirmou)
-{
-	<UserComponent email="@email"/>
-}
-else
-{
-	<h2>Candidatura para a feira</h2>
+
+<h2>Candidatura para a feira</h2>
+<div>
 	<div>
-		<div>
-			<label><b>Email</b></label>
-			<input type="text" class="tb" id="email" name="email" @bind-value="email" readonly="readonly" />
-		</div>
+		<label><b>Email</b></label>
+		<input type="text" class="tb" id="email" name="email" @bind-value="email" readonly="readonly" />
 		<br />
-		<div>
-			<label><b>Id Feira</b></label>
-			<input type="text" class="tb" id="feira" name="feira" @bind-value="nameFeira" readonly="readonly" />
-		</div>
-		<div>
-			<label><b>Id Stand</b></label>
-			<input type="text" class="tb" id="stand" name="stand" @bind-value="idStand" readonly="readonly" />
-		</div>
-		<div>
-			<button class="buttonA" @onclick="Confirmar">Confirmar</button>
-		</div>
+		<label><b>Id Feira</b></label>
+		<input type="text" class="tb" id="feira" name="feira" @bind-value="nameFeira" readonly="readonly" />
+		<br />
+		<label><b>Id Stand</b></label>
+		<input type="text" class="tb" id="stand" name="stand" @bind-value="idStand" readonly="readonly" />
 	</div>
-}
+	<div>
+		<button class="buttonA" @onclick="Confirmar">Confirmar</button>
+	</div>
+</div>
 		
 
 @code
@@ -52,6 +43,6 @@ else
 	{
 		//int idCandidatura, DateTime dataSubmissao, bool aprovacao, int idStand, int idFeira
 		SistemaFeiras.GetInstance().CriaCandidatura(new Candidatura(0,DateTime.Today,false,idStand,idFeira));
-		confirmou = true;
+		navigation.NavigateTo("/user/" + email);
 	}
 }

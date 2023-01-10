@@ -195,9 +195,32 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			leiloes.InsertLeilao(leilao);
 			stands.DiminuiStockProduto(leilao.Produto, leilao.Quantidade);
 		}
+
+		public void AddFeira(Feira feira, string cat)
+		{
+			if (cat.Length > 0)
+			{
+				int catID = AddCategoria(cat);
+				feira.Categoria = catID;
+			}
+			feira.IDFeira = feirasCounter;
+			feirasCounter++;
+			feiras.Insert(feira);
+		}
 		public void AprovarCandidatura(int candidatura)
 		{
+			Candidatura c = candidaturas.GetCandidatura(candidatura);
+			int idF = c.IdFeira;
+			int stand = c.IdStand;
+			feiras.InsertStandParticipante(stand, idF);
+		}
+		public void RemoveCandidatura(int candidatura)
+		{
 
+		}
+		public List<Candidatura> GetCandidaturasAnalise(string email)
+		{
+			return candidaturas.ListAllCandidatura().Where(c => feiras[c.IdFeira].CriadorEmail.Equals(email) && c.Aprovacao == false).ToList();
 		}
 		public void CriaCandidatura (Candidatura candidatura)
 		{
