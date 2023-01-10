@@ -176,9 +176,11 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 
 		}
-		public void CriaCandidatura (int stand, int feira)
+		public void CriaCandidatura (Candidatura candidatura)
 		{
-
+			candidatura.IdCandidatura = candidaturasCounter;
+			candidaturasCounter++;
+			candidaturas.InsertCandidatura(candidatura);
 		}
 
 		public List<Leilao> GetLeiloesFeiraStand(int idFeira, int idStand)

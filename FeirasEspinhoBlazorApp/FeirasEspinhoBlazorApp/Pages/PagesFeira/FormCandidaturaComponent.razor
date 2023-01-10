@@ -42,11 +42,16 @@ else
 	private string nameFeira;
 	private bool confirmou = false;
 
-	public void Confirmar()
+	protected override void OnInitialized()
 	{
 		Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
 		nameFeira = f.Nome;
-		SistemaFeiras.GetInstance().CriaCandidatura(idStand, idFeira);
+	}
+
+	public void Confirmar()
+	{
+		//int idCandidatura, DateTime dataSubmissao, bool aprovacao, int idStand, int idFeira
+		SistemaFeiras.GetInstance().CriaCandidatura(new Candidatura(0,DateTime.Today,false,idStand,idFeira));
 		confirmou = true;
 	}
 }
