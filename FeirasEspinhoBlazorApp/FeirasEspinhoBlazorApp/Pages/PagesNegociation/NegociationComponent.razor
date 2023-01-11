@@ -5,6 +5,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesStand;
+@inject SistemaFeiras facade;
 
 @if(negociar)
 {
@@ -62,17 +63,16 @@ else
 	protected override void OnInitialized()
 	{
 		negociation = this;
-		SistemaFeiras sistema = SistemaFeiras.GetInstance();
-		venda = sistema.GetVenda(idVenda);
+		venda = facade.GetVenda(idVenda);
 		if(venda.Negociacao.HasValue)
 		{
-			Utilizador user = sistema.GetUtilizador(email);
-			negociacao = sistema.GetNegociacao((int)venda.Negociacao);
+			Utilizador user = facade.GetUtilizador(email);
+			negociacao = facade.GetNegociacao((int)venda.Negociacao);
 			alterar = negociacao.Resposta;
 			if (user is Feirante)
 				alterar = !alterar;
 		}
-		stand = sistema.GetStand(venda.IdStand);
+		stand = facade.GetStand(venda.IdStand);
 	}
 	public NegociationComponent GetInstance()
 	{
@@ -80,12 +80,12 @@ else
 	}
 	private void Aceitar()
 	{
-		SistemaFeiras.GetInstance().RegistaSucesso(negociacao.IdNegociacao);
+		facade.RegistaSucesso(negociacao.IdNegociacao);
 		Voltar();
 	}
 	private void Recusar()
 	{
-		SistemaFeiras.GetInstance().RegistaInsucesso(negociacao.IdNegociacao); 
+		facade.RegistaInsucesso(negociacao.IdNegociacao); 
 		Voltar();
 	}
 	private void Negociar()

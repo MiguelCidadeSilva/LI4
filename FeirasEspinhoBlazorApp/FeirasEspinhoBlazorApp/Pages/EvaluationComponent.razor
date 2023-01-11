@@ -5,6 +5,7 @@
 @using SourceCode.Utilizadores;
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
+@inject SistemaFeiras facade;
 
 <PageTitle>Avaliar</PageTitle>
 <div>
@@ -43,9 +44,9 @@
 	protected override async void OnInitialized()
 	{
 		if (avaliar == 0)
-			name += "à feira: " + SistemaFeiras.GetInstance().GetFeira(idFeira).Nome + "?";
+			name += "à feira: " + facade.GetFeira(idFeira).Nome + "?";
 		else
-			name += "ao feirante: " + SistemaFeiras.GetInstance().GetUtilizador(feirante).Username + "?";
+			name += "ao feirante: " + facade.GetUtilizador(feirante).Username + "?";
 		codigosErros[1] = "Nenhuma Avaliação selecionada";
 	}
 	public void Avalia(int avaliacao)
@@ -57,9 +58,9 @@
 		if(avaliacao != -1)
 		{
 			if (avaliar == 0)
-				SistemaFeiras.GetInstance().AddAvaliacaoFeira(email,idFeira,avaliacao);
+				facade.AddAvaliacaoFeira(email,idFeira,avaliacao);
 			else
-				SistemaFeiras.GetInstance().AddAvaliacaoFeirante(email, feirante, avaliacao);
+				facade.AddAvaliacaoFeirante(email, feirante, avaliacao);
 			Passar();
 		}
 	}

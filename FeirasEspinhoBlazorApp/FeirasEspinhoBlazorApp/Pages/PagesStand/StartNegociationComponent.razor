@@ -2,6 +2,7 @@
 @using SourceCode;
 @using SourceCode.Vendas;
 @using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
+@inject SistemaFeiras facade;
 
 <h2>Negociação</h2>
 <br />
@@ -34,13 +35,13 @@
 	{
 		if(returnPage == 0)
 		{
-			SistemaFeiras.GetInstance().AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, valorapagar, false, false));
+			facade.AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, valorapagar, false, false));
 			ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
 			showStandComponent.ShowStand("Negociação registada");
 		}
 		else
 		{
-			SistemaFeiras.GetInstance().RegistaNovoPreco((int) venda.Negociacao, valorapagar);
+			facade.RegistaNovoPreco((int) venda.Negociacao, valorapagar);
 			ShowNegociacoesComponent.GetInstance().GetBack("Preço Registado");
 		}
 

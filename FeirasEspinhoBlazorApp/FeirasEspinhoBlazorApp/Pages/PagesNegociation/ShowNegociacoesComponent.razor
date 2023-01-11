@@ -2,6 +2,7 @@
 @using SourceCode.Vendas;
 @using SourceCode.WebClasses;
 @using SourceCode;
+@inject SistemaFeiras facade;
 
 <PageTitle>Negociações</PageTitle>
 @if(showNegociation)
@@ -61,8 +62,8 @@ else
 	private void InitializeData()
 	{
 		dict.Clear();
-		List<Venda> negociacaos = SistemaFeiras.GetInstance().GetNegociacoes(email);
-		negociacaos.ForEach(v => dict.Add(v.IdVenda, SistemaFeiras.GetInstance().GetNegociacao(v.Negociacao.Value)));
+		List<Venda> negociacaos = facade.GetNegociacoes(email);
+		negociacaos.ForEach(v => dict.Add(v.IdVenda, facade.GetNegociacao(v.Negociacao.Value)));
 		table = new Table<Venda>(negociacaos);
 	}
 	protected override void OnInitialized()

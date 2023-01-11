@@ -1,6 +1,7 @@
 ﻿@page "/notifications/{email}"
 @using SourceCode;
 @using SourceCode.WebClasses;
+@inject SistemaFeiras facade;
 
 <PageTitle>Notificações</PageTitle>
 
@@ -42,7 +43,7 @@
 	private Table<Notificacao> tabelContent;
 	protected override void OnInitialized()
 	{
-		List<Notificacao> notificacaos = SistemaFeiras.GetInstance().GetNotificacaos(email);
+		List<Notificacao> notificacaos = facade.GetNotificacaos(email);
 		this.tabelContent = new Table<Notificacao>(notificacaos);
 	}
 }

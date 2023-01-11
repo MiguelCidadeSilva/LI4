@@ -2,7 +2,8 @@
 @using SourceCode;
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
-@inject NavigationManager navigationManager
+@inject NavigationManager navigationManager;
+@inject SistemaFeiras facade;
 
 
 @if(formProduto)
@@ -89,7 +90,7 @@ else
 		// METER CATEGORIA DIREITA
 		// public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
 		Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
-		SistemaFeiras.GetInstance().AddStand(stand,categoria, impostos.Values.ToList());
+		facade.AddStand(stand,categoria, impostos.Values.ToList());
 		ShowStandsFeiranteComponent.GetInstance().GetBack();
 	}
 	public void AdicionaProduto(Produto p, float imposto)

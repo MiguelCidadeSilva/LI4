@@ -1,5 +1,6 @@
 ﻿@using SourceCode.Stands;
 @using SourceCode;
+@inject SistemaFeiras facade;
 
 <h2>Formulário Produto</h2>
 
@@ -45,7 +46,6 @@
 	private float preco = 0f;
 	private string categoria = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	public void AdicionarProduto()
 	{
 		if (page == 0)

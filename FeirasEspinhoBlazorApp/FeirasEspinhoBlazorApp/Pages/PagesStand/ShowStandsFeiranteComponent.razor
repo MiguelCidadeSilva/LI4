@@ -2,6 +2,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
 @using SourceCode;
+@inject SistemaFeiras facade;
 
 <PageTitle>Seus Stands</PageTitle>
 @if(editStand)
@@ -65,7 +66,6 @@ else
 	private Table<Stand> tabelContent;
 	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private void CarregaDados()
 	{
 		List<Stand> stands = facade.GetStandFeirante(email);

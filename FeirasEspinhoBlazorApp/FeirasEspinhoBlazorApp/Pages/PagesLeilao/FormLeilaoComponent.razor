@@ -4,6 +4,7 @@
 @using SourceCode;
 @using SourceCode.WebClasses;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
+@inject SistemaFeiras facade;
 
 <div>
 	<h2>Formulário Leilão</h2>
@@ -62,7 +63,7 @@
 	private int lp = -1;
 	protected override void OnInitialized()
 	{
-		Stand stand = SistemaFeiras.GetInstance().GetStand(idStand);
+		Stand stand = facade.GetStand(idStand);
 		List<Produto> conteudo = stand.Produtos;
 		this.tabelContent = new Table<Produto>(conteudo);
 	}
@@ -73,7 +74,7 @@
 		{
 			Produto p = tabelContent.GetElement();
 			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, p.Stand, idStand, idFeira, 0);
-			SistemaFeiras.GetInstance().AddLeilao(l);
+			facade.AddLeilao(l);
 			ShowLeiloesComponent.GetInstance().GetBack();
 		}
 	}

@@ -1,10 +1,12 @@
 ﻿@page "/login"
-@inject NavigationManager navigationManager
+@inject NavigationManager navigationManager;
+@inject SistemaFeiras facade;
 @using SourceCode.WebClasses;
 @using SourceCode.Utilizadores;
 @using Data;
 @using SourceCode;
 @using System.Text.Json;
+
 
 <PageTitle>Página de autenticação</PageTitle>
 
@@ -33,7 +35,7 @@ else
 			</div>
 			<br />
 			<div>
-				<button class="buttonA" @onclick="verificaCredencais">Autenticar</button>
+				<button class="buttonA" @onclick="Login">Autenticar</button>
 			</div>
 		</main>
 	</div>
@@ -69,18 +71,18 @@ else
 		this.erro = 0;
 		StateHasChanged();
 	}
-	private void verificaCredencais()
+	private async void VerificaCredencais()
 	{
+
 		if(email.Length == 0 || password.Length == 0)
 		{
 			this.erro = 2;
 		}
 		else 
 		{
-			SistemaFeiras sistemaFeiras = SistemaFeiras.GetInstance();
 			try
 			{
-				Utilizador? user = sistemaFeiras.Login(email, password);
+				Utilizador? user = facade.Login(email, password);
 				if(user != null)
 				{
 					switch (user.GetType().Name)
@@ -100,7 +102,8 @@ else
 					}
 					NavMenu.GetInstance().show = true;
 					NavMenu.GetInstance().Refresh();
-					navigationManager.NavigateTo("user/" + email);
+					loginSucess = true;
+					StateHasChanged();
 				}
 			}
 			catch (Exception e)
@@ -109,6 +112,11 @@ else
 				codigosErro[3] = e.Message;
 			}
 		}
+		return;
+	}
+	public void Login()
+	{
+		VerificaCredencais();
 	}
 	public void Logout()
 	{

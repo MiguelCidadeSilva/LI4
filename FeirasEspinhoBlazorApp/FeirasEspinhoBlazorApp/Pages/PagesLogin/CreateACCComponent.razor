@@ -3,6 +3,7 @@
 @using SourceCode;
 @using Data;
 @inject NavigationManager navigationManager;
+@inject SistemaFeiras facade;
 
 <PageTitle>Página de criação de conta</PageTitle>
 
@@ -159,7 +160,7 @@
 			{
 				try
 				{
-					SistemaFeiras.GetInstance().Registo(utilizador);
+					facade.Registo(utilizador);
 					this.sucess = true;
 					this.LimpaCampos();
 				}

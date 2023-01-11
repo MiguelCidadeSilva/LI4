@@ -5,6 +5,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
+@inject SistemaFeiras facade;
 
 <PageTitle>Leilões</PageTitle>
 
@@ -85,7 +86,6 @@
 	private Dictionary<int, string> nomesDonos = new Dictionary<int, string>();
 	private Dictionary<int, string> nomesProdutos = new Dictionary<int, string>();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private static ShowLeiloesComponent instance;
 	private bool showLeilao;
 	private bool isFeirante = false;

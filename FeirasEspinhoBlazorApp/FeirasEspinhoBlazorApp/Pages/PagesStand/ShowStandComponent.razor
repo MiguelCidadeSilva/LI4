@@ -6,6 +6,7 @@
 @using SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
 @using System.Text.Json;
+@inject SistemaFeiras facade;
 
 <PageTitle>Stand</PageTitle>
 
@@ -131,7 +132,6 @@ else
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, int> quantidades = new Dictionary<int, int>();
 	private static ShowStandComponent standComponent;
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	protected override void OnParametersSet()
 	{
 		if(!int.TryParse(erroStr, out erro))

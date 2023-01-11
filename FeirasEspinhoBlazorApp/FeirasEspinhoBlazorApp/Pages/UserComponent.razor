@@ -2,8 +2,8 @@
 @using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 @using FeirasEspinhoBlazorApp.SourceCode;
 @using FeirasEspinhoBlazorApp.Pages.PagesFeira;
-@using System.Text.Json;
-@inject NavigationManager navigationManager
+@inject NavigationManager navigationManager;
+@inject SistemaFeiras facade;
 
 <PageTitle>Página de utilizador</PageTitle>
 
@@ -16,7 +16,6 @@
 	private Utilizador user;
 	protected override void OnInitialized()
 	{
-		user = SistemaFeiras.GetInstance().GetUtilizador(email);
-		//user = JsonSerializer.Deserialize<Utilizador>(userStr);
+		user = facade.GetUtilizador(email);
 	}
 }

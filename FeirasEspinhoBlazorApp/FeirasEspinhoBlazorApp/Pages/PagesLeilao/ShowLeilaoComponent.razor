@@ -3,6 +3,7 @@
 @using SourceCode.Stands;
 @using SourceCode;
 @using SourceCode.Utilizadores;
+@inject SistemaFeiras facade;
 
 <PageTitle>Leilão</PageTitle>
 <h2>Bem vindo ao Leilão</h2>
@@ -53,9 +54,9 @@
 	{
 		if (leilao.ValormMaximo.HasValue)
 			valorMax = leilao.ValormMaximo.Value.ToString();
-		isClient = SistemaFeiras.GetInstance().GetUtilizador(email) is Cliente;
+		isClient = facade.GetUtilizador(email) is Cliente;
 		showLeilaoComponent = this;
-		produto = SistemaFeiras.GetInstance().GetProduto(leilao.Produto);
+		produto = facade.GetProduto(leilao.Produto);
 		quantidade = leilao.Quantidade;
 		ultimaLicitação = leilao.BidAtual;
 	}
@@ -67,7 +68,7 @@
 	{
 		try
 		{
-			SistemaFeiras.GetInstance().Licitar(leilao.Id, email, valorLicitação);
+			facade.Licitar(leilao.Id, email, valorLicitação);
 			ShowLeiloesComponent.GetInstance().GetBack("Licitação registada");
 		}
 		catch (Exception e)
