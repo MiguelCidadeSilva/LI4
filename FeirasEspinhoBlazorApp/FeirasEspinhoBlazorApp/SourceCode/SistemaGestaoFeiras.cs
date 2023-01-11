@@ -11,7 +11,6 @@ using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FeirasEspinhoBlazorApp.SourceCode
 {

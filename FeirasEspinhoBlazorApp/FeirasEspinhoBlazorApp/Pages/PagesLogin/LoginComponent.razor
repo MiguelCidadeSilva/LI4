@@ -10,41 +10,34 @@
 
 <PageTitle>Página de autenticação</PageTitle>
 
-@if (loginSucess)
-{
-	<UserComponent email="@email"/>
-}
-else
-{
-	<h1>Feiras Virtuais de Espinho</h1>
-	<br />
-	<div class="page">
-		<main>
-			@if (erro != 0)
-			{
-				<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
-			}
-			<div>
-				<label><b>Email</b></label>
-				<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
-			</div>
-			<br />
-			<div>
-				<label> <b>Palavra passe</b> </label>
-				<input type="password" class="tb" id="password" name="password" @bind-value="password" />
-			</div>
-			<br />
-			<div>
-				<button class="buttonA" @onclick="Login">Autenticar</button>
-			</div>
-		</main>
-	</div>
-}
+
+<h1>Feiras Virtuais de Espinho</h1>
+<br />
+<div class="page">
+	<main>
+		@if (erro != 0)
+		{
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
+		}
+		<div>
+			<label><b>Email</b></label>
+			<input type="text" class="tb" id="email" name="email" placeholder="Insira o seu email" @bind-value="email" />
+		</div>
+		<br />
+		<div>
+			<label> <b>Palavra passe</b> </label>
+			<input type="password" class="tb" id="password" name="password" @bind-value="password" />
+		</div>
+		<br />
+		<div>
+			<button class="buttonA" @onclick="Login">Autenticar</button>
+		</div>
+	</main>
+</div>
 
 
 @code 
 {
-	private bool loginSucess = false;
 	private int erro = 0;
 	private string email = "";
 	private string password = "";
@@ -102,7 +95,7 @@ else
 					}
 					NavMenu.GetInstance().show = true;
 					NavMenu.GetInstance().Refresh();
-					loginSucess = true;
+					navigationManager.NavigateTo("user/" + email);
 					StateHasChanged();
 				}
 			}
