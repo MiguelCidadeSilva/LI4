@@ -654,7 +654,43 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
+        public int GetNextIdNotifCliente()
+        {
+            int r = 0;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(id)+1,0) AS MaiorID FROM [NotificacaoCliente]", connection);
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    r = response.GetFieldValue<int>("MaiorID");
+                }
+                connection.Close();
+                return r;
+            }
+        }
 
+        public int GetNextIdNotifFeirante()
+        {
+            int r = 0;
+            using SqlConnection connection = new(ConnectionDAO.connectionString);
+            using SqlCommand command = new("SELECT  ISNULL(MAX(id)+1,0) AS MaiorID FROM [NotificacaoFeirante]", connection);
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+                SqlDataReader response = command.ExecuteReader();
+                if (response.HasRows)
+                {
+                    response.Read();
+                    r = response.GetFieldValue<int>("MaiorID");
+                }
+                connection.Close();
+                return r;
+            }
+        }
 
     }
 }
