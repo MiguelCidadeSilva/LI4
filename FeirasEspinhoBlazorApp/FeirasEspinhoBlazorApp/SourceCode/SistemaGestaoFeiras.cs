@@ -64,7 +64,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			categoriaCounter = categorias.GetNextIdCategoria();
 			subCategoriaCounter = categorias.GetNextSubCategoria();
 			candidaturasCounter = candidaturas.GetNextId();
-			notificacaoCounter = 0;
+			notificacaoCounter = users.GetNextIdNotifCliente+users.GetNextIdNotifFeirante;
 
         }
 
