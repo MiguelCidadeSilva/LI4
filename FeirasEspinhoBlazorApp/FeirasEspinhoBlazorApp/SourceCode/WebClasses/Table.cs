@@ -22,7 +22,13 @@
 			content = new List<(Tipo, float?)>(conteudo);
 			cssclasses = new Dictionary<int, string>();
 			defineCss();
-			// buscar feiras às base de dados
+		}
+		public Table(List<(Tipo, int)> conteudo)
+		{
+			content = new();
+			conteudo.ForEach(c => content.Add((c.Item1, (float)c.Item2)));
+			cssclasses = new Dictionary<int, string>();
+			defineCss();
 		}
 
 		public Table(List<Tipo> conteudo)
@@ -31,7 +37,6 @@
 			conteudo.ForEach(c => content.Add((c,null)));
 			cssclasses = new Dictionary<int, string>();
 			defineCss();
-			// buscar feiras às base de dados
 		}
 
 		public List<(int, Tipo, float?)> Content 

@@ -70,7 +70,8 @@
             this.menus[ad] = new()
             {
                 new Opcao("Página inicial", "oi oi-home", "user/" +email ),
-                new Opcao("Criar Feira","oi oi-briefcase","formfeira/" + email),
+				new Opcao("Minhas Feiras", "oi oi-briefcase", "showfeiras/" +email ),
+				new Opcao("Criar Feira","oi oi-briefcase","formfeira/" + email),
                 new Opcao("Aprovar Candidatura", "oi oi-list", "aprovecandidaturas/" + email),
 				new Opcao("Criar Admin", "oi oi-plus", "createacc/" + "00")
 			};

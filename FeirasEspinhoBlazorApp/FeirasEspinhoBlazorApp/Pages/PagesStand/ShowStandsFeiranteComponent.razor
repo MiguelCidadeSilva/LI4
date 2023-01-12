@@ -2,6 +2,7 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Stands;
 @using SourceCode;
+@using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
 @inject SistemaFeiras facade;
 
 <PageTitle>Seus Stands</PageTitle>
@@ -12,6 +13,10 @@
 else if (formStand)
 {
 	<FormStandComponent emailFeirante="@email"/>
+}
+else if (showVendas)
+{
+	<ShowVendasComponent idFeira="-1" idStand="idStand"/>
 }
 else
 {
@@ -31,17 +36,17 @@ else
 					@foreach (var stand in tabelContent.Content)
 					{
 						<tr class=@tabelContent.Cssclasses[stand.Item1] @onclick="() => tabelContent.SelectedRow(stand.Item1)">
-								<td> @stand.Item2.IdStand</td>
-								<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
-								<td> @categoria[stand.Item2.IdStand].Name</td>
-								@if (stand.Item3.HasValue)
-								{
-									<td> @stand.Item3.Value</td>
-								}
-								else
-								{
-								<td><b>-</b></td>
-								}
+							<td> @stand.Item2.IdStand</td>
+							<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
+							<td> @categoria[stand.Item2.IdStand].Name</td>
+							@if (stand.Item3.HasValue)
+							{
+								<td> @stand.Item3.Value</td>
+							}
+							else
+							{
+							<td><b>-</b></td>
+							}
 						</tr>
 					}
 				</tbody>
@@ -51,6 +56,7 @@ else
 		<div>
 			<button class="buttonA buttonTable1" @onclick="CriarStand">Criar Stand</button>
 			<button class="buttonA buttonTable2" @onclick="EditarStand">Editar Stand</button>
+			<button class="buttonA" @onclick="ConsultarVendas">Consultar Vendas Stand</button>
 		</div>
 	</div>
 }
@@ -62,6 +68,7 @@ else
 	private static ShowStandsFeiranteComponent showStandsFeirante;
 	private bool formStand = false;
 	private bool editStand = false;
+	private bool showVendas = false;
 	private int idStand;
 	private Table<Stand> tabelContent;
 	private Dictionary<int, Categoria?> categoria = new();
@@ -91,18 +98,31 @@ else
 			idStand = tabelContent.GetElement().IdStand;
 			formStand = false;
 			editStand = true;
+			showVendas = false;
 		}
 	}
 	public void CriarStand()
 	{
 		formStand = true;
 		editStand = false;
+		showVendas = false;
 	}
 	public void GetBack()
 	{
 		formStand = false;
 		editStand = false;
+		showVendas = false;
 		CarregaDados();
 		StateHasChanged();
+	}
+	public void ConsultarVendas()
+	{
+		if (tabelContent.IdValid())
+		{
+			idStand = tabelContent.GetElement().IdStand;
+			showVendas = true;
+			formStand = false;
+			editStand = false;
+		}
 	}
 }

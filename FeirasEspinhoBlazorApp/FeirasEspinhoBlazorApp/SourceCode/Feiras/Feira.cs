@@ -18,7 +18,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
         private Dictionary <string, List<Stand>> listaStands;
         private Dictionary<string, List<Leilao>> listaLeiloes;
         private string nome;
-        public int IDFeira
+		private int consultantes;
+		public int IDFeira
         {
             get { return iDFeira; }
             set { iDFeira = value; }
@@ -63,7 +64,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             get { return listaLeiloes; }
             set { listaLeiloes = value; }
         }
-		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria)
+
+		public int Consultantes { get => consultantes; set => consultantes = value; }
+
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria, int consultantes)
 		{
 			IDFeira = idFeira;
 			Nome = nome;
@@ -74,9 +78,10 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
 			Categoria = categoria;
 			listaStands = new Dictionary<string, List<Stand>>();
 			ListaLeiloes = new Dictionary<string, List<Leilao>>();
+			this.consultantes = consultantes;
 		}
 
-		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria, List<Stand> stands, List<Leilao> leiloes)
+		public Feira(int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria, int consultantes, List<Stand> stands, List<Leilao> leiloes)
         {
             IDFeira = idFeira;
             Nome = nome;
@@ -85,7 +90,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             PrecoCandidatura = precoCand;
             CriadorEmail = criadorEmail;
             Categoria = categoria;
-            listaStands = new Dictionary<string, List<Stand>>();
+			this.consultantes = consultantes;
+			listaStands = new Dictionary<string, List<Stand>>();
             ListaLeiloes = new Dictionary<string, List<Leilao>>();
             foreach(Stand s in stands)
             {
@@ -114,6 +120,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode.Feiras
             Categoria = f.Categoria;
             ListaStands = f.ListaStands;
             ListaLeiloes = f.ListaLeiloes;
+            Consultantes = f.Consultantes;
         }
 
 

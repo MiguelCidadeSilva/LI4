@@ -37,7 +37,7 @@ namespace FeirasEspinhoBlazorApp.Data
         public void Insert(Feira feira)
         {
             using SqlConnection connection = new(ConnectionDAO.connectionString);
-            using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria)", connection);
+            using SqlCommand command = new("INSERT INTO [dbo].[Feira] VALUES (@idFeira, @nome, @dataInicio, @dataFim, @precoCandidatura, @criadorEmail, @categoria, 0)", connection);
             {
                 connection.Open();
                 command.Parameters.AddWithValue("@idFeira", feira.IDFeira);
@@ -82,8 +82,9 @@ namespace FeirasEspinhoBlazorApp.Data
 					if (!response.IsDBNull("categoria"))
 						categoria = response.GetInt32("categoria");
 					List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(id);
-                       List<Stand> standsdafeira = StandsDaFeira(id);
-                       return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria,standsdafeira,leiloesdafeira);
+                    List<Stand> standsdafeira = StandsDaFeira(id);
+                    int consultantes = response.GetInt32("consultantes");
+					return new Feira(id, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria, consultantes,standsdafeira,leiloesdafeira);
                 }
                 connection.Close();
             }
@@ -116,7 +117,8 @@ namespace FeirasEspinhoBlazorApp.Data
                             categoria = response.GetInt32("categoria");
                         List<Leilao> leiloesdafeira = LeilaoDAO.GetInstance().ListLeiloesFeira(idFeira);
                         List<Stand> standsdafeira = StandsDaFeira(idFeira);
-                        r.Add(new Feira(idFeira, nome, dataI, dataF, precoCand, criadorEmail, categoria, standsdafeira, leiloesdafeira));
+						int consultantes = response.GetInt32("consultantes");
+						r.Add(new Feira(idFeira, nome, dataI, dataF, precoCand, criadorEmail, categoria,consultantes, standsdafeira, leiloesdafeira));
                     }
                 }
                 connection.Close();
@@ -128,20 +130,20 @@ namespace FeirasEspinhoBlazorApp.Data
 		{
 			using (SqlConnection connection = new SqlConnection(ConnectionDAO.connectionString))
 			{
-				string sql = @"INSERT INTO Feira (idFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria)
+				string sql = @"INSERT INTO Feira (idFeira, nome, dataInicio, dataFim, precoCandidatura, criadorEmail, categoria, consultantes)
                         VALUES
-                            (1, 'Feira de frutas', '2022-12-16', '2022-12-18', 10.00, 'isaura@hotmail.com', 1),
-                            (2, 'Feira de roupas', '2022-12-19', '2022-12-21', 15.00, 'cristiano@hotmail.com', 2),
-                            (3, 'Feira de brinquedos', '2022-12-22', '2022-12-24', 20.00, 'eduarda@hotmail.com', 3),
-                            (4, 'Feira de eletrônicos', '2022-12-25', '2022-12-27', 25.00, 'isaura@hotmail.com', 4),
-                            (5, 'Feira de livros', '2022-12-28', '2022-12-30', 30.00, 'marco@hotmail.com', 5),
-                            (6, 'Feira de móveis', '2022-12-31', '2023-01-02', 35.00, 'eduarda@hotmail.com', 6),
-                            (7, 'Feira de cosméticos', '2023-01-03', '2023-01-05', 40.00, 'rui@hotmail.com', 7),
-                            (8, 'Feira de ferramentas', '2023-01-06', '2023-01-08', 45.00, 'evandro@hotmail.com', 8),
-                            (9, 'Feira de desporto', '2023-01-09', '2023-01-11', 50.00, 'diogo@hotmail.com', 9),
-                            (10, 'Feira de jardinagem', '2023-01-12', '2023-01-14', 55.00, 'filipa@hotmail.com', 10),
-                            (11, 'Feira de jardinagem', '2023-01-12',  null, 60.00, 'manuel@hotmail.com', null),
-                            (12, 'Feira de jardinagem', '2023-01-12', '2023-02-20', 65.00, 'angelico@hotmail.com', null)";
+                            (1, 'Feira de frutas', '2022-12-16', '2022-12-18', 10.00, 'isaura@hotmail.com', 1,10),
+                            (2, 'Feira de roupas', '2022-12-19', '2022-12-21', 15.00, 'cristiano@hotmail.com', 2,30),
+                            (3, 'Feira de brinquedos', '2022-12-22', '2022-12-24', 20.00, 'eduarda@hotmail.com', 3,60),
+                            (4, 'Feira de eletrônicos', '2022-12-25', '2022-12-27', 25.00, 'isaura@hotmail.com', 4,70),
+                            (5, 'Feira de livros', '2022-12-28', '2022-12-30', 30.00, 'marco@hotmail.com', 5,10),
+                            (6, 'Feira de móveis', '2022-12-31', '2023-01-02', 35.00, 'eduarda@hotmail.com', 6,10),
+                            (7, 'Feira de cosméticos', '2023-01-03', '2023-01-05', 40.00, 'rui@hotmail.com', 7,10),
+                            (8, 'Feira de ferramentas', '2023-01-06', '2023-01-08', 45.00, 'evandro@hotmail.com', 8,50),
+                            (9, 'Feira de desporto', '2023-01-09', '2023-01-11', 50.00, 'diogo@hotmail.com', 9,10),
+                            (10, 'Feira de jardinagem', '2023-01-12', '2023-01-14', 55.00, 'filipa@hotmail.com', 10,40),
+                            (11, 'Feira de jardinagem', '2023-01-12',  null, 60.00, 'manuel@hotmail.com', null,20),
+                            (12, 'Feira de jardinagem', '2023-01-12', '2023-02-20', 65.00, 'angelico@hotmail.com', null,10)";
 				SqlCommand command = new(sql, connection);
 				connection.Open();
 				command.ExecuteNonQuery();
@@ -245,5 +247,38 @@ namespace FeirasEspinhoBlazorApp.Data
                 return r;
             }
         }
-    }
+		public int GetConsultantes(int idFeira)
+		{
+			int r = 0;
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("SELECT * FROM [Feira] WHERE idFeira = (@idFeira)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@idFeira", idFeira);
+				command.ExecuteNonQuery();
+				SqlDataReader response = command.ExecuteReader();
+				if (response.HasRows)
+				{
+					response.Read();
+					r = response.GetFieldValue<int>("consultantes");
+					return r;
+				}
+				connection.Close();
+			}
+			return r;
+		}
+		public void AumentaConsultantesNaFeira(int idFeira)
+		{
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("UPDATE [Feira] SET consultantes = (@consultantes) WHERE idFeira = (@idFeira)", connection))
+			{
+				connection.Open();
+				int consultantes = GetConsultantes(idFeira);
+				command.Parameters.AddWithValue("@consultantes", consultantes + 1);
+				command.Parameters.AddWithValue("@idFeira", idFeira);
+				command.ExecuteNonQuery();
+				connection.Close();
+			}
+		}
+	}
 }

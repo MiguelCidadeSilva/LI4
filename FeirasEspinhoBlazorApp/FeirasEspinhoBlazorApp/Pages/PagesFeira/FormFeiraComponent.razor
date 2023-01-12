@@ -2,6 +2,7 @@
 @using SourceCode;
 @using SourceCode.Feiras;
 @inject NavigationManager navigation;
+@inject SistemaFeiras facade;
 
 
 <h2>Formulário feira</h2>
@@ -43,9 +44,9 @@
 		{
 			DateTime end;
 			if (DateTime.TryParse(dataFim, out end))
-				SistemaFeiras.GetInstance().AddFeira(new Feira(0, nome, init, end, preco, email, null), categoria);
+				facade.AddFeira(new Feira(0, nome, init, end, preco, email, null, 0), categoria);
 			else
-				SistemaFeiras.GetInstance().AddFeira(new Feira(0, nome, init, null, preco, email, null), categoria);
+				facade.AddFeira(new Feira(0, nome, init, null, preco, email, null, 0), categoria);
 		}
 	}
 }

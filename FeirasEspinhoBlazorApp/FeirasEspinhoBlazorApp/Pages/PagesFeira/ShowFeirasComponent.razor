@@ -3,7 +3,7 @@
 @using SourceCode.Feiras;
 @using SourceCode;
 @using SourceCode.Utilizadores;
-@using System.Text.Json;
+@using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
 
@@ -20,6 +20,10 @@ else if (showLeilao)
 else if (showAvaliacao)
 {
 	<EvaluationComponent idFeira="@feiraSelecionada" avaliar="0" feirante="" email="@email"/>
+}
+else if (showVenda)
+{
+	<ShowVendasComponent idFeira="@feiraSelecionada" idStand="-1"/>
 }
 else
 {
@@ -39,12 +43,13 @@ else
 						<th>Data Início</th>
 						<th>Data Fim</th>
 						<th>Categoria</th>
-						@if (!type)
+						@if (type2)
 						{
 							<th>Preço Candidatura</th>
 						}
 						else
 						{
+							<th>Consultantes</th>
 							<th>Avaliação</th>
 						}
 					</tr>
@@ -72,12 +77,13 @@ else
 							{
 								<td><b>-</b></td>
 							}
-							@if (!type)
+							@if (type2)
 							{
 								<td>@feira.Item2.PrecoCandidatura</td>
 							}
 							else
 							{
+								<td> @feira.Item2.Consultantes</td>
 								@if (feira.Item3.HasValue)
 								{
 									<td> @feira.Item3</td>
@@ -99,9 +105,13 @@ else
 				<button class="buttonA buttonTable1" @onclick="ConsultarStands">Consultar Stands</button>
 				<button class="buttonA buttonTable2" @onclick="ConsultarLeiloes">Consultar Leilões</button>
 			}
-			else
+			else if (type2)
 			{
 				<button class="buttonA" @onclick="InscreverFeira">Inscrever</button>
+			}
+			else
+			{
+				<button class="buttonA" @onclick="ConsultarVendas">Consultar Vendas</button>
 			}
 		</div>
 	</div>
@@ -112,6 +122,7 @@ else
 	[Parameter, EditorRequired]
 	public string email { get; set; }
 	private bool type;
+	private bool type2;
 	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private Table<Feira> tabelContent;
 	private int erro = 0;
@@ -122,6 +133,7 @@ else
 	private bool showFeira = false;
 	private bool showLeilao = false;
 	private bool showForm = false;
+	private bool showVenda = false;
 	private int feiraSelecionada = 0;
 	private void InitializedContent()
 	{
@@ -129,10 +141,13 @@ else
 		showFeiras = this;
 		List<Feira> feiras;
 		type = utilizador is Cliente;
+		type2 = utilizador is Feirante;
 		if (type)
 			feiras = facade.GetFeiras();
-		else
+		else if (type2)
 			feiras = facade.FeirasNotStarted();
+		else
+			feiras = facade.GetFeirasAdmin(email);
 		if(categoria.Count() == 0)
 			feiras.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
 		List<(Feira, float?)> conteudo = new();
@@ -160,6 +175,7 @@ else
 			erro = 0;
 			Feira feira = tabelContent.GetElement();
 			feiraSelecionada = feira.IDFeira;
+			facade.IncrementConsultantesFeira(feiraSelecionada);
 			showFeira = true;
 			showLeilao = false;
 		}
@@ -202,6 +218,7 @@ else
 		showLeilao = false;
 		showFeira = false;
 		showForm = false;
+		showVenda = false;
 		tabelContent.Unselect();
 		StateHasChanged();
 	}
@@ -212,7 +229,16 @@ else
 		showLeilao = false;
 		showFeira = false;
 		showForm = false;
+		showVenda = false;
 		erro = 0;
 		StateHasChanged();
+	}
+	public void ConsultarVendas()
+	{
+		if(tabelContent.IdValid())
+		{
+			feiraSelecionada = tabelContent.GetElement().IDFeira;
+			showVenda = true;
+		}
 	}
 }

@@ -1,0 +1,107 @@
+﻿@page "/showvendas"
+@using SourceCode.WebClasses;
+@using SourceCode.Vendas;
+@using SourceCode;
+@using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
+@using FeirasEspinhoBlazorApp.Pages.PagesStand;
+@using FeirasEspinhoBlazorApp.Pages.PagesFeira;
+@inject SistemaFeiras facade;
+
+@if(showProds)
+{
+	<ShowVendaComponent idVenda="idVenda"/>
+}
+else
+{	
+	<div>
+		<h2>Vendas</h2>
+		<div class="tableFixHead">
+			<table>
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Stand</th>
+						<th>Cliente</th>
+						<th>Data Venda</th>
+						<th>Valor da venda</th>
+						<th>Negociação</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var venda in content.Content)
+					{
+						<tr class=@content.Cssclasses[venda.Item1] @onclick="() => content.SelectedRow(venda.Item1)">
+							<td> @venda.Item2.IdVenda</td>
+							<td> @venda.Item2.IdStand</td>
+							<td> @venda.Item2.EmailCliente</td>
+							<td> @venda.Item2.Data.ToShortDateString()</td>
+							<td> @venda.Item2.Preco</td>
+							@if(venda.Item2.Negociacao.HasValue)
+							{
+								<td> @venda.Item2.Negociacao.Value</td>
+							}
+							else
+							{
+								<td><b>-</b></td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<button class="buttonA" @onclick="ConsultarVenda">Consultar Venda</button>
+			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+		</div>
+	</div>
+}
+	
+@code 
+{
+	[Parameter, EditorRequired]
+	public int idStand { get; set; }
+	[Parameter, EditorRequired]
+	public int idFeira { get; set; }
+	private Table<Venda> content;
+	private bool showProds = false;
+	private int idVenda;
+	private static ShowVendasComponent component;
+	protected override void OnInitialized()
+	{
+		component = this;
+		if(idFeira == -1)
+		{
+			content = new(facade.GetVendasStand(idStand));
+		}
+		else
+		{
+			content = new(facade.GetVendasFeira(idFeira));
+		}
+	}
+	public void ConsultarVenda()
+	{
+		if(content.IdValid())
+		{
+			showProds = true;
+			idVenda = content.GetElement().IdVenda;
+		}
+	}
+	public static ShowVendasComponent GetInstance()
+	{
+		return component;
+	}
+	public void GetBack()
+	{
+		showProds = false;
+		content.Unselect();
+		StateHasChanged();
+	}
+	public void Retroceder()
+	{
+		if (idFeira == -1)
+			ShowStandsFeiranteComponent.GetInstance().GetBack();
+		else
+			ShowFeirasComponent.GetInstace().GetBack();
+	}
+
+}

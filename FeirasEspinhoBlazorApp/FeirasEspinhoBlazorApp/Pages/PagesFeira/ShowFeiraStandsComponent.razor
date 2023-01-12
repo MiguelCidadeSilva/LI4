@@ -44,6 +44,7 @@
 						<th>Feirante</th>
 						<th>Data Criação</th>
 						<th>Categoria</th>
+						<th>Consultantes</th>
 						<th>Avaliação Feirante</th>
 					</tr>
 				</thead>
@@ -55,6 +56,7 @@
 							<td> @nomes[stand.Item2.EmailDono]</td>
 							<td> @stand.Item2.DataCriacao.ToShortDateString()</td>
 							<td> @categoria[stand.Item2.IdStand].Name</td>
+							<td> @stand.Item2.Consultantes</td>
 							@if (stand.Item3.HasValue)
 							{
 								<td> @stand.Item3.Value</td>

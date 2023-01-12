@@ -93,7 +93,10 @@ else
 			<br />
 			<div>
 				<button class="buttonA buttonTable1" @onclick="CompraRapida">Comprar Rápida</button>
-				<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+				@if(stand.Negociavel)
+				{
+					<button class="buttonA buttonTable2" @onclick="Negociar">Negociar</button>
+				}
 				<button class="buttonA" @onclick="Retroceder">Retroceder</button>
 			</div>
 		}
@@ -159,6 +162,7 @@ else
 			facade.IncrementConsultantes(idStand);
 			codigosErro[2] = "Compra cancelada";
 			codigosErro[3] = "Negociação cancelada";
+			codigosErro[4] = "Quantidades tem que ser menores que o stock.";
 		}
 		else
 		{
@@ -194,8 +198,14 @@ else
 	public void CompraRapida()
 	{
 		CreateVenda();
-		fastPurchase = true;
-		negociation = false;
+		if (facade.VendaCompativel(venda))
+		{
+			fastPurchase = true;
+			negociation = false;
+		}
+		else
+			erro = 4;
+
 	}
 	public void Negociar()
 	{

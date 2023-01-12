@@ -1,0 +1,63 @@
+﻿@page "/showvenda"
+@using SourceCode.WebClasses;
+@using SourceCode.Vendas;
+@using SourceCode.Stands;
+@using SourceCode;
+@using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
+@inject SistemaFeiras facade;
+
+<div>
+	<h2>Venda</h2>
+	<div class="tableFixHead">
+		<table>
+			<thead>
+				<tr>
+					<th>Produto</th>
+					<th>Nome</th>
+					<th>Preço</th>
+					<th>Quantidade</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var produto in content.Content)
+				{
+					<tr class=@content.Cssclasses[produto.Item1]>
+						<td> @produto.Item2.IdProduto</td>
+						<td> @produto.Item2.Nome</td>
+						<td> @produto.Item2.Preco</td>
+						<td> @produto.Item3</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<div>
+		<label><b>Preço total</b></label>
+		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly"/>
+	</div>
+	<br />
+	<div>
+		<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+	</div>
+</div>
+@code 
+{
+
+	[Parameter, EditorRequired]
+	public int idVenda { get; set; }
+	private Table<Produto> content;
+	private float precoTotal;
+	private Dictionary<int, int> quantidades;
+
+	protected override void OnInitialized()
+	{
+		Venda v = facade.GetVenda(idVenda);
+		precoTotal = v.Preco;
+		content = new(v.Produtos);
+	}
+	public void Retroceder()
+	{
+		ShowVendasComponent.GetInstance().GetBack();
+	}
+}

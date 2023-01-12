@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //builder.Services.AddSingleton<SistemaFeiras>();
-builder.Services.AddScoped<SistemaFeiras>(x => new SistemaFeiras());
+builder.Services.AddScoped<SistemaFeiras>(x => SistemaFeiras.GetInstance());
 
 var app = builder.Build();
 

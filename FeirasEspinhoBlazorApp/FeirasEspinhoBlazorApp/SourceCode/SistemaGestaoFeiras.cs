@@ -63,7 +63,7 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			categoriaCounter = categorias.GetNextIdCategoria();
 			subCategoriaCounter = categorias.GetNextSubCategoria();
 			candidaturasCounter = candidaturas.GetNextId();
-			notificacaoCounter = users.GetNextIdNotifCliente+users.GetNextIdNotifFeirante;
+			notificacaoCounter = users.GetNextIdNotifCliente()+users.GetNextIdNotifFeirante();
 
         }
 
@@ -92,20 +92,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 				throw new EmailInvalidoException("Email já está associado a uma conta...");
 			users.Insert(u);
 
-		}
-
-		//Quando a data final é null, é uma feira permanente
-		//Não precisamos de verificar se já acabou quando implementarmos essa funcionalidade no sistema
-		public void CriarFeira(Utilizador u, String nome_Feira, DateTime? data_Final, float preco_candidatura, int categoria_feira)
-		{
-			if (u is not Administrador)
-				throw new PermissaoInvalidaException("Funcionalidade restrita a Administradores.");
-
-			//Caso o admin em questão já adicionou feiras no passado
-			int key = feirasCounter;
-			feirasCounter++;
-			feiras.Insert(new Feira(key, nome_Feira, DateTime.Now, data_Final,
-										  preco_candidatura, u.Email, categoria_feira));
 		}
 
 		public Stand GetStand(int idStand)
@@ -290,24 +276,18 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			negociacoes.AlteraSucesso(idNegociacao);
 			List<Venda> listaVendas = vendas.ListAllVendas();
-			foreach(Venda venda in listaVendas)
-			{
-				if (venda.Negociacao == idNegociacao)
-				{
-					DateTime data = DateTime.Now;
-					string emailCL = venda.EmailCliente;
-					string emailFei = stands[venda.IdStand].EmailDono;
-                    string mensagem = string.Format("A negociacao {0} entre o cliente {1} e o feirante {2} foi bem sucedida",
-                         idNegociacao, emailCL, emailFei);
-                    Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Negociao bem sucedida", mensagem, data);
-                    notificacaoCounter++;
-                    Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Negociao bem sucedida", mensagem, data);
-                    notificacaoCounter++;
-                    users.InsertNotificacaoCliente(notifCliente);
-					users.InsertNotificacaoFeirante(notifFeirante);
-					break;
-                }
-            }	
+			Venda venda = vendas.GetNegocicaoVenda(idNegociacao);
+			DateTime data = DateTime.Now;
+			string emailCL = venda.EmailCliente;
+			string emailFei = stands[venda.IdStand].EmailDono;
+            string mensagem = string.Format("A negociacao {0} entre o cliente {1} e o feirante {2} foi bem sucedida",
+                 idNegociacao, emailCL, emailFei);
+            Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Negociao bem sucedida", mensagem, data);
+            notificacaoCounter++;
+            Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Negociao bem sucedida", mensagem, data);
+            notificacaoCounter++;
+            users.InsertNotificacaoCliente(notifCliente);
+			users.InsertNotificacaoFeirante(notifFeirante);
         }
         // TO DO
         public void RegistaInsucesso(int idNegociacao)
@@ -316,56 +296,45 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			vendas.DeleteVenda(venda.IdVenda);
 			negociacoes.Insucesso(idNegociacao);
 			venda.Produtos.ForEach(p => stands.AumentaStockProduto(p.Item1.IdProduto, p.Item2));
-            List<Venda> listaVendas = vendas.ListAllVendas();
-            foreach (Venda v in listaVendas)
-            {
-                if (venda.Negociacao == idNegociacao)
-                {
-                    DateTime data = DateTime.Now;
-                    string emailCL = v.EmailCliente;
-                    string emailFei = stands[v.IdStand].EmailDono;
-                    string mensagem = string.Format("A negociacao {0} entre o cliente {1} e o feirante {2} foi cancelada",
-                         idNegociacao, emailCL, emailFei);
-                    Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Negociao cancelada", mensagem, data);
-                    notificacaoCounter++;
-                    Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Negociao cancelada", mensagem, data);
-                    notificacaoCounter++;
-                    users.InsertNotificacaoCliente(notifCliente);
-                    users.InsertNotificacaoFeirante(notifFeirante);
-                    break;
-                }
-            }
+            DateTime data = DateTime.Now;
+            string emailCL = venda.EmailCliente;
+            string emailFei = stands[venda.IdStand].EmailDono;
+            string mensagem = string.Format("A negociacao {0} entre o cliente {1} e o feirante {2} foi cancelada",
+                 idNegociacao, emailCL, emailFei);
+            Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Negociao cancelada", mensagem, data);
+            notificacaoCounter++;
+            Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Negociao cancelada", mensagem, data);
+            notificacaoCounter++;
+            users.InsertNotificacaoCliente(notifCliente);
+            users.InsertNotificacaoFeirante(notifFeirante);
         }
         // TO DO
         public void RegistaNovoPreco(int idNegociacao, float novoPreco)
 		{
 			negociacoes.NovaProposta(idNegociacao,novoPreco);
-            List<Venda> listaVendas = vendas.ListAllVendas();
-            foreach (Venda v in listaVendas)
-            {
-                if (v.Negociacao == idNegociacao)
-                {
-                    DateTime data = DateTime.Now;
-                    string emailCL = v.EmailCliente;
-                    string emailFei = stands[v.IdStand].EmailDono;
-                    string mensagem = string.Format("Nova proposta na negociacao ({0}) entre o cliente {1} e o feirante {2}\nPreço: {3}",
-                         idNegociacao, emailCL, emailFei,novoPreco);
-                    Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Novo preço", mensagem, data);
-                    notificacaoCounter++;
-                    Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Novo preço", mensagem, data);
-                    notificacaoCounter++;
-                    users.InsertNotificacaoCliente(notifCliente);
-                    users.InsertNotificacaoFeirante(notifFeirante);
-                    break;
-                }
-            }
+			Venda venda = vendas.GetNegocicaoVenda(idNegociacao);
+			DateTime data = DateTime.Now;
+            string emailCL = venda.EmailCliente;
+            string emailFei = stands[venda.IdStand].EmailDono;
+            string mensagem = string.Format("Nova proposta na negociacao ({0}) entre o cliente {1} e o feirante {2}\nPreço: {3}",
+                 idNegociacao, emailCL, emailFei,novoPreco);
+            Notificacao notifCliente = new Notificacao(notificacaoCounter, emailCL, "Novo preço", mensagem, data);
+            notificacaoCounter++;
+            Notificacao notifFeirante = new Notificacao(notificacaoCounter, emailFei, "Novo preço", mensagem, data);
+            notificacaoCounter++;
+            users.InsertNotificacaoCliente(notifCliente);
+            users.InsertNotificacaoFeirante(notifFeirante);
         }
 		// TO DO
+		public bool VendaCompativel(Venda venda)
+		{
+			return venda.Produtos.Where(p => p.Item1.Stock < p.Item2).Count() == 0;
+		}
 		public void AddVenda(Venda venda)
 		{
+			List<(Produto, int)> prods = venda.Produtos;
 			venda.IdVenda = vendasCounter;
 			vendas.Insert(venda);
-			List<(Produto, int)> prods = venda.Produtos;
 			prods.ForEach(p => stands.DiminuiStockProduto(p.Item1.IdProduto, p.Item2));
 			vendasCounter++;
 		}
@@ -479,7 +448,26 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		{
 			stands.TrocaDisponibilidadeProduto(produto);
 		}
-
+		private List<Venda> GetVendas()
+		{
+			return vendas.ListAllVendas().Where(v => v.Negociacao.HasValue ? negociacoes.GetSucesso(v.Negociacao.Value) : true).ToList();
+		}
+		public List<Venda> GetVendasStand(int stand)
+		{
+			return GetVendas().Where(v => v.IdStand == stand).ToList();
+		}
+		public List<Venda> GetVendasFeira(int feira)
+		{
+			return GetVendas().Where(v => v.IdFeira == feira).ToList();
+		}
+		public List<Feira> GetFeirasAdmin(string admin)
+		{
+			return feiras.ListAllFeiras().Where(f => f.CriadorEmail.Equals(admin)).ToList();
+		}
+		public void IncrementConsultantesFeira(int feira)
+		{
+			feiras.AumentaConsultantesNaFeira(feira);
+		}
 		public class Teste
 		{
 			static void Main(String[] args)
@@ -495,7 +483,6 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 				sf.Login("sweeper@gmail.com","123456789");
 				sf.Login("ze@gmail.com", "bananas123");
 				sf.Login("maria@gmail.com", "whatinthefuck");
-				sf.CriarFeira(a, "Feira do Congo", null, 19.90f, 3);
 
 				Venda v = new Venda();
 				Venda v2 = v.Clone();
