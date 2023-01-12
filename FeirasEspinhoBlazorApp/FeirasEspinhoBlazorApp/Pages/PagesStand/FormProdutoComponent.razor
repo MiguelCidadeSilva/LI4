@@ -6,24 +6,22 @@
 
 @if (erro != 0)
 {
-	<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="2" />
+	<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="12" />
 }
 <div>
 	<label><b>Produto</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Nome do produto" @bind-value="produto" />
-</div>
-<div>
+	<input type="text" class="tb" id="nome" name="nome" placeholder="Nome do produto" @bind-value="produto" />
+	<br />
 	<label><b>Quantidade</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Stock inicial" @bind-value="quantidade" />
-</div>
-<div>
+	<input type="text" class="tb" id="stock" name="stock" placeholder="Stock inicial" @bind-value="quantidade" />
+	<br />
 	<label><b>Imposto</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Indique o imposto associado" @bind-value="imposto" />
-</div>
-<div>
+	<input type="text" class="tb" id="imposto" name="imposto" placeholder="Indique o imposto associado" @bind-value="imposto" />
+	<br />
 	<label><b>Preco</b></label>
-	<input type="text" class="tb" id="email" name="email" placeholder="Preço produto" @bind-value="preco" />
+	<input type="text" class="tb" id="preco" name="preco" placeholder="Preço produto" @bind-value="preco" />
 </div>
+<br />
 <div>
 	<button class="buttonA" @onclick="AdicionarProduto">Adicionar Produto</button>
 	<button class="buttonA" @onclick="Retroceder">Retroceder</button>
@@ -46,18 +44,43 @@
 	private float preco = 0f;
 	private string categoria = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static FormProdutoComponent component;
+	protected override void OnInitialized()
+	{
+		component = this;
+		codigosErro[1] = "Um produto tem que ter um nome";
+		codigosErro[2] = "Valores inválidos, todos os números tem que ser maior ou igual que 0";
+	}
+	public static FormProdutoComponent GetInstance()
+	{
+		return component;
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
+	}
 	public void AdicionarProduto()
 	{
-		if (page == 0)
+		if(produto.Length > 0)
 		{
-			FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true),imposto);
-			FormStandComponent.GetInstance().GetBack();
+			if (quantidade >= 0 && imposto > 0 && preco > 0)
+			{
+				if (page == 0)
+				{
+					FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true), imposto);
+					FormStandComponent.GetInstance().GetBack();
+				}
+				else
+				{
+					facade.AddProduto(new Produto(0, produto, 0, stand, quantidade, preco, true), imposto);
+					ShowStandComponent.GetInstance().ShowStand("Produto Adicionado");
+				}
+			}
+			else
+				erro = 2;
 		}
-		else
-		{
-			facade.AddProduto(new Produto(0, produto, 0, stand, quantidade, preco, true), imposto);
-			ShowStandComponent.GetInstance().ShowStand("Produto Adicionado");
-		}
+		erro = 1;
 	}
 	public void Retroceder()
 	{

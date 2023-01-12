@@ -22,6 +22,10 @@ else
 {
 	<div>
 		<h2>Seus Stands</h2>
+		@if(erro != 0)
+		{
+			<WarningComponent sucess="false" mensagem="@codigosErro[erro]" page="18"/>
+		}
 		<div class="tableFixHead">
 			<table>
 				<thead>
@@ -69,6 +73,7 @@ else
 	private bool formStand = false;
 	private bool editStand = false;
 	private bool showVendas = false;
+	private int erro = 0;
 	private int idStand;
 	private Table<Stand> tabelContent;
 	private Dictionary<int, Categoria?> categoria = new();
@@ -93,13 +98,20 @@ else
 	}
 	public void EditarStand()
 	{
-		if(tabelContent.IdValid())
+		if (tabelContent.IdValid())
 		{
 			idStand = tabelContent.GetElement().IdStand;
 			formStand = false;
 			editStand = true;
 			showVendas = false;
 		}
+		else
+			erro = 1;
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
 	}
 	public void CriarStand()
 	{
@@ -124,5 +136,7 @@ else
 			formStand = false;
 			editStand = false;
 		}
+		else
+			erro = 1;
 	}
 }

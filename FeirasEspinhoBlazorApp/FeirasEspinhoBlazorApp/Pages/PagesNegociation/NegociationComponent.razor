@@ -74,19 +74,19 @@ else
 		}
 		stand = facade.GetStand(venda.IdStand);
 	}
-	public NegociationComponent GetInstance()
+	public static NegociationComponent GetInstance()
 	{
 		return negociation;
 	}
 	private void Aceitar()
 	{
 		facade.RegistaSucesso(negociacao.IdNegociacao);
-		Voltar();
+		ShowNegociacoesComponent.GetInstance().GetBack("Sucesso Registado.");
 	}
 	private void Recusar()
 	{
-		facade.RegistaInsucesso(negociacao.IdNegociacao); 
-		Voltar();
+		facade.RegistaInsucesso(negociacao.IdNegociacao);
+		ShowNegociacoesComponent.GetInstance().GetBack("Insucesso Registado.");
 	}
 	private void Negociar()
 	{
@@ -95,5 +95,9 @@ else
 	private void Voltar()
 	{
 		ShowNegociacoesComponent.GetInstance().GetBack();
+	}
+	public void GetBack()
+	{
+		negociar = false;
 	}
 }

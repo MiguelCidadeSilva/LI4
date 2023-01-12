@@ -180,9 +180,7 @@ else
 			showLeilao = false;
 		}
 		else
-		{
 			erro = 1;
-		}
 	}
 
 	public void ConsultarLeiloes()
@@ -196,9 +194,7 @@ else
 			showFeira = false;
 		}
 		else
-		{
 			erro = 1;
-		}
 	}
 	public void InscreverFeira()
 	{
@@ -209,11 +205,14 @@ else
 			feiraSelecionada = feira.IDFeira;
 			showFeira = true;
 		}
+		else
+			erro = 1;
 	}
 
 	public void GetBack()
 	{
 		InitializedContent();
+		erro = 0;
 		showAvaliacao = false;
 		showLeilao = false;
 		showFeira = false;
@@ -240,5 +239,7 @@ else
 			feiraSelecionada = tabelContent.GetElement().IDFeira;
 			showVenda = true;
 		}
+		else
+			erro = 1;
 	}
 }

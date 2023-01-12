@@ -17,11 +17,11 @@ else
 		<h2>Formulário Stand</h2>
 		@if(erro != 0)
 		{
-			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="2" />
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="11" />
 		}
 		else if (sucess)
 		{
-			<WarningComponent mensagem="@sucmensagem" sucess="true" page="2" />
+			<WarningComponent mensagem="@sucmensagem" sucess="true" page="11" />
 		}
 		<br />
 		<div>
@@ -79,6 +79,7 @@ else
 	private Dictionary<int, float> impostos = new();
 	protected override void OnInitialized()
 	{
+		codigosErro[1] = "Insira uma categoria";
 		formStand = this;
 	}
 	public static FormStandComponent GetInstance()
@@ -87,16 +88,21 @@ else
 	}
 	public void AdicionarStand()
 	{
-		// METER CATEGORIA DIREITA
-		// public Stand(int idStand, bool negociavel, int consultates, DateTime dataCriacao, string emailDono, int categoria, List<Produto> produto)
-		Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
-		facade.AddStand(stand,categoria, impostos.Values.ToList());
-		ShowStandsFeiranteComponent.GetInstance().GetBack();
+		if (categoria.Length > 0)
+		{
+			Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
+			facade.AddStand(stand, categoria, impostos.Values.ToList());
+			ShowStandsFeiranteComponent.GetInstance().GetBack();
+		}
+		else
+			erro = 1;
 	}
 	public void AdicionaProduto(Produto p, float imposto)
 	{
 		int paux = this.table.AddElement(p);
 		impostos.Add(paux, imposto);
+		sucess = true;
+		sucmensagem = "Produto " + p.Nome + " adicionado";
 	}
 	public void AdicionarProduto()
 	{
@@ -114,5 +120,11 @@ else
 	public void Retroceder()
 	{
 		ShowStandsFeiranteComponent.GetInstance().GetBack();
+	}
+	public void CleanWarning()
+	{
+		sucess = false;
+		erro = 0;
+		StateHasChanged();
 	}
 }

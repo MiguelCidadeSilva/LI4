@@ -3,9 +3,14 @@
 @using SourceCode.WebClasses;
 @using SourceCode.Utilizadores;
 @using SourceCode;
+@inject SistemaFeiras facade;
 
 <div>
 	<h2>Aprovação de candidaturas</h2>
+	@if(erro != 0)
+	{
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="17"/>
+	}
 	<div class="tableFixHead">
 		<table>
 			<thead>
@@ -50,7 +55,9 @@
 	private Table<Candidatura> table;
 	private Dictionary<int, Feira> feiras;
 	private Dictionary<int, (Utilizador, float?)> users;
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
+	private static AproveCandidaturaComponent component;
+	private int erro = 0;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private void InitializeData()
 	{
 		feiras = new();
@@ -61,16 +68,29 @@
 	}
 	protected override void OnInitialized()
 	{
+		codigosErro[1] = "Candidatura não selecionada";
+		component = this;
 		InitializeData();
+	}
+	public static AproveCandidaturaComponent GetInstance()
+	{
+		return component;
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
 	}
 	private void AceitarCandidatura()
 	{
-		if(table.IdValid())
+		if (table.IdValid())
 		{
 			Candidatura c = table.GetElement();
 			facade.AprovarCandidatura(c.IdCandidatura);
 			InitializeData();
 		}
+		else
+			erro = 1;
 	}
 	private void RecusarCandidatura()
 	{
@@ -80,6 +100,8 @@
 			facade.RemoveCandidatura(c.IdCandidatura);
 			InitializeData();
 		}
+		else
+			erro = 1;
 	}
 
 }

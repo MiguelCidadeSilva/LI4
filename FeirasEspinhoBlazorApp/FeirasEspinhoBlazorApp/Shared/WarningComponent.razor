@@ -3,6 +3,7 @@
 @using Pages.PagesFeira;
 @using Pages.PagesStand;
 @using Pages.PagesLeilao;
+@using Pages.PagesNegociation;
 
 @if(sucess)
 {
@@ -63,12 +64,52 @@ else
 				ShowLeiloesComponent.GetInstance().CleanWarning();
 				break;
 			case 7:
-				// Show Leiloes
+				// Show Leilao
 				ShowLeilaoComponent.GetInstance().CleanWarning();
 				break;
 			case 8:
-				// Show Leiloes
+				// Feira Select
 				FeiraSelectComponent.GetInstance().CleanWarning();
+				break;
+			case 9:
+				//  Negociação
+				StartNegociationComponent.GetInstance().CleanWarning();
+				break;
+			case 10:
+				//  Show Vendas
+				ShowVendasComponent.GetInstance().CleanWarning();
+				break;
+			case 11:
+				//  Form Stand
+				FormStandComponent.GetInstance().CleanWarning();
+				break;
+			case 12:
+				//  Form Produto
+				FormProdutoComponent.GetInstance().CleanWarning();
+				break;
+			case 13:
+				//  Feira Select Leilão
+				FeiraSelectComponent.GetInstance().CleanWarning();
+				break;
+			case 14:
+				//  Form Leilao
+				FormLeilaoComponent.GetInstance().CleanWarning();
+				break;
+			case 15:
+				//  Form Leilao
+				ShowNegociacoesComponent.GetInstance().CleanWarning();
+				break;
+			case 16:
+				//  Form Feira
+				FormFeiraComponent.GetInstance().CleanWarning();
+				break;
+			case 17:
+				//  Form Feira
+				AproveCandidaturaComponent.GetInstance().CleanWarning();
+				break;
+			case 18:
+				// Show Stands Feirante
+				ShowStandsFeiranteComponent.GetInstance().CleanWarning();
 				break;
 		}
 	}

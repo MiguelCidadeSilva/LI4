@@ -14,11 +14,11 @@ else
 	<h2>Negociações</h2>
 	@if (erro != 0)
 	{
-		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="5" />
+		<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="15" />
 	}
 	else if (sucess)
 	{
-		<WarningComponent mensagem="@sucessMessage" sucess="true" page="5" />
+		<WarningComponent mensagem="@sucessMessage" sucess="true" page="15" />
 	}
 	<div class="tableFixHead">
 		<table>
@@ -68,7 +68,8 @@ else
 	}
 	protected override void OnInitialized()
 	{
-		codigosErro[0] = "Negociação não registada";
+		codigosErro[1] = "Negociação não registada";
+		codigosErro[2] = "Selecione uma negociação";
 		InitializeData();
 		// public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
 		showNegociacoes = this;
@@ -79,12 +80,14 @@ else
 	}
 	private void Consultar()
 	{
-		if(table.IdValid())
+		if (table.IdValid())
 		{
 			Venda venda = table.GetElement();
 			idVenda = venda.IdVenda;
 			showNegociation = true;
 		}
+		else
+			erro = 2;
 	}
 	public void GetBack()
 	{
@@ -113,6 +116,12 @@ else
 		sucess = true;
 		sucessMessage = message;
 		table.Unselect();
+		StateHasChanged();
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		sucess = false;
 		StateHasChanged();
 	}
 }

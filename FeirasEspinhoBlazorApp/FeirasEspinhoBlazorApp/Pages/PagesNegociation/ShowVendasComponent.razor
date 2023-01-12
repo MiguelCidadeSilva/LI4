@@ -15,6 +15,10 @@ else
 {	
 	<div>
 		<h2>Vendas</h2>
+		@if(erro != 0)
+		{
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="10"/>
+		}
 		<div class="tableFixHead">
 			<table>
 				<thead>
@@ -49,6 +53,7 @@ else
 				</tbody>
 			</table>
 		</div>
+		<br />
 		<div>
 			<button class="buttonA" @onclick="ConsultarVenda">Consultar Venda</button>
 			<button class="buttonA" @onclick="Retroceder">Retroceder</button>
@@ -65,9 +70,12 @@ else
 	private Table<Venda> content;
 	private bool showProds = false;
 	private int idVenda;
+	private int erro = 0;
 	private static ShowVendasComponent component;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	protected override void OnInitialized()
 	{
+		codigosErro[1] = "Nenhuma venda selecionada";
 		component = this;
 		if(idFeira == -1)
 		{
@@ -78,13 +86,20 @@ else
 			content = new(facade.GetVendasFeira(idFeira));
 		}
 	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
+	}
 	public void ConsultarVenda()
 	{
-		if(content.IdValid())
+		if (content.IdValid())
 		{
 			showProds = true;
 			idVenda = content.GetElement().IdVenda;
 		}
+		else
+			erro = 1;
 	}
 	public static ShowVendasComponent GetInstance()
 	{

@@ -16,7 +16,6 @@
 }
 else if (negociation)
 {
-
 	<StartNegociationComponent venda="@venda" returnPage="0"/>
 }
 else if (formProduto)
@@ -170,6 +169,7 @@ else
 			codigosErro[3] = "Adicionar produto cancelado";
 		}
 		codigosErro[1] = "Nenhum stand selecionado";
+		codigosErro[5] = "Quantidades todas nulas";
 	}
 	public static ShowStandComponent GetInstance()
 	{
@@ -184,7 +184,7 @@ else
 	private void RecalculaPrecoTotal(ChangeEventArgs args, int key)
 	{
 		int number;
-		if(int.TryParse(args.Value.ToString(),out number))
+		if(int.TryParse(args.Value.ToString(),out number) && number > 0)
 			quantidades[key] = number;
 		else
 			quantidades[key] = 0;
@@ -195,23 +195,37 @@ else
 		List<(Produto, int)> list = tabelContent.Content.Where(p => quantidades[p.Item1] > 0).Select(p => (p.Item2, quantidades[p.Item1])).ToList();
 		venda = new Venda(0,DateTime.Now,precoTotal,email,idFeira,null,idStand,list);
 	}
+	private bool Avanca()
+	{
+		return quantidades.Where(p => p.Value > 0).Count() > 0;
+	}
 	public void CompraRapida()
 	{
-		CreateVenda();
-		if (facade.VendaCompativel(venda))
+		if (Avanca())
 		{
-			fastPurchase = true;
-			negociation = false;
+			CreateVenda();
+			if(facade.VendaCompativel(venda))
+			{
+				fastPurchase = true;
+				negociation = false;
+			}
+			else
+				erro = 4;
 		}
 		else
-			erro = 4;
+			erro = 5;
 
 	}
 	public void Negociar()
 	{
-		CreateVenda();
-		negociation = true;
-		fastPurchase = false;
+		if (Avanca())
+		{
+			CreateVenda();
+			negociation = true;
+			fastPurchase = false;
+		}
+		else
+			erro = 5;
 
 	}
 	public void Retroceder()
@@ -258,6 +272,8 @@ else
 	{
 		tabelContent.Content.ForEach(p => { if (quantidades[p.Item1] > 0) facade.AumentaStock(p.Item2.IdProduto, quantidades[p.Item1]); });
 		InitializedTable();
+		sucess = true;
+		sucessMessage = "Stock adicionado";
 	}
 
 	public void EliminarProduto()

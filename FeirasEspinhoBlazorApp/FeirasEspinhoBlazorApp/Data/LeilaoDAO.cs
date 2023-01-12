@@ -80,7 +80,7 @@ namespace FeirasEspinhoBlazorApp.Data
                     command.Parameters.AddWithValue("@valorMaximo", leilao.ValormMaximo);
                 else
                     command.Parameters.AddWithValue("@valorMaximo", DBNull.Value);
-                command.Parameters.AddWithValue("@produto", leilao.ValormMaximo);
+                command.Parameters.AddWithValue("@produto", leilao.Produto);
                 command.Parameters.AddWithValue("@quantidade", leilao.Quantidade);
                 command.Parameters.AddWithValue("@stand", leilao.Stand);
                 command.Parameters.AddWithValue("@feira", leilao.Feira);

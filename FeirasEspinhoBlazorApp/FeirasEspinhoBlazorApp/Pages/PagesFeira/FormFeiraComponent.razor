@@ -5,9 +5,17 @@
 @inject SistemaFeiras facade;
 
 
-<h2>Formulário feira</h2>
 <div>
+	<h2>Formulário feira</h2>
 	<div>
+		@if(erro != 0)
+		{
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="16"/>
+		}
+		else if(sucess)
+		{
+			<WarningComponent mensagem="Feira adicionada com sucesso" sucess="true" page="16"/>
+		}
 		<label><b>Nome</b></label>
 		<input type="text" class="tb" id="name" name="name" placeholder="Insira aqui o nome da feira" @bind-value="nome"/>
 		<br />
@@ -36,12 +44,54 @@
 	private string dataInit = "";
 	private string dataFim = "";
 	private float preco = 0;
+	private int erro = 0;
+	private bool sucess = false;
+	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
+	private static FormFeiraComponent component;
+	protected override void OnInitialized()
+	{
+		component = this;
+		codigosErro[1] = "Uma feira tem que ter um nome";
+		codigosErro[2] = "Uma feira tem que ter uma data de inicio";
+		codigosErro[3] = "Data de inicio no formato errado";
+		codigosErro[4] = "Data de fim no formato errado";
+		codigosErro[5] = "Preço de candidatura inválido";
+	}
+	public static FormFeiraComponent GetInstance()
+	{
+		return component;
+	}
+	public void CleanWarning()
+	{
+		erro = 0;
+		StateHasChanged();
+	}
+	private void CleanFields()
+	{
+		nome = "";
+		categoria = "";
+		dataInit = "";
+		dataFim = "";
+		preco = 0;
+		erro = 0;
+	}
 	public void Confirmar()
 	{
 		// int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria
 		DateTime init;
-		if(DateTime.TryParse(dataInit, out init))
+		if (nome.Length == 0)
+			erro = 1;
+		else if (dataInit.Length == 0)
+			erro = 2;
+		else if (dataInit.Count(c => (c == '-')) != 2 || !DateTime.TryParse(dataInit, out init))
+			erro = 3;
+		else if (dataFim.Length > 0 && (dataFim.Count(c => (c == '-')) != 2 || !DateTime.TryParse(dataFim, out init)))
+			erro = 4;
+		else if (preco <= 0)
+			erro = 5;
+		else
 		{
+			sucess = true;
 			DateTime end;
 			if (DateTime.TryParse(dataFim, out end))
 				facade.AddFeira(new Feira(0, nome, init, end, preco, email, null, 0), categoria);
