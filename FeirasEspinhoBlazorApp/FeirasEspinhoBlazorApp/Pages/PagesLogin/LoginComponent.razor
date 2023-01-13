@@ -15,9 +15,9 @@
 <br />
 <div class="page">
 	<main>
-		@if (erro != 0)
+		@if(erro != 0)
 		{
-			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1"/>
+			<WarningComponent mensagem="@codigosErro[erro]" sucess="false" page="1" />
 		}
 		<div>
 			<label><b>Email</b></label>
@@ -43,30 +43,27 @@
 	private string password = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private static LoginComponent login;
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		login = this;
 		this.codigosErro[1] = "Dados de acesso incorretos";
 		this.codigosErro[2] = "Campos incompletos";
-		this.codigosErro[3] = "";
+		this.codigosErro[3] = "Login SUCESSO";
+		this.codigosErro[4] = "Login INSUCESSO";
 	}
 	private void CleanFields()
 	{
 		email = "";
 		password = "";
 	}
-	public static LoginComponent GetInstace()
+	public static LoginComponent GetInstance()
 	{
 		return login;
 	}
-	public void CleanWarning()
+	private async Task VerificaCredencais()
 	{
-		this.erro = 0;
+		erro = 0;
 		StateHasChanged();
-	}
-	private async void VerificaCredencais()
-	{
-
 		if(email.Length == 0 || password.Length == 0)
 		{
 			this.erro = 2;
@@ -75,19 +72,20 @@
 		{
 			try
 			{
-				Utilizador? user = facade.Login(email, password);
-				if(user != null)
+				// Utilizador? user = await UtilizadoresDAO.GetInstance().GetUtilizador2(email);
+				Utilizador? user = facade.Login(email,password);
+				if (user != null)
 				{
 					switch (user.GetType().Name)
-					{
-						case "Cliente":
+						{
+							case "Cliente":
 							NavBar.GetInstance().LoginCL(email);
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
-							break;
+						break;
 						case "Feirante":
 							NavBar.GetInstance().LoginFeirante(email);
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
-							break;
+						break;
 						case "Administrador":
 							NavBar.GetInstance().LoginAdmin(email);
 							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
@@ -96,8 +94,10 @@
 					NavMenu.GetInstance().show = true;
 					NavMenu.GetInstance().Refresh();
 					navigationManager.NavigateTo("user/" + email);
-					StateHasChanged();
 				}
+				else
+					erro = 4;
+				StateHasChanged();
 			}
 			catch (Exception e)
 			{
@@ -105,7 +105,6 @@
 				codigosErro[3] = e.Message;
 			}
 		}
-		return;
 	}
 	public void Login()
 	{

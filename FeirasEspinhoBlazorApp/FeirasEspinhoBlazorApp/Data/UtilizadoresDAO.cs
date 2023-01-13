@@ -692,5 +692,77 @@ namespace FeirasEspinhoBlazorApp.Data
             }
         }
 
-    }
+		public async Task<Utilizador?> GetUtilizador2(String email)
+		{
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("SELECT * FROM [Cliente] WHERE email = (@email)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@email", email);
+				await command.ExecuteNonQueryAsync();
+				SqlDataReader response = command.ExecuteReader();
+				if (response.HasRows)
+				{
+					response.Read();
+					Cliente c = new()
+					{
+						Email = response.GetFieldValue<string>("email"),
+						Username = response.GetFieldValue<string>("nome"),
+						Password = response.GetFieldValue<string>("password"),
+						DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+						DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+					};
+					connection.Close();
+					return c;
+				}
+			}
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("SELECT * FROM [Administrador] WHERE email = (@email)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@email", email);
+				await command.ExecuteNonQueryAsync();
+				SqlDataReader response = command.ExecuteReader();
+				if (response.HasRows)
+				{
+					response.Read();
+					Administrador a = new()
+					{
+						Email = response.GetFieldValue<string>("email"),
+						Username = response.GetFieldValue<string>("nome"),
+						Password = response.GetFieldValue<string>("password"),
+						DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+						DataCriacao = response.GetFieldValue<DateTime>("dataCriacao")
+					};
+					connection.Close();
+					return a;
+				}
+			}
+			using (SqlConnection connection = new(ConnectionDAO.connectionString))
+			using (SqlCommand command = new("SELECT * FROM [Feirante] WHERE email = (@email)", connection))
+			{
+				connection.Open();
+				command.Parameters.AddWithValue("@email", email);
+				await command.ExecuteNonQueryAsync();
+				SqlDataReader response = command.ExecuteReader();
+				if (response.HasRows)
+				{
+					response.Read();
+					Feirante f = new()
+					{
+						Email = response.GetFieldValue<string>("email"),
+						Username = response.GetFieldValue<string>("nome"),
+						Password = response.GetFieldValue<string>("password"),
+						DataNascimento = response.GetFieldValue<DateTime>("dataNascimento"),
+						DataCriacao = response.GetFieldValue<DateTime>("dataCriacao"),
+						iDconta = response.GetFieldValue<int>("nrconta")
+					};
+					connection.Close();
+					return f;
+				}
+			}
+			return null;
+		}
+
+	}
 }

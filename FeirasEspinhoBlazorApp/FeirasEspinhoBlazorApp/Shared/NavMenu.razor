@@ -59,7 +59,7 @@
     {
         NavBar.GetInstance().Logout();
         show = false;
-        LoginComponent loginComponent = LoginComponent.GetInstace();
+        LoginComponent loginComponent = LoginComponent.GetInstance();
         loginComponent.Logout();
         lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Login);
     }
