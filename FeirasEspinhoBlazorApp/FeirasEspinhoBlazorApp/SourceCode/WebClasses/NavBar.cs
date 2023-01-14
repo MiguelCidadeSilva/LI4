@@ -61,7 +61,8 @@ namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
 				new Opcao("Os meus stands","oi oi-briefcase","showstandsfeirante/" + email),
 				new Opcao("Inscrição numa feira", "oi oi-list", "showfeiras/" + email),
 				new Opcao("Leilões", "oi oi-euro", "showleiloesuser/" + email),
-				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email)
+				new Opcao("Negociações", "oi oi-transfer", "shownegociacoes/" + email),
+				new Opcao("Notificações", "oi oi-bell", "notifications/" + email)
 			};
 		}
 		private void InicializeAdminNav()

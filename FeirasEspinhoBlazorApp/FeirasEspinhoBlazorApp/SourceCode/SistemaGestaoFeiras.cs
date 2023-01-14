@@ -142,10 +142,12 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 			if (user is Cliente)
 			{
 				lista = users.ListAllNotificacoesCliente(email);
+				users.ClienteVeNotifs(email);
 			}
 			else if (user is Feirante)
 			{
 				lista = users.ListAllNotificacoesFeirante(email);
+				users.FeiranteVeNotifs(email);
 			}
 			return lista;
 		}

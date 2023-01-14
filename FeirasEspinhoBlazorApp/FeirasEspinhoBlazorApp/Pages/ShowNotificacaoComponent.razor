@@ -1,0 +1,45 @@
+﻿@page "/notification"
+@using SourceCode;
+@using SourceCode.WebClasses;
+@inject SistemaFeiras facade;
+<PageTitle>Notificação</PageTitle>
+
+<h2>Notificação</h2>
+
+<div>
+	<label><b>Assunto</b></label>
+	<input type="text" class="tb" id="assunto" name="assunto" @bind-value="notificacao.Assunto" readonly="readonly" />
+	<br />
+	<label><b>Data</b></label>
+	<input type="text" class="tb" id="data" name="data" @bind-value="date" readonly="readonly" />
+	<br />
+	<label><b>Origem</b></label>
+	<input type="text" class="tb" id="email" name="email" @bind-value="name" readonly="readonly" />
+	<br />
+	<label><b>Mensagem</b> </label>
+	<input type="text" class="tb" id="mensagem" name="mensagem" @bind-value="notificacao.Mensagem" readonly="readonly" />
+</div>
+<br />
+<div>
+	<button class="buttonA" @onclick="Retroceder">Retroceder</button>
+</div>
+
+@code {
+
+	[Parameter, EditorRequired]
+	public Notificacao notificacao { get; set; }
+	[Parameter, EditorRequired]
+	public NotificationsComponent component { get; set; }
+	private string date;
+	private string name;
+	protected override void OnInitialized()
+	{
+		date = notificacao.Data.ToShortDateString();
+		name = facade.GetUtilizador(notificacao.Email).Username;
+	}
+	public void Retroceder()
+	{
+		component.GetBack();
+	}
+
+}
