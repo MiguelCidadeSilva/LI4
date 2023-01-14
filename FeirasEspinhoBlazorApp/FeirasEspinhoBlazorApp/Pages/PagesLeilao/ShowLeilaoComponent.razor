@@ -41,6 +41,8 @@
 	public Leilao leilao { get; set; }
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowLeiloesComponent component { get; set; }
 	private float ultimaLicitação;
 	private float valorLicitação;
 	private string valorMax = "-";
@@ -69,7 +71,7 @@
 		try
 		{
 			facade.Licitar(leilao.Id, email, valorLicitação);
-			ShowLeiloesComponent.GetInstance().GetBack("Licitação registada");
+			component.GetBack("Licitação registada");
 		}
 		catch (Exception e)
 		{
@@ -79,7 +81,7 @@
 	}
 	private void Voltar()
 	{
-		ShowLeiloesComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 	public void CleanWarning()
 	{

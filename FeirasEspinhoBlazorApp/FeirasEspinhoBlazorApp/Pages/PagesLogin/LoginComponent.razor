@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @inject NavigationManager navigationManager;
 @inject SistemaFeiras facade;
+@inject NavBar nav;
 @using SourceCode.WebClasses;
 @using SourceCode.Utilizadores;
 @using Data;
@@ -72,27 +73,28 @@
 		{
 			try
 			{
-				// Utilizador? user = await UtilizadoresDAO.GetInstance().GetUtilizador2(email);
-				Utilizador? user = facade.Login(email,password);
+				Utilizador? user = await UtilizadoresDAO.GetInstance().GetUtilizador2(email);
+				// Utilizador? user = facade.Login(email,password);
 				if (user != null)
 				{
 					switch (user.GetType().Name)
-						{
-							case "Cliente":
-							NavBar.GetInstance().LoginCL(email);
-							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Cliente);
-						break;
+					{
+						case "Cliente":
+							nav.LoginCL(email);
+							nav.ChangeMenu((int)NavBar.menusNomes.Cliente);
+							break;
 						case "Feirante":
-							NavBar.GetInstance().LoginFeirante(email);
-							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Feirante);
-						break;
+							nav.LoginFeirante(email);
+							nav.ChangeMenu((int)NavBar.menusNomes.Feirante);
+							break;
 						case "Administrador":
-							NavBar.GetInstance().LoginAdmin(email);
-							NavMenu.GetInstance().lista = NavBar.GetInstance().GetMenu((int)NavBar.menusNomes.Admin);
+							nav.LoginAdmin(email);
+							nav.ChangeMenu((int)NavBar.menusNomes.Admin);
 							break;
 					}
-					NavMenu.GetInstance().show = true;
-					NavMenu.GetInstance().Refresh();
+					nav.State = true;
+					//NavMenu.GetInstance().show = true;
+					//NavMenu.GetInstance().Refresh();
 					navigationManager.NavigateTo("user/" + email);
 				}
 				else

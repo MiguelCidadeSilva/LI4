@@ -12,7 +12,7 @@
 <div>
 	@if(showLeilao)
 	{
-		<ShowLeilaoComponent leilao="@table.GetElement()" email="@email"/>
+		<ShowLeilaoComponent leilao="@table.GetElement()" email="@email" component="this"/>
 	}
 	else if (formLeilao)
 	{

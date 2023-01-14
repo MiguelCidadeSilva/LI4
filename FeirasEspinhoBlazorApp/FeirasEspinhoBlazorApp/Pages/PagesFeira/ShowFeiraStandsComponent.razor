@@ -8,13 +8,14 @@
 @using FeirasEspinhoBlazorApp.Pages.PagesStand;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
+@inject SistemaFeiras facade;
 
 <PageTitle>Stands</PageTitle>
 
 <div>
 	@if (showAvaliacao)
 	{
-		<EvaluationComponent avaliar="1" email="@email" feirante="@feirante" idFeira="-1"/>
+		<EvaluationComponent avaliar="1" email="@email" feirante="@feirante" idFeira="-1" feiras="null" stands="this"/>
 	}
 	else if (showStand)
 	{
@@ -90,7 +91,8 @@
 	public string email { get; set; }
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
+	[Parameter, EditorRequired]
+	public ShowFeirasComponent component { get; set; }
 	private Feira feira;
 	private string feirante = "";
 	private bool showAvaliacao = false;
@@ -189,7 +191,7 @@
 	}
 	public void Avalia()
 	{
-		feirante = SistemaFeiras.GetInstance().GetStand(idStand).EmailDono;
+		feirante = facade.GetStand(idStand).EmailDono;
 		showStand = false;
 		showAvaliacao = true;
 		showLeilao = false;
@@ -211,13 +213,11 @@
 	{
 		if(type)
 		{
-			ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
-			showFeirasComponent.Avalia();
+			component.Avalia();
 		}
 		else
 		{
-			ShowFeirasComponent showFeirasComponent = ShowFeirasComponent.GetInstace();
-			showFeirasComponent.GetBack();
+			component.GetBack();
 		}
 	}
 	public void SelecionarStand()

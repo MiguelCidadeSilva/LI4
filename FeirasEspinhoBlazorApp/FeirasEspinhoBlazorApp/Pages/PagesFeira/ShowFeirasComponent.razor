@@ -6,12 +6,14 @@
 @using FeirasEspinhoBlazorApp.Pages.PagesNegociation;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
+@inject SistemaFeiras facade;
+
 
 <PageTitle>Feiras</PageTitle>
 
 @if(showFeira)
 {
-	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" email="@email"/> 
+	<ShowFeiraStandsComponent idFeira="@feiraSelecionada" email="@email" component="this"/> 
 }
 else if (showLeilao)
 {
@@ -19,7 +21,7 @@ else if (showLeilao)
 }
 else if (showAvaliacao)
 {
-	<EvaluationComponent idFeira="@feiraSelecionada" avaliar="0" feirante="" email="@email"/>
+	<EvaluationComponent idFeira="@feiraSelecionada" avaliar="0" feirante="" email="@email" feiras="this" stands="null"/>
 }
 else if (showVenda)
 {
@@ -123,7 +125,6 @@ else
 	public string email { get; set; }
 	private bool type;
 	private bool type2;
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
 	private Table<Feira> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, Categoria?> categoria = new();

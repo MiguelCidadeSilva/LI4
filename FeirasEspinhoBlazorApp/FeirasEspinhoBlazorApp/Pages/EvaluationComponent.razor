@@ -38,6 +38,10 @@
 	public string feirante { get; set; }
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeirasComponent feiras { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeiraStandsComponent stands { get; set; }
 	private String name = "Que nota gostaria de dar ";
 	private int avaliacao = -1;
 	private Dictionary<int, string> codigosErros = new();
@@ -68,11 +72,11 @@
 	{
 		if (avaliar == 0)
 		{
-			ShowFeirasComponent.GetInstace().GetBack();
+			feiras.GetBack();
 		}
 		else
 		{
-			ShowFeiraStandsComponent.GetInstace().GetBack();
+			stands.GetBack();
 		}
 	}
 }
