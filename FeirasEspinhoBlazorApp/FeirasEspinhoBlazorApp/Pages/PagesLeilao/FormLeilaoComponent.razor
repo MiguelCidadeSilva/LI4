@@ -59,6 +59,10 @@
 	public int idStand { get; set; }
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
+	[Parameter, EditorRequired]
+	public FeiraSelectComponent component { get; set; }
+	[Parameter, EditorRequired]
+	public ShowLeiloesComponent leiloes { get; set; }
 	private int quantidade = 0;
 	private int valorMax = 0;
 	private int valorMin = 0;
@@ -67,20 +71,14 @@
 	private int lp = -1;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static FormLeilaoComponent component;
 	protected override void OnInitialized()
 	{
-		component = this;
 		codigosErro[1] = "Data no formato errado";
 		codigosErro[2] = "Produto não selecionado";
 		codigosErro[3] = "Quantidade e valores tem que ser positivos";
 		Stand stand = facade.GetStand(idStand);
 		List<Produto> conteudo = stand.Produtos;
 		this.tabelContent = new Table<Produto>(conteudo);
-	}
-	public static FormLeilaoComponent GetInstance()
-	{
-		return component;
 	}
 	public void CleanWarning()
 	{
@@ -89,6 +87,7 @@
 	}
 	private void CriarLeilao()
 	{
+		CleanWarning();
 		DateTime param;
 		if (date.Count(c => (c == '-')) != 2 || !DateTime.TryParse(date, out param))
 		{
@@ -105,16 +104,18 @@
 		}
 		else
 		{
+			// public Leilao(int id, DateTime date, float valormMinimo, float? valormMaximo, int produto, int quantidade, int stand, int feira, float bidAtual)
+
 			Produto p = tabelContent.GetElement();
-			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, p.Stand, idStand, idFeira, 0);
+			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, quantidade, idStand, idFeira, 0);
 			facade.AddLeilao(l);
-			ShowLeiloesComponent.GetInstance().GetBack("Leilão criado");
+			leiloes.GetBack("Leilão criado");
 		}
 			
 	}
 	private void Retroceder()
 	{
-		FeiraSelectComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 
 }

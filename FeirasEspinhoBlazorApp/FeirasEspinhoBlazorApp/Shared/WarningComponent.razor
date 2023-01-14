@@ -12,7 +12,7 @@
 		<div class="alert sucess">
 			<div class="d-table w-100">
 				<p class="d-table-cell w-100"><b>@mensagem</b></p>
-				<button class="buttonAlerta buttonSucess d-table-cell tar" @onclick="FechaAlerta">&times</button>
+				<!--<button class="buttonAlerta buttonSucess d-table-cell tar" @onclick="FechaAlerta">&times</button>-->
 			</div> 
 		</div>
 		<br />
@@ -22,7 +22,7 @@
 		<div class="alert">
 			<div class="d-table w-100">
 				<p class="d-table-cell w-100"><b>@mensagem</b></p>
-				<button class="buttonAlerta d-table-cell tar" @onclick="FechaAlerta">&times</button>
+				<!--<button class="buttonAlerta d-table-cell tar" @onclick="FechaAlerta">&times</button>-->
 			</div>
 		</div>
 		<br />
@@ -40,80 +40,5 @@
 	private bool show = true;
 	public void FechaAlerta()
 	{
-		switch (page)
-		{
-			case 1:
-				// Login Page
-				show = false;
-				break;
-			case 2:
-				// Create ACC Page
-				CreateACCComponent.GetInstance().CleanWarning();
-				break;
-			case 3:
-				// Show Feiras
-				ShowFeirasComponent.GetInstace().CleanWarning();
-				break;
-			case 4:
-				// Show Feiras Stande
-				ShowFeiraStandsComponent.GetInstace().CleanWarning();
-				break;
-			case 5:
-				// Show Stand
-				ShowStandComponent.GetInstance().CleanWarning();
-				break;
-			case 6:
-				// Show Leiloes
-				ShowLeiloesComponent.GetInstance().CleanWarning();
-				break;
-			case 7:
-				// Show Leilao
-				ShowLeilaoComponent.GetInstance().CleanWarning();
-				break;
-			case 8:
-				// Feira Select
-				FeiraSelectComponent.GetInstance().CleanWarning();
-				break;
-			case 9:
-				//  Negociação
-				StartNegociationComponent.GetInstance().CleanWarning();
-				break;
-			case 10:
-				//  Show Vendas
-				ShowVendasComponent.GetInstance().CleanWarning();
-				break;
-			case 11:
-				//  Form Stand
-				FormStandComponent.GetInstance().CleanWarning();
-				break;
-			case 12:
-				//  Form Produto
-				FormProdutoComponent.GetInstance().CleanWarning();
-				break;
-			case 13:
-				//  Feira Select Leilão
-				FeiraSelectComponent.GetInstance().CleanWarning();
-				break;
-			case 14:
-				//  Form Leilao
-				FormLeilaoComponent.GetInstance().CleanWarning();
-				break;
-			case 15:
-				//  Form Leilao
-				ShowNegociacoesComponent.GetInstance().CleanWarning();
-				break;
-			case 16:
-				//  Form Feira
-				FormFeiraComponent.GetInstance().CleanWarning();
-				break;
-			case 17:
-				//  Form Feira
-				AproveCandidaturaComponent.GetInstance().CleanWarning();
-				break;
-			case 18:
-				// Show Stands Feirante
-				ShowStandsFeiranteComponent.GetInstance().CleanWarning();
-				break;
-		}
 	}
 }

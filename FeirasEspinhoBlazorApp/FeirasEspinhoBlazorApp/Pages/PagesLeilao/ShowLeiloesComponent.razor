@@ -16,7 +16,7 @@
 	}
 	else if (formLeilao)
 	{
-		<FeiraSelectComponent email="@email"/>
+		<FeiraSelectComponent email="@email" component="this"/>
 	}
 	else
 	{
@@ -80,22 +80,21 @@
 	public string email { get; set; }
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeiraStandsComponent stands { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeirasComponent feiras { get; set; }
 	private bool sucess = false;
 	private string sucess_msg = "";
 	private Table<Leilao> table;
 	private Dictionary<int, string> nomesDonos = new Dictionary<int, string>();
 	private Dictionary<int, string> nomesProdutos = new Dictionary<int, string>();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static ShowLeiloesComponent instance;
 	private bool showLeilao;
 	private bool isFeirante = false;
 	private bool formLeilao = false;
 	private int retroceder = 0;
 	private int erro = 0;
-	public static ShowLeiloesComponent GetInstance()
-	{
-		return instance;
-	}
 	private List<Leilao> OnInitializedUser()
 	{
 		Utilizador user = facade.GetUtilizador(email);
@@ -118,7 +117,6 @@
 	protected override void OnInitialized()
 	{
 		List<Leilao> conteudo;
-		instance = this; 
 		if (idStand != -1)
 			conteudo = OnInitializedFeiraStand();
 		else if(idFeira != -1)
@@ -138,7 +136,7 @@
 	}
 	private void ConsultarLeilao()
 	{
-
+		CleanWarning();
 		if (table.IdValid())
 		{
 			this.erro = 0;
@@ -152,8 +150,8 @@
 	}
 	private void Retroceder()
 	{
-		if (retroceder == 2) ShowFeiraStandsComponent.GetInstace().GetBack();
-		else if (retroceder == 1) ShowFeirasComponent.GetInstace().GetBack();
+		if (retroceder == 2) stands.GetBack();
+		else if (retroceder == 1) feiras.GetBack();
 	}
 	public void CleanWarning()
 	{

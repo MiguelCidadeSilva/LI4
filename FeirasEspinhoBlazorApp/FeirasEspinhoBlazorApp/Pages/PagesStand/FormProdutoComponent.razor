@@ -35,6 +35,10 @@
 	public int page { get; set; }
 	[Parameter, EditorRequired]
 	public int stand { get; set; }
+	[Parameter, EditorRequired]
+	public FormStandComponent formprod { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandComponent standcomp { get; set; }
 	private float imposto = 0;
 	private int erro = 0;
 	private bool sucess = false;
@@ -44,16 +48,10 @@
 	private float preco = 0f;
 	private string categoria = "";
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static FormProdutoComponent component;
 	protected override void OnInitialized()
 	{
-		component = this;
 		codigosErro[1] = "Um produto tem que ter um nome";
 		codigosErro[2] = "Valores inválidos, todos os números tem que ser maior ou igual que 0";
-	}
-	public static FormProdutoComponent GetInstance()
-	{
-		return component;
 	}
 	public void CleanWarning()
 	{
@@ -62,19 +60,20 @@
 	}
 	public void AdicionarProduto()
 	{
+		CleanWarning();
 		if(produto.Length > 0)
 		{
 			if (quantidade >= 0 && imposto > 0 && preco > 0)
 			{
 				if (page == 0)
 				{
-					FormStandComponent.GetInstance().AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true), imposto);
-					FormStandComponent.GetInstance().GetBack();
+					formprod.AdicionaProduto(new Produto(0, produto, 0, 0, quantidade, preco, true), imposto);
+					formprod.GetBack();
 				}
 				else
 				{
 					facade.AddProduto(new Produto(0, produto, 0, stand, quantidade, preco, true), imposto);
-					ShowStandComponent.GetInstance().ShowStand("Produto Adicionado");
+					standcomp.ShowStand("Produto Adicionado");
 				}
 			}
 			else
@@ -86,11 +85,11 @@
 	{
 		if (page == 0)
 		{
-			FormStandComponent.GetInstance().GetBack();
+			formprod.GetBack();
 		}
 		else
 		{
-			ShowStandComponent.GetInstance().ShowStand(3);
+			standcomp.ShowStand(3);
 		}
 	}
 }

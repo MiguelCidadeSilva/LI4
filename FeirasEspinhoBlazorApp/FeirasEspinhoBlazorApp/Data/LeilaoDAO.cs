@@ -338,8 +338,7 @@ namespace FeirasEspinhoBlazorApp.Data
                 if (response.HasRows)
                 {
                     response.Read();
-					if (response.IsDBNull(0))
-						r = response.GetFieldValue<int>("MaiorID")+1;
+					r = response.GetFieldValue<int>("MaiorID");
                 }
                 connection.Close();
                 return r;

@@ -1,6 +1,8 @@
 ﻿@page "/showleiloesstand"
 
-<ShowLeiloesComponent idStand="@idStand" idFeira="@idFeira" email="@email"/>
+@using FeirasEspinhoBlazorApp.Pages.PagesFeira;
+
+<ShowLeiloesComponent idStand="@idStand" idFeira="@idFeira" email="@email" stands="stands" feiras="null"/>
 
 @code 
 {
@@ -10,4 +12,6 @@
 	public int idStand { get; set; }
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeiraStandsComponent stands { get; set; }
 }

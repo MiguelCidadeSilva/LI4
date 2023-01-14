@@ -9,7 +9,7 @@
 
 @if(showProds)
 {
-	<ShowVendaComponent idVenda="idVenda"/>
+	<ShowVendaComponent idVenda="idVenda" component="this"/>
 }
 else
 {	
@@ -67,16 +67,18 @@ else
 	public int idStand { get; set; }
 	[Parameter, EditorRequired]
 	public int idFeira { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandsFeiranteComponent stands { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeirasComponent feiras { get; set; }
 	private Table<Venda> content;
 	private bool showProds = false;
 	private int idVenda;
 	private int erro = 0;
-	private static ShowVendasComponent component;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	protected override void OnInitialized()
 	{
 		codigosErro[1] = "Nenhuma venda selecionada";
-		component = this;
 		if(idFeira == -1)
 		{
 			content = new(facade.GetVendasStand(idStand));
@@ -93,6 +95,7 @@ else
 	}
 	public void ConsultarVenda()
 	{
+		CleanWarning();
 		if (content.IdValid())
 		{
 			showProds = true;
@@ -100,10 +103,6 @@ else
 		}
 		else
 			erro = 1;
-	}
-	public static ShowVendasComponent GetInstance()
-	{
-		return component;
 	}
 	public void GetBack()
 	{
@@ -114,9 +113,9 @@ else
 	public void Retroceder()
 	{
 		if (idFeira == -1)
-			ShowStandsFeiranteComponent.GetInstance().GetBack();
+			stands.GetBack();
 		else
-			ShowFeirasComponent.GetInstace().GetBack();
+			feiras.GetBack();
 	}
 
 }

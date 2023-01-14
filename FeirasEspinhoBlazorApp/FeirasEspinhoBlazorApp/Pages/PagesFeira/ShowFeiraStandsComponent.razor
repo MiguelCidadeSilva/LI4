@@ -19,11 +19,11 @@
 	}
 	else if (showStand)
 	{
-		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" email="@email"/>
+		<ShowStandComponent idStand="@idStand" idFeira="@idFeira" email="@email" feiras="this" stands="null"/>
 	}
 	else if (showLeilao)
 	{
-		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand" email="@email"/>
+		<ShowStandLeilaoComponent idFeira="@idFeira" idStand="@idStand" email="@email" stands="this"/>
 	}
 	else if(showCandidatura)
 	{
@@ -106,7 +106,6 @@
 	private Table<Stand> tabelContent;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new();
-	private static ShowFeiraStandsComponent showBancas;
 	private void InitializeContent()
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
@@ -115,7 +114,6 @@
 		List<Stand> stands;
 		if (type)
 		{
-			showBancas = this;
 			stands = facade.GetStandsFeira(idFeira);
 			stands.ForEach(s => conteudo.Add((s, facade.GetAvaliacoesStands(s.IdStand))));
 			if (nomes.Count() == 0)
@@ -145,10 +143,6 @@
 		InitializeContent();
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
-	public static ShowFeiraStandsComponent GetInstace()
-	{
-		return showBancas;
-	}
 	public void CleanWarning()
 	{
 		this.erro = 0;
@@ -156,6 +150,7 @@
 	}
 	public void ConsultarStand()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
@@ -174,6 +169,7 @@
 
 	public void ConsultarLeiloes()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
@@ -222,6 +218,7 @@
 	}
 	public void SelecionarStand()
 	{
+		CleanWarning();
 		if(tabelContent.IdValid())
 		{
 			erro = 0;

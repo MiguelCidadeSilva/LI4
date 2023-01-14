@@ -47,19 +47,13 @@
 	private int erro = 0;
 	private bool sucess = false;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static FormFeiraComponent component;
 	protected override void OnInitialized()
 	{
-		component = this;
 		codigosErro[1] = "Uma feira tem que ter um nome";
 		codigosErro[2] = "Uma feira tem que ter uma data de inicio";
 		codigosErro[3] = "Data de inicio no formato errado";
 		codigosErro[4] = "Data de fim no formato errado";
 		codigosErro[5] = "Preço de candidatura inválido";
-	}
-	public static FormFeiraComponent GetInstance()
-	{
-		return component;
 	}
 	public void CleanWarning()
 	{
@@ -77,6 +71,7 @@
 	}
 	public void Confirmar()
 	{
+		CleanWarning();
 		// int idFeira, string nome, DateTime dataI, DateTime? dataF, float precoCand, string criadorEmail, int? categoria
 		DateTime init;
 		if (nome.Length == 0)

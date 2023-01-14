@@ -34,18 +34,23 @@
 	public Venda venda { get; set; }
 	[Parameter, EditorRequired]
 	public int returnPage { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandComponent stand { get; set; }
+	[Parameter, EditorRequired]
+	public ShowNegociacoesComponent neg { get; set; }
+	[Parameter, EditorRequired]
+	public NegociationComponent negsin { get; set; }
 	private float valorapagar = 0;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new();
-	private static StartNegociationComponent component;
 	protected override void OnInitialized()
 	{
-		component = this;
 		codigosErro[1] = "Valor a negociar inválido.";
 	}
 
 	public void Confirmar()
 	{
+		CleanWarning();
 		if(valorapagar <= 0)
 		{
 			erro = 1;
@@ -53,26 +58,21 @@
 		else if(returnPage == 0)
 		{
 			facade.AddNegociacaoVenda(venda, new Negociacao(0, venda.Preco, valorapagar, false, false));
-			ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
-			showStandComponent.ShowStand("Negociação registada");
+			stand.ShowStand("Negociação registada");
 		}
 		else
 		{
 			facade.RegistaNovoPreco(venda.Negociacao.Value, valorapagar);
-			ShowNegociacoesComponent.GetInstance().GetBack("Preço Registado");
+			neg.GetBack("Preço Registado");
 		}
 
-	}
-	public static StartNegociationComponent GetInstance()
-	{
-		return component;
 	}
 	public void Cancelar()
 	{
 		if (returnPage == 0)
-			ShowStandComponent.GetInstance().ShowStand(3);
+			stand.ShowStand(3);
 		else
-			NegociationComponent.GetInstance().GetBack();
+			negsin.GetBack();
 	}
 	public void CleanWarning()
 	{

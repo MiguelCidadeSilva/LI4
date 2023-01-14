@@ -9,7 +9,7 @@
 
 @if(negociar)
 {
-	<StartNegociationComponent venda="@venda" returnPage="1"/>
+	<StartNegociationComponent venda="@venda" returnPage="1" neg="@component" negsin="this" stand="null"/>
 }
 else
 {	
@@ -53,16 +53,16 @@ else
 	public int idVenda { get; set; }
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowNegociacoesComponent component { get; set; }
 	private bool negociar = false;
 	private bool alterar = false;
 	private Venda venda;
 	private Negociacao negociacao;
 	private Stand stand;
-	private static NegociationComponent negociation;
 
 	protected override void OnInitialized()
 	{
-		negociation = this;
 		venda = facade.GetVenda(idVenda);
 		if(venda.Negociacao.HasValue)
 		{
@@ -74,19 +74,15 @@ else
 		}
 		stand = facade.GetStand(venda.IdStand);
 	}
-	public static NegociationComponent GetInstance()
-	{
-		return negociation;
-	}
 	private void Aceitar()
 	{
 		facade.RegistaSucesso(negociacao.IdNegociacao);
-		ShowNegociacoesComponent.GetInstance().GetBack("Sucesso Registado.");
+		component.GetBack("Sucesso Registado.");
 	}
 	private void Recusar()
 	{
 		facade.RegistaInsucesso(negociacao.IdNegociacao);
-		ShowNegociacoesComponent.GetInstance().GetBack("Insucesso Registado.");
+		component.GetBack("Insucesso Registado.");
 	}
 	private void Negociar()
 	{
@@ -94,7 +90,7 @@ else
 	}
 	private void Voltar()
 	{
-		ShowNegociacoesComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 	public void GetBack()
 	{

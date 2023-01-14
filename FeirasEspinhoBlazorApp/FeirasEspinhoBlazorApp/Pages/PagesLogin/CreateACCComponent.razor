@@ -84,10 +84,8 @@
 	protected string password = "";
 	protected string passwordRepat = "";
 	protected string numConta = "";
-	private static CreateACCComponent createACC;
 	protected override void OnInitialized()
 	{
-		createACC = this;
 		this.selected = 0;
 		this.codigosErro[1] = "Campos incompletos";
 		this.codigosErro[2] = "Passwords diferentes";
@@ -95,10 +93,6 @@
 		this.codigosErro[4] = "Opção não selecionada";
 		this.codigosErro[5] = "Número de cartão inválido";
 		this.codigosErro[6] = "";
-	}
-	public static CreateACCComponent GetInstance()
-	{
-		return createACC;
 	}
 	private void LimpaCampos()
 	{
@@ -111,6 +105,7 @@
 	}
 	public void AdicionarConta()
 	{
+		CleanWarning();
 		this.erro = 0;
 		DateTime date = new DateTime();
 		if (email.Length == 0 || name.Length == 0 || bornDate.Length == 0 || password.Length == 0 || passwordRepat.Length == 0)

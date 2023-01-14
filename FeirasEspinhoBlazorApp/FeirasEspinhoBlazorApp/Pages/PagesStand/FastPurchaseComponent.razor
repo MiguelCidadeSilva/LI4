@@ -28,19 +28,19 @@
 @code
 {
 	[Parameter, EditorRequired]
-	public Venda venda  { get; set; }
+	public Venda venda { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandComponent stands { get; set; }
 	private string numeroCartao = "";
 	public void Confirmar()
 	{
 		facade.AddVenda(venda);
-		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
-		showStandComponent.ShowStand("Compra registada");
+		stands.ShowStand("Compra registada");
 
 	}
 	public void Cancelar()
 	{
-		ShowStandComponent showStandComponent = ShowStandComponent.GetInstance();
-		showStandComponent.ShowStand(2);
+		stands.ShowStand(2);
 	}
 
 }

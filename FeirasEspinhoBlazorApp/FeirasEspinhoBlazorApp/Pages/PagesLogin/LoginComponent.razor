@@ -31,7 +31,7 @@
 		</div>
 		<br />
 		<div>
-			<button class="buttonA" @onclick="Login">Autenticar</button>
+			<button class="buttonA" @onclick="VerificaCredencais">Autenticar</button>
 		</div>
 	</main>
 </div>
@@ -42,24 +42,17 @@
 	private int erro = 0;
 	private string email = "";
 	private string password = "";
-	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static LoginComponent login;
+	private Dictionary<int, string> codigosErro = new();
 	protected override async Task OnInitializedAsync()
 	{
-		login = this;
 		this.codigosErro[1] = "Dados de acesso incorretos";
 		this.codigosErro[2] = "Campos incompletos";
-		this.codigosErro[3] = "Login SUCESSO";
-		this.codigosErro[4] = "Login INSUCESSO";
+		this.codigosErro[3] = "Utilizador não existe";
 	}
 	private void CleanFields()
 	{
 		email = "";
 		password = "";
-	}
-	public static LoginComponent GetInstance()
-	{
-		return login;
 	}
 	private async Task VerificaCredencais()
 	{
@@ -93,13 +86,12 @@
 							break;
 					}
 					nav.State = true;
-					//NavMenu.GetInstance().show = true;
-					//NavMenu.GetInstance().Refresh();
 					navigationManager.NavigateTo("user/" + email);
 				}
 				else
-					erro = 4;
-				StateHasChanged();
+				{
+					erro = 3;
+				}
 			}
 			catch (Exception e)
 			{
@@ -107,10 +99,7 @@
 				codigosErro[3] = e.Message;
 			}
 		}
-	}
-	public void Login()
-	{
-		VerificaCredencais();
+		StateHasChanged();
 	}
 	public void Logout()
 	{
