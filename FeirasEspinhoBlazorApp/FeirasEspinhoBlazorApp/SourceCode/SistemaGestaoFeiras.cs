@@ -11,6 +11,7 @@ using FeirasEspinhoBlazorApp.SourceCode.Feiras;
 using FeirasEspinhoBlazorApp.SourceCode.Vendas;
 using FeirasEspinhoBlazorApp.SourceCode.Utilizadores;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace FeirasEspinhoBlazorApp.SourceCode
 {
@@ -135,19 +136,31 @@ namespace FeirasEspinhoBlazorApp.SourceCode
 		}
 		public List<Notificacao> GetNotificacaos(string email)
 		{
+			Utilizador user = users[email];
+			List<Notificacao> lista = new List<Notificacao>();
 
-			return new();
+			if (user is Cliente)
+			{
+				lista = users.ListAllNotificacoesCliente(email);
+			}
+			else if (user is Feirante)
+			{
+				lista = users.ListAllNotificacoesFeirante(email);
+			}
+			return lista;
 		}
 
 		public void AddNotificacao(string emailUser,Notificacao not)
 		{
-            //List<Notificacao> lista;
-            //if (!mapNotificacao.TryGetValue(emailUser, out lista))
-            //{
-            //    lista = new List<Notificacao>();
-            //    mapNotificacao[emailUser] = lista;
-            //}
-            //lista.Add(not);
+            Utilizador user = users[emailUser];
+            if (user is Cliente)
+            {
+				users.InsertNotificacaoCliente(not);
+            }
+            else if (user is Feirante)
+            {
+				users.InsertNotificacaoFeirante(not);
+            }
         }
 		public Utilizador GetUtilizador(string emailUtilizador)
 		{
