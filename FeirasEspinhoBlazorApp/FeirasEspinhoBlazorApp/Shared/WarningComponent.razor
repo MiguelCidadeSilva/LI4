@@ -12,7 +12,7 @@
 		<div class="alert sucess">
 			<div class="d-table w-100">
 				<p class="d-table-cell w-100"><b>@mensagem</b></p>
-				<button class="buttonAlerta buttonSucess d-table-cell tar" @onclick="FechaAlerta">&times</button>
+				<!--<button class="buttonAlerta buttonSucess d-table-cell tar" @onclick="FechaAlerta">&times</button>-->
 			</div> 
 		</div>
 		<br />
@@ -22,7 +22,7 @@
 		<div class="alert">
 			<div class="d-table w-100">
 				<p class="d-table-cell w-100"><b>@mensagem</b></p>
-				<button class="buttonAlerta d-table-cell tar" @onclick="FechaAlerta">&times</button>
+				<!--<button class="buttonAlerta d-table-cell tar" @onclick="FechaAlerta">&times</button>-->
 			</div>
 		</div>
 		<br />
@@ -40,6 +40,5 @@
 	private bool show = true;
 	public void FechaAlerta()
 	{
-		show = false;
 	}
 }
