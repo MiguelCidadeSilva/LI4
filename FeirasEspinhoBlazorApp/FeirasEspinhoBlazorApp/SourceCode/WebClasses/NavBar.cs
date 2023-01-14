@@ -1,9 +1,14 @@
-﻿namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
+﻿using FeirasEspinhoBlazorApp.Shared;
+
+namespace FeirasEspinhoBlazorApp.SourceCode.WebClasses
 {
     public class NavBar
     {
+        public int listaShow;
         private Dictionary<int, List<Opcao>> menus = new Dictionary<int, List<Opcao>>();
-        public enum menusNomes { Cliente, Admin, Feirante, Login, Geral };
+		public event Action OnChange;
+		private bool _state;
+		public enum menusNomes { Cliente, Admin, Feirante, Login, Geral };
         private static NavBar instance = null;
         private void InicializeLoginNav()
         {
@@ -90,17 +95,26 @@
             menus[ad].AddRange(menus[ge]);
             menus[fe].AddRange(menus[ge]);
         }
-        public List<Opcao> GetMenu(int menuApresentar)
+        public void ChangeMenu(int menuApresentar)
         {
-            return this.menus[menuApresentar];
+            listaShow = menuApresentar;
         }
-        private NavBar()
+        public List<Opcao> GetMenu()
+        {
+            return this.menus[listaShow];
+        }
+        public int GetOpcao()
+        {
+            return listaShow;
+        }
+        public NavBar()
         {
             this.InicializeLoginNav();
             this.InicializeClientNav();
             this.InicializeFeiranteNav();
             this.InicializeAdminNav();
             this.InicializeGeralNav();
+            ChangeMenu((int)menusNomes.Login);
         }
         public static NavBar GetInstance()
         {
@@ -108,5 +122,14 @@
                 instance = new NavBar();
             return instance;
         }
-    }
+		public bool State
+		{
+			get => _state;
+			set
+			{
+				_state = value;
+				OnChange?.Invoke();
+			}
+		}
+	}
 }

@@ -7,7 +7,7 @@
 <PageTitle>Negociações</PageTitle>
 @if(showNegociation)
 {
-	<NegociationComponent idVenda="@idVenda" email="@email"/>
+	<NegociationComponent idVenda="@idVenda" email="@email" component="this"/>
 }
 else
 {
@@ -54,7 +54,6 @@ else
 	private bool showNegociation;
 	private int idVenda;
 	private Dictionary<int, Negociacao> dict = new();
-	private static ShowNegociacoesComponent showNegociacoes;
 	private int erro;
 	private bool sucess;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
@@ -72,14 +71,10 @@ else
 		codigosErro[2] = "Selecione uma negociação";
 		InitializeData();
 		// public Venda(int idVenda, DateTime data, float preco, string emailCliente, int idFeira, int negociacao, int idStand)
-		showNegociacoes = this;
-	}
-	public static ShowNegociacoesComponent GetInstance()
-	{
-		return showNegociacoes;
 	}
 	private void Consultar()
 	{
+		CleanWarning();
 		if (table.IdValid())
 		{
 			Venda venda = table.GetElement();

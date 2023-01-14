@@ -31,7 +31,7 @@
 		</div>
 		<br />
 		<div>
-			<button class="buttonA" @onclick="Login">Autenticar</button>
+			<button class="buttonA" @onclick="VerificaCredencais">Autenticar</button>
 		</div>
 	</main>
 </div>
@@ -49,8 +49,7 @@
 		login = this;
 		this.codigosErro[1] = "Dados de acesso incorretos";
 		this.codigosErro[2] = "Campos incompletos";
-		this.codigosErro[3] = "Login SUCESSO";
-		this.codigosErro[4] = "Login INSUCESSO";
+		this.codigosErro[3] = "Utilizador não existe";
 	}
 	private void CleanFields()
 	{
@@ -98,8 +97,7 @@
 					navigationManager.NavigateTo("user/" + email);
 				}
 				else
-					erro = 4;
-				StateHasChanged();
+					erro = 3;
 			}
 			catch (Exception e)
 			{
@@ -107,10 +105,7 @@
 				codigosErro[3] = e.Message;
 			}
 		}
-	}
-	public void Login()
-	{
-		VerificaCredencais();
+		StateHasChanged();
 	}
 	public void Logout()
 	{

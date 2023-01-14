@@ -19,6 +19,8 @@
 	<input type="text" class="tb" id="quantidade" name="quantidade" readonly="readonly" @bind-value="quantidade" />
 	<label><b>Valor máximo</b></label>
 	<input type="text" class="tb" id="valorMax" name="valorMax" readonly="readonly" @bind-value="valorMax" />
+	<label><b>Valor minimo</b></label>
+	<input type="text" class="tb" id="valorMax" name="valorMax" readonly="readonly" @bind-value="valorMin" />
 	<label><b>Última licitação</b></label>
 	<input type="text" class="tb" id="valorUltimaBid" name="valorUltimaBid" readonly="readonly" @bind-value="ultimaLicitação" />
 	@if(isClient)
@@ -47,27 +49,24 @@
 	private float valorLicitação;
 	private string valorMax = "-";
 	private int quantidade;
+	private float valorMin;
 	private Produto produto;
 	private string codigo_erro = "";
 	private bool erro = false;
 	private bool isClient;
-	private static ShowLeilaoComponent showLeilaoComponent; 
 	protected override void OnInitialized()
 	{
 		if (leilao.ValormMaximo.HasValue)
 			valorMax = leilao.ValormMaximo.Value.ToString();
 		isClient = facade.GetUtilizador(email) is Cliente;
-		showLeilaoComponent = this;
 		produto = facade.GetProduto(leilao.Produto);
 		quantidade = leilao.Quantidade;
 		ultimaLicitação = leilao.BidAtual;
-	}
-	public static ShowLeilaoComponent GetInstance()
-	{
-		return showLeilaoComponent;
+		valorMin = leilao.ValormMinimo;
 	}
 	private void Licitar()
 	{
+		CleanWarning();
 		try
 		{
 			facade.Licitar(leilao.Id, email, valorLicitação);

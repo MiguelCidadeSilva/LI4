@@ -12,15 +12,15 @@
 
 @if(fastPurchase)
 {
-	<FastPurchaseComponent venda="@venda"/>
+	<FastPurchaseComponent venda="@venda" stands="this"/>
 }
 else if (negociation)
 {
-	<StartNegociationComponent venda="@venda" returnPage="0"/>
+	<StartNegociationComponent venda="@venda" returnPage="0" neg="null" negsin="null" stand="this"/>
 }
 else if (formProduto)
 {
-	<FormProdutoComponent page="1" stand="@idStand"/>
+	<FormProdutoComponent page="1" stand="@idStand" formprod="null" standcomp="this"/>
 }
 else
 {
@@ -118,6 +118,10 @@ else
 	public int idFeira { get; set; }
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowFeiraStandsComponent feiras { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandsFeiranteComponent stands { get; set; }
 	public string sucessStr { get; set; }
 	public string sucessMessage { get; set; }
 	public string erroStr { get; set; }
@@ -133,7 +137,6 @@ else
 	private Venda venda;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Dictionary<int, int> quantidades = new Dictionary<int, int>();
-	private static ShowStandComponent standComponent;
 	protected override void OnParametersSet()
 	{
 		if(!int.TryParse(erroStr, out erro))
@@ -153,7 +156,6 @@ else
 	protected override async void OnInitialized()
 	{
 		Utilizador user = facade.GetUtilizador(email);
-		standComponent = this;
 		InitializedTable();
 		type = user is Cliente;
 		if(type)
@@ -170,10 +172,6 @@ else
 		}
 		codigosErro[1] = "Nenhum stand selecionado";
 		codigosErro[5] = "Quantidades todas nulas";
-	}
-	public static ShowStandComponent GetInstance()
-	{
-		return standComponent;
 	}
 	public void CleanWarning()
 	{
@@ -201,6 +199,7 @@ else
 	}
 	public void CompraRapida()
 	{
+		CleanWarning();
 		if (Avanca())
 		{
 			CreateVenda();
@@ -218,6 +217,7 @@ else
 	}
 	public void Negociar()
 	{
+		CleanWarning();
 		if (Avanca())
 		{
 			CreateVenda();
@@ -232,12 +232,11 @@ else
 	{
 		@if(type)
 		{
-			ShowFeiraStandsComponent showFeirasStandsComponent = ShowFeiraStandsComponent.GetInstace();
-			showFeirasStandsComponent.Avalia();
+			feiras.Avalia();
 		}
 		else
 		{
-			ShowStandsFeiranteComponent.GetInstance().GetBack();
+			stands.GetBack();
 		}
 	}
 	public void ShowStand(int cod)
@@ -278,6 +277,7 @@ else
 
 	public void EliminarProduto()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			Produto p = tabelContent.GetElement();

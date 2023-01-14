@@ -6,12 +6,13 @@
 @using System.Text.Json;
 @using FeirasEspinhoBlazorApp.Pages.PagesLeilao;
 @inject NavigationManager navigationManager
+@inject SistemaFeiras facade
 
 <PageTitle>Feiras</PageTitle>
 
 @if(showForm)
 {
-	<FormLeilaoComponent idFeira="@feiraSelected" idStand="@standSelected"/>
+	<FormLeilaoComponent idFeira="@feiraSelected" idStand="@standSelected" component="this" leiloes="@component"/>
 }
 else
 {
@@ -74,29 +75,25 @@ else
 {
 	[Parameter, EditorRequired]
 	public string email { get; set; }
+	[Parameter, EditorRequired]
+	public ShowLeiloesComponent component { get; set; }
 	private int erro = 0;
 	private bool showForm = false;
 	private int feiraSelected;
 	private int standSelected;
-	private SistemaFeiras facade = SistemaFeiras.GetInstance();
-	private static FeiraSelectComponent component;
 	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Table<Feira> tabelContent;
 	protected override void OnInitialized()
 	{
-		component = this;
 		List<Feira> feira = facade.GetFeiranteParticipacoes(email);
 		feira.ForEach(f => categoria.Add(f.IDFeira, f.Categoria.HasValue ? facade.GetCategoria(f.Categoria.Value) : null));
 		tabelContent = new Table<Feira>(feira);
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}
-	public static FeiraSelectComponent GetInstance()
-	{
-		return component;
-	}
 	public void SelecionarFeira()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			feiraSelected = tabelContent.GetElement().IDFeira;
@@ -120,7 +117,7 @@ else
 	}
 	public void Retroceder()
 	{
-		ShowLeiloesComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 
 }

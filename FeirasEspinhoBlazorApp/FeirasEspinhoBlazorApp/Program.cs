@@ -1,5 +1,7 @@
 using FeirasEspinhoBlazorApp.Data;
+using FeirasEspinhoBlazorApp.Shared;
 using FeirasEspinhoBlazorApp.SourceCode;
+using FeirasEspinhoBlazorApp.SourceCode.WebClasses;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -10,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //builder.Services.AddSingleton<SistemaFeiras>();
 builder.Services.AddScoped<SistemaFeiras>(x => SistemaFeiras.GetInstance());
+builder.Services.AddScoped<NavBar>();
 
 var app = builder.Build();
 

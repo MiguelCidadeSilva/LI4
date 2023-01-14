@@ -8,7 +8,7 @@
 
 @if(formProduto)
 {
-	<FormProdutoComponent page="0" stand="-1"/>
+	<FormProdutoComponent page="0" stand="-1" formprod="this" standcomp="null"/>
 }
 else
 {
@@ -67,6 +67,8 @@ else
 {
 	[Parameter, EditorRequired]
 	public string emailFeirante { get; set; }
+	[Parameter, EditorRequired]
+	public ShowStandsFeiranteComponent component { get; set; }
 	private int erro = 0;
 	private string sucmensagem;
 	private bool sucess = false;
@@ -75,24 +77,19 @@ else
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private Table<Produto> table = new Table<Produto>(new List<Produto>());
 	private bool negociavel = false;
-	private static FormStandComponent formStand;
 	private Dictionary<int, float> impostos = new();
 	protected override void OnInitialized()
 	{
 		codigosErro[1] = "Insira uma categoria";
-		formStand = this;
-	}
-	public static FormStandComponent GetInstance()
-	{
-		return formStand;
 	}
 	public void AdicionarStand()
 	{
+		CleanWarning();
 		if (categoria.Length > 0)
 		{
 			Stand stand = new Stand(0, negociavel, 0, DateTime.Now, emailFeirante, 0, table.Content.Select(t => t.Item2).ToList());
 			facade.AddStand(stand, categoria, impostos.Values.ToList());
-			ShowStandsFeiranteComponent.GetInstance().GetBack();
+			component.GetBack();
 		}
 		else
 			erro = 1;
@@ -119,7 +116,7 @@ else
 	}
 	public void Retroceder()
 	{
-		ShowStandsFeiranteComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 	public void CleanWarning()
 	{

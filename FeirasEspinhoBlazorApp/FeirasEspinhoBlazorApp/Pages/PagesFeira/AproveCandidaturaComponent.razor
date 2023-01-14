@@ -55,7 +55,6 @@
 	private Table<Candidatura> table;
 	private Dictionary<int, Feira> feiras;
 	private Dictionary<int, (Utilizador, float?)> users;
-	private static AproveCandidaturaComponent component;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	private void InitializeData()
@@ -69,12 +68,7 @@
 	protected override void OnInitialized()
 	{
 		codigosErro[1] = "Candidatura não selecionada";
-		component = this;
 		InitializeData();
-	}
-	public static AproveCandidaturaComponent GetInstance()
-	{
-		return component;
 	}
 	public void CleanWarning()
 	{
@@ -83,6 +77,7 @@
 	}
 	private void AceitarCandidatura()
 	{
+		CleanWarning();
 		if (table.IdValid())
 		{
 			Candidatura c = table.GetElement();
@@ -94,6 +89,7 @@
 	}
 	private void RecusarCandidatura()
 	{
+		CleanWarning();
 		if (table.IdValid())
 		{
 			Candidatura c = table.GetElement();

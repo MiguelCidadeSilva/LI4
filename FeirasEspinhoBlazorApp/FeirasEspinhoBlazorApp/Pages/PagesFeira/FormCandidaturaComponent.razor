@@ -1,7 +1,8 @@
 ﻿@page "/formcandidatura"
 @using SourceCode;
 @using SourceCode.Feiras;
-@inject NavigationManager navigation;
+@inject NavigationManager navigation
+@inject SistemaFeiras facade
 
 
 <h2>Candidatura para a feira</h2>
@@ -31,18 +32,17 @@
 	[Parameter, EditorRequired]
 	public int idStand { get; set; }
 	private string nameFeira;
-	private bool confirmou = false;
 
 	protected override void OnInitialized()
 	{
-		Feira f = SistemaFeiras.GetInstance().GetFeira(idFeira);
+		Feira f = facade.GetFeira(idFeira);
 		nameFeira = f.Nome;
 	}
 
 	public void Confirmar()
 	{
 		//int idCandidatura, DateTime dataSubmissao, bool aprovacao, int idStand, int idFeira
-		SistemaFeiras.GetInstance().CriaCandidatura(new Candidatura(0,DateTime.Today,false,idStand,idFeira));
+		facade.CriaCandidatura(new Candidatura(0,DateTime.Today,false,idStand,idFeira));
 		navigation.NavigateTo("/user/" + email);
 	}
 }

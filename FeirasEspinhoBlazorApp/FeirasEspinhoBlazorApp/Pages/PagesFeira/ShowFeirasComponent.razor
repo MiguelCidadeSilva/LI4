@@ -17,7 +17,7 @@
 }
 else if (showLeilao)
 {
-	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada" email="@email"/>
+	<ShowFeiraLeilaoComponent idFeira="@feiraSelecionada" email="@email" feiras="this"/>
 }
 else if (showAvaliacao)
 {
@@ -25,7 +25,7 @@ else if (showAvaliacao)
 }
 else if (showVenda)
 {
-	<ShowVendasComponent idFeira="@feiraSelecionada" idStand="-1"/>
+	<ShowVendasComponent idFeira="@feiraSelecionada" idStand="-1" feiras="this" stands="null"/>
 }
 else
 {
@@ -129,7 +129,6 @@ else
 	private int erro = 0;
 	private Dictionary<int, Categoria?> categoria = new();
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
-	private static ShowFeirasComponent showFeiras;
 	private bool showAvaliacao = false;
 	private bool showFeira = false;
 	private bool showLeilao = false;
@@ -139,7 +138,6 @@ else
 	private void InitializedContent()
 	{
 		Utilizador utilizador = facade.GetUtilizador(email);
-		showFeiras = this;
 		List<Feira> feiras;
 		type = utilizador is Cliente;
 		type2 = utilizador is Feirante;
@@ -160,10 +158,6 @@ else
 		InitializedContent();
 		codigosErro[1] = "Nenhuma feira selecionada";
 	}
-	public static ShowFeirasComponent GetInstace()
-	{
-		return showFeiras;
-	}
 	public void CleanWarning()
 	{
 		this.erro = 0;
@@ -171,6 +165,7 @@ else
 	}
 	public void ConsultarStands()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
@@ -186,6 +181,7 @@ else
 
 	public void ConsultarLeiloes()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
@@ -199,6 +195,7 @@ else
 	}
 	public void InscreverFeira()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			erro = 0;
@@ -235,6 +232,7 @@ else
 	}
 	public void ConsultarVendas()
 	{
+		CleanWarning();
 		if(tabelContent.IdValid())
 		{
 			feiraSelecionada = tabelContent.GetElement().IDFeira;

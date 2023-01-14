@@ -46,6 +46,8 @@
 
 	[Parameter, EditorRequired]
 	public int idVenda { get; set; }
+	[Parameter, EditorRequired]
+	public ShowVendasComponent component { get; set; }
 	private Table<Produto> content;
 	private float precoTotal;
 	private Dictionary<int, int> quantidades;
@@ -58,6 +60,6 @@
 	}
 	public void Retroceder()
 	{
-		ShowVendasComponent.GetInstance().GetBack();
+		component.GetBack();
 	}
 }

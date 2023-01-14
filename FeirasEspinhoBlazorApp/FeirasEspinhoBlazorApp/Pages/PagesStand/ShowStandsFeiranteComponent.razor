@@ -8,15 +8,15 @@
 <PageTitle>Seus Stands</PageTitle>
 @if(editStand)
 {
-	<ShowStandComponent idStand="@idStand" email="@email" idFeira="-1"/>
+	<ShowStandComponent idStand="@idStand" email="@email" idFeira="-1" feiras="null" stands="this"/>
 }
 else if (formStand)
 {
-	<FormStandComponent emailFeirante="@email"/>
+	<FormStandComponent emailFeirante="@email" component="this"/>
 }
 else if (showVendas)
 {
-	<ShowVendasComponent idFeira="-1" idStand="idStand"/>
+	<ShowVendasComponent idFeira="-1" idStand="idStand" feiras="null" stands="this"/>
 }
 else
 {
@@ -69,7 +69,6 @@ else
 {
 	[Parameter, EditorRequired]
 	public string email { get; set; }
-	private static ShowStandsFeiranteComponent showStandsFeirante;
 	private bool formStand = false;
 	private bool editStand = false;
 	private bool showVendas = false;
@@ -88,16 +87,12 @@ else
 	}
 	protected override void OnInitialized()
 	{
-		showStandsFeirante = this;
 		CarregaDados();
 		codigosErro[1] = "Nenhum stand selecionado";
 	}
-	public static ShowStandsFeiranteComponent GetInstance()
-	{
-		return showStandsFeirante;
-	}
 	public void EditarStand()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			idStand = tabelContent.GetElement().IdStand;
@@ -129,6 +124,7 @@ else
 	}
 	public void ConsultarVendas()
 	{
+		CleanWarning();
 		if (tabelContent.IdValid())
 		{
 			idStand = tabelContent.GetElement().IdStand;
