@@ -92,6 +92,7 @@
 				facade.AddFeira(new Feira(0, nome, init, end, preco, email, null, 0), categoria);
 			else
 				facade.AddFeira(new Feira(0, nome, init, null, preco, email, null, 0), categoria);
+			CleanFields();
 		}
 	}
 }

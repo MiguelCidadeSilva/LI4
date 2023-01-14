@@ -32,6 +32,13 @@
 		</table>
 	</div>
 	<br />
+	@if(negociacao != null)
+	{
+		<div>
+			<label><b>Preço base</b></label>
+			<input type="text" class="tb tb_smaller" id="precoBase" name="precoBase" @bind-value="@negociacao.PrecoBase" readonly="readonly" />
+		</div>
+	}
 	<div>
 		<label><b>Preço total</b></label>
 		<input type="text" class="tb tb_smaller" id="precoTotal" name="precoTotal" @bind-value="@precoTotal" readonly="readonly"/>
@@ -48,6 +55,7 @@
 	public int idVenda { get; set; }
 	[Parameter, EditorRequired]
 	public ShowVendasComponent component { get; set; }
+	private Negociacao negociacao = null;
 	private Table<Produto> content;
 	private float precoTotal;
 	private Dictionary<int, int> quantidades;
@@ -57,6 +65,11 @@
 		Venda v = facade.GetVenda(idVenda);
 		precoTotal = v.Preco;
 		content = new(v.Produtos);
+		if(v.Negociacao.HasValue)
+		{
+			negociacao = facade.GetNegociacao(v.Negociacao.Value);
+			precoTotal = negociacao.PrecoNegociacao;
+		}
 	}
 	public void Retroceder()
 	{
