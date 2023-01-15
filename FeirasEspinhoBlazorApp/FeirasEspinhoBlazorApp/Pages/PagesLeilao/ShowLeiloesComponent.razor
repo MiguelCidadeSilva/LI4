@@ -114,16 +114,21 @@
 		List<Leilao> conteudo = facade.GetLeiloesFeiraStand(idFeira, idStand);
 		return conteudo;
 	}
-	protected override void OnInitialized()
+	private List<Leilao> InitializeData()
 	{
 		List<Leilao> conteudo;
 		if (idStand != -1)
 			conteudo = OnInitializedFeiraStand();
-		else if(idFeira != -1)
+		else if (idFeira != -1)
 			conteudo = OnInitializedFeira();
 		else
 			conteudo = OnInitializedUser();
 		this.table = new Table<Leilao>(conteudo);
+		return conteudo;
+	}
+	protected override void OnInitialized()
+	{
+		List<Leilao> conteudo = InitializeData();
 		foreach(Leilao leilao in conteudo)
 		{
 			Stand stand = facade.GetStand(leilao.Stand);
@@ -161,6 +166,7 @@
 	}
 	public void GetBack()
 	{
+		InitializeData();
 		showLeilao = false;
 		formLeilao = false;
 		sucess = false;
@@ -170,6 +176,7 @@
 	}
 	public void GetBack(string message)
 	{
+		InitializeData();
 		showLeilao = false;
 		formLeilao = false;
 		sucess = true;

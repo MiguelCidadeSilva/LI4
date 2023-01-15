@@ -64,7 +64,7 @@
 		quantidade = leilao.Quantidade;
 		ultimaLicitação = leilao.BidAtual;
 		valorMin = leilao.ValormMinimo;
-		podeLicitar = (leilao.ValormMaximo.HasValue ? leilao.ValormMaximo.Value > leilao.BidAtual : true) && leilao.Date.CompareTo(DateTime.Today) <= 0;
+		podeLicitar = (leilao.ValormMaximo.HasValue ? leilao.ValormMaximo.Value > leilao.BidAtual : true) && leilao.Date.CompareTo(DateTime.Today) >= 0;
 	}
 	private void Licitar()
 	{

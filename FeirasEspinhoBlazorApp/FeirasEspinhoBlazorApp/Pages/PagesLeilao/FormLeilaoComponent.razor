@@ -67,15 +67,18 @@
 	private int valorMax = 0;
 	private int valorMin = 0;
 	private string date = "";
+	private Feira feira;
 	private Table<Produto> tabelContent;
 	private int lp = -1;
 	private int erro = 0;
 	private Dictionary<int, string> codigosErro = new Dictionary<int, string>();
 	protected override void OnInitialized()
 	{
+		feira = facade.GetFeira(idFeira);
 		codigosErro[1] = "Data no formato errado";
 		codigosErro[2] = "Produto não selecionado";
 		codigosErro[3] = "Quantidade e valores tem que ser positivos";
+		codigosErro[4] = "Data excede a data de fim da feira";
 		Stand stand = facade.GetStand(idStand);
 		List<Produto> conteudo = stand.Produtos;
 		this.tabelContent = new Table<Produto>(conteudo);
@@ -102,10 +105,12 @@
 		{
 			this.erro = 3;
 		}
+		else if(feira.DataFim.HasValue && feira.DataFim.Value.CompareTo(param) > 0)
+		{
+			this.erro = 4;
+		}
 		else
 		{
-			// public Leilao(int id, DateTime date, float valormMinimo, float? valormMaximo, int produto, int quantidade, int stand, int feira, float bidAtual)
-
 			Produto p = tabelContent.GetElement();
 			Leilao l = new Leilao(0, param, valorMin, valorMax != 0 ? valorMax : null, p.IdProduto, quantidade, idStand, idFeira, 0);
 			facade.AddLeilao(l);
