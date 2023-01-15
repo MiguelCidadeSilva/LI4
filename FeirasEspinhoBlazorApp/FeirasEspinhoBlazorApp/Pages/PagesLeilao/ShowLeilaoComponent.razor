@@ -30,7 +30,7 @@
 	}
 </div>
 <div>
-	@if(isClient)
+	@if(isClient && podeLicitar)
 	{
 		<button class="buttonA buttonTable1" @onclick="Licitar">Licitar</button>
 	}
@@ -48,6 +48,7 @@
 	private float ultimaLicitação;
 	private float valorLicitação;
 	private string valorMax = "-";
+	private bool podeLicitar;
 	private int quantidade;
 	private float valorMin;
 	private Produto produto;
@@ -63,6 +64,7 @@
 		quantidade = leilao.Quantidade;
 		ultimaLicitação = leilao.BidAtual;
 		valorMin = leilao.ValormMinimo;
+		podeLicitar = (leilao.ValormMaximo.HasValue ? leilao.ValormMaximo.Value > leilao.BidAtual : true) && leilao.Date.CompareTo(DateTime.Today) <= 0;
 	}
 	private void Licitar()
 	{
