@@ -54,7 +54,7 @@
 		email = "";
 		password = "";
 	}
-	private async Task VerificaCredencais()
+	private void VerificaCredencais()
 	{
 		erro = 0;
 		StateHasChanged();
@@ -66,8 +66,7 @@
 		{
 			try
 			{
-				Utilizador? user = await UtilizadoresDAO.GetInstance().GetUtilizador2(email);
-				// Utilizador? user = facade.Login(email,password);
+				Utilizador? user = facade.Login(email,password);
 				if (user != null)
 				{
 					switch (user.GetType().Name)
