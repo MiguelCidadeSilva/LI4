@@ -7,6 +7,9 @@
 @using FeirasEspinhoBlazorApp.Pages.PagesStand;
 @inject SistemaFeiras facade;
 
+
+<PageTitle>Negociação</PageTitle>
+
 @if(negociar)
 {
 	<StartNegociationComponent venda="@venda" returnPage="1" neg="@component" negsin="this" stand="null"/>
